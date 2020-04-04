@@ -1,29 +1,31 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
-	_ "github.com/heroku/x/hmetrics/onload"
-	_ "github.com/lib/pq"
+	"github.com/gorilla/mux"
+	"github.com/heroku/whaler-api/app"
+	"github.com/heroku/whaler-api/controllers"
 )
 
 func main() {
-	port := os.Getenv("PORT")
+	router := mux.NewRouter()
+	router.Use(app.JwtAuthentication)
 
+	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.LoadHTMLGlob("templates/*.tmpl.html")
-	router.Static("/static", "static")
+	fmt.Println(port)
 
-	router.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.tmpl.html", nil)
-	})
-
-	router.Run(":" + port)
+	err := http.ListenAndServe(":"+port, router)
+	if err != nil {
+		fmt.Print(err)
+	}
 }

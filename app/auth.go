@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"whaler-api/models"
-	"whaler-api/utils"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/heroku/whaler-api/models"
+	"github.com/heroku/whaler-api/utils"
 )
 
 var JwtAuthentication = func(next http.Handler) http.Handler {

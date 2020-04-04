@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"whaler-api/utils"
 
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/heroku/whaler-api/utils"
 	"github.com/jinzhu/gorm"
 )
 

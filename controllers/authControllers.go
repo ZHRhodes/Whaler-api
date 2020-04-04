@@ -3,8 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"whaler-api/models"
-	"whaler-api/utils"
+
+	"github.com/heroku/whaler-api/models"
+	"github.com/heroku/whaler-api/utils"
 )
 
 //CreateAccount creates an account on the backend and returns it
