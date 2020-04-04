@@ -1,12 +1,12 @@
 {
-  "name": "Start on Heroku: Go",
-  "description": "Go Getting Started Example App",
+  "name": "Whaler API",
+  "description": "The API component of the Whaler platform",
   "keywords": [
-    "getting-started",
+    "whaler",
     "go",
     "sample",
     "example"
   ],
-  "website": "http://github.com/heroku/go-getting-started",
-  "repository": "http://github.com/heroku/go-getting-started"
+  "website": "https://github.com/ZHRhodes/Whaler-api",
+  "repository": "https://github.com/ZHRhodes/Whaler-api"
 }
