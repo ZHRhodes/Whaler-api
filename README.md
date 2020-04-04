@@ -1,7 +1,7 @@
 
 # whaler-api
 
-A barebones Go app, which can easily be deployed to Heroku.
+The api component of the whaler app
 
 ## Running Locally
 
