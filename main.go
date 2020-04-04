@@ -1,19 +1,19 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/heroku/x/hmetrics/onload"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		log.Fatal("$PORT must be set")
+		port = "8000"
 	}
 
 	router := gin.New()
