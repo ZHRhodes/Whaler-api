@@ -63,7 +63,7 @@ func (account *Account) Create() map[string]interface{} {
 
 	tk := &Token{UserID: account.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	account.Token = tokenString
 
 	account.Password = ""
@@ -94,7 +94,7 @@ func Login(email, password string) map[string]interface{} {
 
 	tk := &Token{UserID: account.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	account.Token = tokenString
 
 	resp := utils.Message(true, "Logged in")
