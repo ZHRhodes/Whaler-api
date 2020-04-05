@@ -13,7 +13,7 @@ import (
 )
 
 type Token struct {
-	UserId uint
+	UserID uint
 	jwt.StandardClaims
 }
 
@@ -61,7 +61,7 @@ func (account *Account) Create() map[string]interface{} {
 		return utils.Message(false, "Failed to create account, connection error.")
 	}
 
-	tk := &Token{UserId: account.ID}
+	tk := &Token{UserID: account.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	account.Token = tokenString
@@ -92,7 +92,7 @@ func Login(email, password string) map[string]interface{} {
 
 	account.Password = ""
 
-	tk := &Token{UserId: account.ID}
+	tk := &Token{UserID: account.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
 	account.Token = tokenString
