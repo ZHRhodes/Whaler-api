@@ -37,7 +37,8 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 
 	err := DB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return utils.Message(false, "Connection error. Please retry"), false
+		errMessage := fmt.Sprintf("Connection error. Please retry. temp: %q", err)
+		return utils.Message(false, errMessage), false
 	}
 	if temp.Email != "" {
 		return utils.Message(false, "Email address already in use by another user."), false
