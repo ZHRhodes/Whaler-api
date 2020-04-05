@@ -17,16 +17,6 @@ type Token struct {
 	jwt.StandardClaims
 }
 
-type Account struct {
-	gorm.Model
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	Token     string `sql:"-"`
-	UserID    string
-	FirstName string
-	LastName  string
-}
-
 type User struct {
 	gorm.Model
 	Email     string `gorm:"unique, not null"`
@@ -36,18 +26,18 @@ type User struct {
 	LastName  string
 }
 
-func (account *Account) Validate() (map[string]interface{}, bool) {
-	if !strings.Contains(account.Email, "@") {
+func (user *User) Validate() (map[string]interface{}, bool) {
+	if !strings.Contains(user.Email, "@") {
 		return utils.Message(false, "Email address is required"), false
 	}
 
-	if len(account.Password) < 6 {
+	if len(user.Password) < 6 {
 		return utils.Message(false, "Password is required"), false
 	}
 
-	temp := &Account{}
+	temp := &User{}
 
-	err := DB().Table("accounts").Where("email = ?", account.Email).First(temp).Error
+	err := DB().Table("users").Where("email = ?", user.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		errMessage := fmt.Sprintf("Connection error. Please retry. temp: %q", err)
 		return utils.Message(false, errMessage), false
@@ -59,36 +49,36 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	return utils.Message(false, "Requirement passed"), true
 }
 
-func (account *Account) Create() map[string]interface{} {
-	if resp, ok := account.Validate(); !ok {
+func (user *User) Create() map[string]interface{} {
+	if resp, ok := user.Validate(); !ok {
 		return resp
 	}
 
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(account.Password), bcrypt.DefaultCost)
-	account.Password = string(hashedPassword)
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	user.Password = string(hashedPassword)
 
-	DB().Create(account)
+	DB().Create(user)
 
-	if account.ID <= 0 {
-		fmt.Print(fmt.Sprint("the account id was less than zero"))
-		return utils.Message(false, "Failed to create account, connection error.")
+	if user.ID <= 0 {
+		fmt.Print(fmt.Sprint("the user id was less than zero"))
+		return utils.Message(false, "Failed to create user, connection error.")
 	}
 
-	tk := &Token{UserID: account.ID}
+	tk := &Token{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-	account.Token = tokenString
+	user.Token = tokenString
 
-	account.Password = ""
+	user.Password = ""
 
-	response := utils.Message(true, "Account has been created")
-	response["account"] = account
+	response := utils.Message(true, "User has been created")
+	response["user"] = user
 	return response
 }
 
 func Login(email, password string) map[string]interface{} {
-	account := &Account{}
-	err := DB().Table("accounts").Where("email = ?", email).First(account).Error
+	user := &User{}
+	err := DB().Table("users").Where("email = ?", email).First(user).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -97,27 +87,27 @@ func Login(email, password string) map[string]interface{} {
 		return utils.Message(false, "Connection error. Please retry")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return utils.Message(false, "Invalid login credentials. Please try again")
 	}
-	account.Password = ""
+	user.Password = ""
 
-	account.Password = ""
+	user.Password = ""
 
-	tk := &Token{UserID: account.ID}
+	tk := &Token{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-	account.Token = tokenString
+	user.Token = tokenString
 
 	resp := utils.Message(true, "Logged in")
-	resp["account"] = account
+	resp["user"] = user
 	return resp
 }
 
-func FindUser(userID uint) *Account {
-	acc := &Account{}
-	DB().Table("accounts").Where("id = ?", userID).First(acc)
+func FindUser(userID uint) *User {
+	acc := &User{}
+	DB().Table("users").Where("id = ?", userID).First(acc)
 	if acc.Email == "" {
 		return nil
 	}

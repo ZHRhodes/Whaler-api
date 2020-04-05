@@ -8,28 +8,28 @@ import (
 	"github.com/heroku/whaler-api/utils"
 )
 
-//CreateAccount creates an account on the backend and returns it
-var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
-	account := &models.Account{}
-	err := json.NewDecoder(r.Body).Decode(account)
+//CreateUser creates a user on the backend and returns it
+var CreateUser = func(w http.ResponseWriter, r *http.Request) {
+	user := &models.User{}
+	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		utils.Respond(w, utils.Message(false, "Invalid request"))
 		return
 	}
 
-	resp := account.Create()
+	resp := user.Create()
 	utils.Respond(w, resp)
 }
 
-//Authenticate logs into the account
+//Authenticate logs into the user
 var Authenticate = func(w http.ResponseWriter, r *http.Request) {
-	account := &models.Account{}
-	err := json.NewDecoder(r.Body).Decode(account)
+	user := &models.User{}
+	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		utils.Respond(w, utils.Message(false, "Invalid request"))
 		return
 	}
 
-	resp := models.Login(account.Email, account.Password)
+	resp := models.Login(user.Email, user.Password)
 	utils.Respond(w, resp)
 }

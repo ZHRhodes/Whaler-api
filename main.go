@@ -14,7 +14,7 @@ func main() {
 	router := mux.NewRouter()
 	router.Use(app.JwtAuthentication)
 
-	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/user/new", controllers.CreateUser).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 
 	port := os.Getenv("PORT")
