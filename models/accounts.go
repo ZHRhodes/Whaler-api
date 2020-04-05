@@ -102,9 +102,9 @@ func Login(email, password string) map[string]interface{} {
 	return resp
 }
 
-func User(userId uint) *Account {
+func User(userID uint) *Account {
 	acc := &Account{}
-	DB().Table("accounts").Where("id = ?", userId).First(acc)
+	DB().Table("accounts").Where("id = ?", userID).First(acc)
 	if acc.Email == "" {
 		return nil
 	}
