@@ -19,9 +19,22 @@ type Token struct {
 
 type Account struct {
 	gorm.Model
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Token    string `json:"token";sql:"-"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	Token     string `sql:"-"`
+	UserID    string
+	FirstName string
+	LastName  string
+}
+
+type User struct {
+	gorm.Model
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	Token     string `sql:"-"`
+	UserID    string
+	FirstName string
+	LastName  string
 }
 
 func (account *Account) Validate() (map[string]interface{}, bool) {
@@ -103,7 +116,7 @@ func Login(email, password string) map[string]interface{} {
 	return resp
 }
 
-func User(userID uint) *Account {
+func FindUser(userID uint) *Account {
 	acc := &Account{}
 	DB().Table("accounts").Where("id = ?", userID).First(acc)
 	if acc.Email == "" {

@@ -24,6 +24,7 @@ func init() {
 	}
 
 	db = conn
+	db.CreateTable(&Account{})
 	// db.Debug().AutoMigrate(&Account{})
 }
 
