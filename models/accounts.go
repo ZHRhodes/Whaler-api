@@ -29,10 +29,9 @@ type Account struct {
 
 type User struct {
 	gorm.Model
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	Email     string `gorm:"unique, not null"`
+	Password  string
 	Token     string `sql:"-"`
-	UserID    string
 	FirstName string
 	LastName  string
 }
