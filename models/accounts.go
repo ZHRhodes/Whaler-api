@@ -36,12 +36,6 @@ type User struct {
 	OrganizationID uint   `json:"organizationId"`
 }
 
-type Organization struct {
-	DBModel
-	Name  string `json:"name"`
-	Users []User `json:"users"`
-}
-
 type Account struct {
 	DBModel
 	Name        string

@@ -8,12 +8,12 @@ import (
 	"github.com/heroku/whaler-api/utils"
 )
 
-//CreateUser creates a user on the backend and returns it
+//CreateUser creates a user in the database and returns it
 var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		utils.Respond(w, utils.Message(4000, "Invalid request", true, map[string]interface{}{}))
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed user", true, map[string]interface{}{}))
 		return
 	}
 
@@ -26,10 +26,23 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
-		utils.Respond(w, utils.Message(4000, "Invalid request", true, map[string]interface{}{}))
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed user", true, map[string]interface{}{}))
 		return
 	}
 
 	resp := models.Login(user.Email, user.Password)
+	utils.Respond(w, resp)
+}
+
+//CreateOrg creates an org in the database and returns it
+var CreateOrg = func(w http.ResponseWriter, r *http.Request) {
+	org := &models.Organization{}
+	err := json.NewDecoder(r.Body).Decode(org)
+	if err != nil {
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed organziation", true, map[string]interface{}{}))
+		return
+	}
+
+	resp := org.Create()
 	utils.Respond(w, resp)
 }

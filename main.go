@@ -17,6 +17,9 @@ func main() {
 	router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 
+	//this endpoint should probably eventually be access controlled if not removed
+	router.HandleFunc("/api/org/create", controllers.CreateOrg).Methods("POST")
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
