@@ -26,13 +26,26 @@ type User struct {
 	LastName  string
 }
 
-func (user *User) Validate() (map[string]interface{}, bool) {
+type Account struct {
+	gorm.Model
+	Name        string
+	Industry    string
+	Description string
+}
+
+type Response struct {
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+func (user *User) Validate() map[string]interface{} {
 	if !strings.Contains(user.Email, "@") {
-		return utils.Message(false, "Email address is required"), false
+		return utils.Message(4001, "Email address is required", true, map[string]interface{}{})
 	}
 
 	if len(user.Password) < 6 {
-		return utils.Message(false, "Password is required"), false
+		return utils.Message(4001, "Password is required", true, map[string]interface{}{})
 	}
 
 	temp := &User{}
@@ -40,17 +53,18 @@ func (user *User) Validate() (map[string]interface{}, bool) {
 	err := DB().Table("users").Where("email = ?", user.Email).First(temp).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		errMessage := fmt.Sprintf("Connection error. Please retry. temp: %q", err)
-		return utils.Message(false, errMessage), false
+		return utils.Message(4001, errMessage, true, map[string]interface{}{})
 	}
 	if temp.Email != "" {
-		return utils.Message(false, "Email address already in use by another user."), false
+		return utils.Message(4001, "Email address already in use by another user.", true, map[string]interface{}{})
 	}
 
-	return utils.Message(false, "Requirement passed"), true
+	return utils.Message(4001, "Requirement passed", false, map[string]interface{}{})
 }
 
 func (user *User) Create() map[string]interface{} {
-	if resp, ok := user.Validate(); !ok {
+	resp := user.Validate()
+	if resp["hasError"] == true {
 		return resp
 	}
 
@@ -61,7 +75,7 @@ func (user *User) Create() map[string]interface{} {
 
 	if user.ID <= 0 {
 		fmt.Print(fmt.Sprint("the user id was less than zero"))
-		return utils.Message(false, "Failed to create user, connection error.")
+		return utils.Message(4002, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
 
 	tk := &Token{UserID: user.ID}
@@ -71,8 +85,8 @@ func (user *User) Create() map[string]interface{} {
 
 	user.Password = ""
 
-	response := utils.Message(true, "User has been created")
-	response["user"] = user
+	data := map[string]interface{}{"user": user}
+	response := utils.Message(2000, "User has been created", false, data)
 	return response
 }
 
@@ -82,14 +96,14 @@ func Login(email, password string) map[string]interface{} {
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return utils.Message(false, "Email address not found")
+			return utils.Message(4001, "Email address not found", true, map[string]interface{}{})
 		}
-		return utils.Message(false, "Connection error. Please retry")
+		return utils.Message(4002, "Connection error", true, map[string]interface{}{})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return utils.Message(false, "Invalid login credentials. Please try again")
+		return utils.Message(4001, "Invalid login credentials", true, map[string]interface{}{})
 	}
 	user.Password = ""
 
@@ -100,8 +114,9 @@ func Login(email, password string) map[string]interface{} {
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	user.Token = tokenString
 
-	resp := utils.Message(true, "Logged in")
-	resp["user"] = user
+	data := map[string]interface{}{"user": user}
+
+	resp := utils.Message(1000, "Logged in", false, data)
 	return resp
 }
 
