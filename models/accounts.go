@@ -19,11 +19,11 @@ type Token struct {
 
 type User struct {
 	gorm.Model
-	Email     string `gorm:"unique, not null"`
-	Password  string
-	Token     string `sql:"-"`
-	FirstName string
-	LastName  string
+	Email     string `json:"email" gorm:"unique, not null"`
+	Password  string `json:"password"`
+	Token     string `json:"token" sql:"-"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
 type Account struct {
