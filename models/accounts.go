@@ -12,13 +12,20 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type BaseModel struct {
+	ID        string `json:"id"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+	DeletedAt string `json:"deletedAt"`
+}
+
 type Token struct {
 	UserID uint
 	jwt.StandardClaims
 }
 
 type User struct {
-	gorm.Model
+	BaseModel
 	Email     string `json:"email" gorm:"unique, not null"`
 	Password  string `json:"password"`
 	Token     string `json:"token" sql:"-"`
@@ -27,7 +34,7 @@ type User struct {
 }
 
 type Account struct {
-	gorm.Model
+	BaseModel
 	Name        string
 	Industry    string
 	Description string
@@ -75,7 +82,7 @@ func (user *User) Create() map[string]interface{} {
 
 	if user.ID <= 0 {
 		fmt.Print(fmt.Sprint("the user id was less than zero"))
-		return utils.Message(4002, "Failed to create user, connection error.", true, map[string]interface{}{})
+		return utils.Message(5001, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
 
 	tk := &Token{UserID: user.ID}
@@ -98,7 +105,7 @@ func Login(email, password string) map[string]interface{} {
 		if err == gorm.ErrRecordNotFound {
 			return utils.Message(4001, "Email address not found", true, map[string]interface{}{})
 		}
-		return utils.Message(4002, "Connection error", true, map[string]interface{}{})
+		return utils.Message(5001, "Connection error", true, map[string]interface{}{})
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
