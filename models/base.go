@@ -24,6 +24,7 @@ func init() {
 	}
 
 	db = conn
+	db.CreateTable(&Organization{})
 }
 
 func DB() *gorm.DB {
