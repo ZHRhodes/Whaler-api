@@ -13,7 +13,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type BaseModel struct {
+type DBModel struct {
 	ID        uint       `json:"id" gorm:"primary_key"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
@@ -26,16 +26,24 @@ type Token struct {
 }
 
 type User struct {
-	BaseModel
-	Email     string `json:"email" gorm:"unique, not null"`
-	Password  string `json:"password"`
-	Token     string `json:"token" sql:"-"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	DBModel
+	Email          string `json:"email" gorm:"unique, not null"`
+	Password       string `json:"password"`
+	Token          string `json:"token" sql:"-"`
+	FirstName      string `json:"firstName"`
+	LastName       string `json:"lastName"`
+	IsAdmin        bool   `json:"isAdmin"`
+	OrganizationID uint   `json:"organizationId"`
+}
+
+type Organization struct {
+	DBModel
+	Name  string `json:"name"`
+	Users []User `json:"users"`
 }
 
 type Account struct {
-	BaseModel
+	DBModel
 	Name        string
 	Industry    string
 	Description string
