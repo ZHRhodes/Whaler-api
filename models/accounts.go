@@ -13,7 +13,7 @@ import (
 )
 
 type BaseModel struct {
-	ID        string `json:"id"`
+	ID        uint   `json:"id"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 	DeletedAt string `json:"deletedAt"`
