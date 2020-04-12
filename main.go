@@ -20,6 +20,7 @@ func main() {
 	//this endpoint should probably eventually be access controlled if not removed
 	router.HandleFunc("/api/org/create", controllers.CreateOrg).Methods("POST")
 
+	//should be access controlled
 	router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
 
 	port := os.Getenv("PORT")
