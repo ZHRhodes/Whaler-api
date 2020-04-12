@@ -29,6 +29,7 @@ func (org *Organization) Create() map[string]interface{} {
 
 func FetchOrg(orgID string) map[string]interface{} {
 	org := &Organization{}
+	users := []User{}
 	err := DB().Table("organizations").Where("id = ?", orgID).First(org).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -37,6 +38,8 @@ func FetchOrg(orgID string) map[string]interface{} {
 			return utils.Message(5001, "Unable to fetch organization, connection error", true, map[string]interface{}{})
 		}
 	}
+	//STRIP USER TOKENS
+	DB().Model(&org).Related(&users).Find(&org.Users)
 
 	data := map[string]interface{}{"organization": org}
 	return utils.Message(2000, "Organization fetched successfully", false, data)
