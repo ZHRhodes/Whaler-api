@@ -46,3 +46,9 @@ var CreateOrg = func(w http.ResponseWriter, r *http.Request) {
 	resp := org.Create()
 	utils.Respond(w, resp)
 }
+
+var FetchOrg = func(w http.ResponseWriter, r *http.Request) {
+	orgID := r.URL.Query().Get("id")
+	resp := models.FetchOrg(orgID)
+	utils.Respond(w, resp)
+}

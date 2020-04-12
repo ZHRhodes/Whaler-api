@@ -24,8 +24,6 @@ func init() {
 	}
 
 	db = conn
-	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Organization{})
 }
 
 func DB() *gorm.DB {

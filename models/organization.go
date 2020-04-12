@@ -3,6 +3,8 @@ package models
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
+
 	"github.com/heroku/whaler-api/utils"
 )
 
@@ -23,4 +25,19 @@ func (org *Organization) Create() map[string]interface{} {
 	data := map[string]interface{}{"organization": org}
 	response := utils.Message(2000, "Organization has been created", false, data)
 	return response
+}
+
+func FetchOrg(orgID string) map[string]interface{} {
+	org := &Organization{}
+	err := DB().Table("organizations").Where("id = ?", orgID).First(org).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return utils.Message(5001, "Organization with the given id not found", true, map[string]interface{}{})
+		} else {
+			return utils.Message(5001, "Unable to fetch organization, connection error", true, map[string]interface{}{})
+		}
+	}
+
+	data := map[string]interface{}{"organization": org}
+	return utils.Message(2000, "Organization fetched successfully", false, data)
 }
