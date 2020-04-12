@@ -17,11 +17,10 @@ func main() {
 	router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 
-	//this endpoint should probably eventually be access controlled if not removed
+	//All these below should be access controlled or removed
 	router.HandleFunc("/api/org/create", controllers.CreateOrg).Methods("POST")
-
-	//should be access controlled
 	router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
+	router.HandleFunc("/api/workspace/create", controllers.CreateWorkspace).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {

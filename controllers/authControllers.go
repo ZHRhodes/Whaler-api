@@ -52,3 +52,15 @@ var FetchOrg = func(w http.ResponseWriter, r *http.Request) {
 	resp := models.FetchOrg(orgID)
 	utils.Respond(w, resp)
 }
+
+var CreateWorkspace = func(w http.ResponseWriter, r *http.Request) {
+	workspace := &models.Workspace{}
+	err := json.NewDecoder(r.Body).Decode(workspace)
+	if err != nil {
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed workspace", true, map[string]interface{}{}))
+		return
+	}
+
+	resp := workspace.Create()
+	utils.Respond(w, resp)
+}

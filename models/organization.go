@@ -38,7 +38,6 @@ func FetchOrg(orgID string) map[string]interface{} {
 			return utils.Message(5001, "Unable to fetch organization, connection error", true, map[string]interface{}{})
 		}
 	}
-	//STRIP USER TOKENS
 	DB().Model(&org).Related(&users).Find(&org.Users)
 
 	data := map[string]interface{}{"organization": org}
