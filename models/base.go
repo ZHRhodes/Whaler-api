@@ -24,7 +24,7 @@ func init() {
 	}
 
 	db = conn
-	db.CreateTable(&Workspace{})
+	db.CreateTable(&Account{})
 }
 
 func DB() *gorm.DB {

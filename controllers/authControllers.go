@@ -64,3 +64,15 @@ var CreateWorkspace = func(w http.ResponseWriter, r *http.Request) {
 	resp := workspace.Create()
 	utils.Respond(w, resp)
 }
+
+var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
+	account := &models.Account{}
+	err := json.NewDecoder(r.Body).Decode(account)
+	if err != nil {
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed workspace", true, map[string]interface{}{}))
+		return
+	}
+
+	resp := account.Create()
+	utils.Respond(w, resp)
+}
