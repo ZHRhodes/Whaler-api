@@ -27,6 +27,7 @@ type Account struct {
 	RevenueLowerBound   int    `json:"RevenueLowerBound"`
 	AssignedTo          []User `json:"assignedTo"`
 	//notes
+	//contacts
 }
 
 func (account *Account) Create() map[string]interface{} {
