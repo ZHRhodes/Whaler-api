@@ -17,7 +17,6 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",
-			"/api/org",
 			"/api/workspace/create",
 			"/api/account/create",
 			"/api/contact/create"}
