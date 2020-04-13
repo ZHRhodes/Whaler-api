@@ -22,6 +22,7 @@ func main() {
 	router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
 	router.HandleFunc("/api/workspace/create", controllers.CreateWorkspace).Methods("POST")
 	router.HandleFunc("/api/account/create", controllers.CreateAccount).Methods("POST")
+	router.HandleFunc("/api/contact/create", controllers.CreateContact).Methods("POST")
 
 	port := os.Getenv("PORT")
 	if port == "" {

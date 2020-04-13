@@ -76,3 +76,15 @@ var CreateAccount = func(w http.ResponseWriter, r *http.Request) {
 	resp := account.Create()
 	utils.Respond(w, resp)
 }
+
+var CreateContact = func(w http.ResponseWriter, r *http.Request) {
+	contact := &models.Contact{}
+	err := json.NewDecoder(r.Body).Decode(contact)
+	if err != nil {
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed contact", true, map[string]interface{}{}))
+		return
+	}
+
+	resp := contact.Create()
+	utils.Respond(w, resp)
+}
