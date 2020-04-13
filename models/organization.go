@@ -19,7 +19,7 @@ func (org *Organization) Create() map[string]interface{} {
 
 	if org.ID <= 0 {
 		fmt.Print(fmt.Sprint("the org id was less than zero"))
-		return utils.Message(5001, "Failed to create organization, connection error.", true, map[string]interface{}{})
+		return utils.Message(5001, "Failed to create organization, connection error", true, map[string]interface{}{})
 	}
 
 	data := map[string]interface{}{"organization": org}
