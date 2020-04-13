@@ -56,6 +56,8 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
+		fmt.Print(fmt.Sprint(tokenHeader))
+
 		if err != nil {
 			fmt.Print(fmt.Sprint(err))
 			data := map[string]interface{}{"error": err}
