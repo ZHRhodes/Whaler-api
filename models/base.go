@@ -24,7 +24,6 @@ func init() {
 	}
 
 	db = conn
-	db.CreateTable(&Contact{})
 }
 
 func DB() *gorm.DB {

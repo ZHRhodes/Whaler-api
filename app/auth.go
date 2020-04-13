@@ -58,7 +58,8 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		if err != nil {
 			fmt.Print(fmt.Sprint(err))
-			response = utils.Message(4003, "Malformed authentication token", true, map[string]interface{}{})
+			data := map[string]interface{}{"error": err}
+			response = utils.Message(4003, "Malformed authentication token", true, data)
 			w.WriteHeader(http.StatusForbidden)
 			w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
