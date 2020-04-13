@@ -12,7 +12,7 @@ type Contact struct {
 	Seniority  string   `json:"seniority"`
 	Persona    string   `json:"persona"`
 	Email      string   `json:"email"`
-	Phone      []string `json:"phone"`
+	Phone      []string `json:"phone" gorm:"type:varchar(64)[]"`
 	AssignedTo User     `json:"assignedTo"`
 	//notes
 }
