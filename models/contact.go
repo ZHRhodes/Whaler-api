@@ -4,16 +4,16 @@ import "github.com/heroku/whaler-api/utils"
 
 type Contact struct {
 	DBModel
-	FirstName  string   `json:"firstName"`
-	LastName   string   `json:"lastName"`
-	State      string   `json:"state"`
-	Account    Account  `json:"account"`
-	JobTitle   string   `json:"jobTitle"`
-	Seniority  string   `json:"seniority"`
-	Persona    string   `json:"persona"`
-	Email      string   `json:"email"`
-	Phone      []string `json:"phone" gorm:"type:varchar(64)[]"`
-	AssignedTo User     `json:"assignedTo"`
+	FirstName  string  `json:"firstName"`
+	LastName   string  `json:"lastName"`
+	State      string  `json:"state"`
+	Account    Account `json:"account"`
+	JobTitle   string  `json:"jobTitle"`
+	Seniority  string  `json:"seniority"`
+	Persona    string  `json:"persona"`
+	Email      string  `json:"email"`
+	Phone      string  `json:"phone"`
+	AssignedTo User    `json:"assignedTo"`
 	//notes
 }
 
