@@ -42,6 +42,8 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 
 		splitted := strings.Split(tokenHeader, ".")
 		if len(splitted) != 3 {
+			fmt.Print(fmt.Sprint(tokenHeader))
+			fmt.Print(fmt.Sprint(len(splitted)))
 			response = utils.Message(4003, "Invalid/Malformed auth token", true, map[string]interface{}{})
 			w.WriteHeader(http.StatusForbidden)
 			w.Header().Add("Content-Type", "application/json")
