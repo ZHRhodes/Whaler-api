@@ -49,10 +49,9 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return
 		}
 
-		tokenPart := splitted[1]
 		tk := &models.Token{}
 
-		token, err := jwt.ParseWithClaims(tokenPart, tk, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(tokenHeader, tk, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
