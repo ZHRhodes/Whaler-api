@@ -22,7 +22,7 @@ type User struct {
 	OrganizationID uint   `json:"organizationId"`
 }
 
-func (user *User) Validate() map[string]interface{} {
+func (user *User) validate() map[string]interface{} {
 	if !strings.Contains(user.Email, "@") {
 		return utils.Message(4001, "Email address is required", true, map[string]interface{}{})
 	}
@@ -46,7 +46,7 @@ func (user *User) Validate() map[string]interface{} {
 }
 
 func (user *User) Create() map[string]interface{} {
-	resp := user.Validate()
+	resp := user.validate()
 	if resp["hasError"] == true {
 		return resp
 	}
@@ -61,7 +61,7 @@ func (user *User) Create() map[string]interface{} {
 		return utils.Message(5001, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
 
-	tk := &Token{UserID: user.ID}
+	tk := &AccessToken{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	user.Token = tokenString
@@ -92,12 +92,13 @@ func Login(email, password string) map[string]interface{} {
 
 	user.Password = ""
 
-	tk := &Token{UserID: user.ID}
+	tk := &AccessToken{UserID: user.ID}
 	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	user.Token = tokenString
 
-	data := map[string]interface{}{"user": user}
+	refreshToken := CreateRefreshToken()
+	data := map[string]interface{}{"user": user, "refreshToken": refreshToken}
 
 	resp := utils.Message(1000, "Logged in", false, data)
 	return resp
