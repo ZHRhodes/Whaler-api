@@ -93,12 +93,12 @@ func Login(email, password string) map[string]interface{} {
 	user.Password = ""
 
 	tk := &AccessToken{UserID: user.ID}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	tokenString, _ := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
-	user.Token = tokenString
+	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	user.Token = accessTokenString
 
-	refreshToken := CreateRefreshToken()
-	data := map[string]interface{}{"user": user, "refreshToken": refreshToken}
+	refreshTokenString := CreateRefreshToken(user.ID)
+	data := map[string]interface{}{"user": user, "refreshToken": refreshTokenString}
 
 	resp := utils.Message(1000, "Logged in", false, data)
 	return resp

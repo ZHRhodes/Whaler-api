@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type AccessToken struct {
@@ -16,30 +17,34 @@ type AccessToken struct {
 
 type RefreshToken struct {
 	UserID uint
-	Value  string
+	Hash   string
 	Exp    time.Time
 }
 
 const RefreshTokenValidTime = time.Hour * 72
 const AuthTokenValidTime = time.Minute * 15
 
-func CreateRefreshToken(userID uint) RefreshToken {
+func CreateRefreshToken(userID uint) string {
 	value := [256]byte{}
 	_, err := rand.Read(value[:])
 	if err != nil {
 		fmt.Printf("Failed to generate a random refresh token %q", err)
 		panic(err)
 	}
+	valueEncrypted, _ := bcrypt.GenerateFromPassword(value[:], bcrypt.DefaultCost)
 	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
+	valueEncryptedAndEncoded := base64.StdEncoding.EncodeToString(valueEncrypted)
 	exp := time.Now().Add(AuthTokenValidTime)
-	return RefreshToken{UserID: userID, Value: valueEncoded, Exp: exp}
+	refreshToken := RefreshToken{UserID: userID, Hash: valueEncryptedAndEncoded, Exp: exp}
+	refreshToken.StoreRefreshToken()
+	return valueEncoded
 }
 
-func StoreRefreshToken(refreshToken RefreshToken) {
-	DB().Create(refreshToken)
+func (token RefreshToken) StoreRefreshToken() {
+	DB().Create(token)
 
-	if len(refreshToken.Value) == 0 {
-		fmt.Printf("")
-	}
+	// if len(refreshToken.Value) == 0 {
+	// 	fmt.Printf("")
+	// }
 
 }
