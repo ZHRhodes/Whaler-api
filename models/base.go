@@ -24,6 +24,7 @@ func init() {
 	}
 
 	db = conn
+	db.CreateTable(&RefreshToken{})
 }
 
 func DB() *gorm.DB {
