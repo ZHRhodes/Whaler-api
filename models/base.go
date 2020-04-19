@@ -3,12 +3,20 @@ package models
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
 	"github.com/joho/godotenv"
 )
+
+type DBModel struct {
+	ID        uint       `json:"id" gorm:"primary_key"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+}
 
 var db *gorm.DB
 
