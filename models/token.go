@@ -50,12 +50,15 @@ func CreateRefreshToken(userID uint) string {
 
 	//base64 encode the random string
 	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
+	fmt.Printf("value encoded -- %s", valueEncoded)
 
 	//encrypt the random string
 	valueEncrypted, _ := bcrypt.GenerateFromPassword([]byte(valueEncoded), bcrypt.DefaultCost)
+	fmt.Printf("value encrypted -- %s", string(valueEncrypted))
 
 	//base64 encode the encrypted string (from step 1)
 	hash := base64.StdEncoding.EncodeToString(valueEncrypted)
+	fmt.Printf("hash -- %s", hash)
 
 	exp := time.Now().Add(RefreshTokenValidTime)
 
@@ -69,9 +72,12 @@ func CreateRefreshToken(userID uint) string {
 }
 
 func Retrieve(refreshTokenString string) (*RefreshToken, error) {
+	fmt.Printf("retrieving refreshTokenString -- %s", refreshTokenString)
 	refreshTokenStringBytes := []byte(refreshTokenString)
 	refreshTokenEncrypted, _ := bcrypt.GenerateFromPassword(refreshTokenStringBytes, bcrypt.DefaultCost)
+	fmt.Printf("refreshTokenEncrypted -- %s", string(refreshTokenEncrypted))
 	hash := base64.StdEncoding.EncodeToString(refreshTokenEncrypted)
+	fmt.Printf("hash from input-- %s", hash)
 
 	refreshToken := &RefreshToken{}
 	fmt.Printf("Fetching refresh token with hash %s\n", hash)
