@@ -104,7 +104,7 @@ func (token RefreshToken) StoreRefreshToken() {
 	err := DB().Create(token).Error
 
 	if err != nil {
-		fmt.Printf("Failed to create refresh token in DB\n")
+		fmt.Printf("Failed to create refresh token in DB -- %q\n", err)
 	}
 }
 
