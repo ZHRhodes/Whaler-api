@@ -96,16 +96,14 @@ func Refresh(refreshTokenString string, userID uint) map[string]interface{} {
 
 	if err != nil {
 		fmt.Printf("Failed to retrieve RefreshToken from DB")
-		//return error
-		return map[string]interface{}{}
+		return utils.Message(5001, "Unable to retrieve refresh token, connection error", true, map[string]interface{}{})
 	}
 
 	isTokenValid := refreshToken.Validate(userID)
 
 	if !isTokenValid {
 		fmt.Printf("Refresh token invalid")
-		//return error
-		return map[string]interface{}{}
+		return utils.Message(4004, "Refresh token invalid", true, map[string]interface{}{})
 	}
 
 	accessTokenString := CreateAccessToken(userID)
