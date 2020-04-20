@@ -74,7 +74,7 @@ func Retrieve(refreshTokenString string) (*RefreshToken, error) {
 	hash := base64.StdEncoding.EncodeToString(refreshTokenEncrypted)
 
 	refreshToken := &RefreshToken{}
-	fmt.Printf("Fetching refresh token from DB\n")
+	fmt.Printf("Fetching refresh token with hash %s\n", hash)
 	err := DB().Table("refresh_tokens").Where("hash = ?", hash).First(refreshToken).Error
 	fmt.Printf("fetched refresh token with error: %q\n", err)
 	if err != nil {
