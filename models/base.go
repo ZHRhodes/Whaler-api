@@ -32,7 +32,6 @@ func init() {
 	}
 
 	db = conn
-	db.AutoMigrate(&RefreshToken{})
 }
 
 func DB() *gorm.DB {

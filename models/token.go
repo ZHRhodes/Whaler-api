@@ -44,7 +44,7 @@ func CreateRefreshToken(userID uint) string {
 	value := [256]byte{}
 	_, err := rand.Read(value[:])
 	if err != nil {
-		fmt.Printf("Failed to generate a random refresh token %q", err)
+		fmt.Printf("Failed to generate a random refresh token %q\n", err)
 		panic(err)
 	}
 
@@ -74,9 +74,9 @@ func Retrieve(refreshTokenString string) (*RefreshToken, error) {
 	hash := base64.StdEncoding.EncodeToString(refreshTokenEncrypted)
 
 	refreshToken := &RefreshToken{}
-	fmt.Printf("Fetching refresh token from DB")
+	fmt.Printf("Fetching refresh token from DB\n")
 	err := DB().Table("refresh_tokens").Where("hash = ?", hash).First(refreshToken).Error
-	fmt.Printf("fetched refresh token with error: %q", err)
+	fmt.Printf("fetched refresh token with error: %q\n", err)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
@@ -87,13 +87,13 @@ func Retrieve(refreshTokenString string) (*RefreshToken, error) {
 func (token RefreshToken) Validate(userId uint) bool {
 	isExpired := token.Exp.Before(time.Now())
 	if isExpired {
-		fmt.Printf("Refresh token is expired")
+		fmt.Printf("Refresh token is expired\n")
 		return false
 	}
 
 	idsMismatch := token.UserID != userId
 	if idsMismatch {
-		fmt.Printf("Refresh requested by the wrong user")
+		fmt.Printf("Refresh requested by the wrong user\n")
 		return false
 	}
 
@@ -104,7 +104,7 @@ func (token RefreshToken) StoreRefreshToken() {
 	err := DB().Create(token).Error
 
 	if err != nil {
-		fmt.Printf("Failed to create refresh token in DB")
+		fmt.Printf("Failed to create refresh token in DB\n")
 	}
 }
 
@@ -112,14 +112,14 @@ func Refresh(refreshTokenString string, userID uint) map[string]interface{} {
 	refreshToken, err := Retrieve(refreshTokenString)
 
 	if err != nil {
-		fmt.Printf("Failed to retrieve RefreshToken from DB")
+		fmt.Printf("Failed to retrieve RefreshToken from DB\n")
 		return utils.Message(5001, "Unable to retrieve refresh token, connection error", true, map[string]interface{}{})
 	}
 
 	isTokenValid := refreshToken.Validate(userID)
 
 	if !isTokenValid {
-		fmt.Printf("Refresh token invalid")
+		fmt.Printf("Refresh token invalid\n")
 		return utils.Message(4004, "Refresh token invalid", true, map[string]interface{}{})
 	}
 
@@ -135,6 +135,6 @@ func (token RefreshToken) Invalidate() {
 	err := DB().Save(&token).Error
 
 	if err != nil {
-		fmt.Printf("Failed to create refresh token in DB")
+		fmt.Printf("Failed to incalidate refresh token in DB\n")
 	}
 }
