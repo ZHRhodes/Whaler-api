@@ -34,6 +34,20 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 	utils.Respond(w, resp)
 }
 
+var Refresh = func(w http.ResponseWriter, r *http.Request) {
+	tokens := &models.Tokens{}
+	err := json.NewDecoder(r.Body).Decode(tokens)
+	if err != nil {
+		utils.Respond(w, utils.Message(4000, "Invalid request - malformed refresh token", true, map[string]interface{}{}))
+		return
+	}
+
+	userID := r.Context().Value("userID").(uint)
+
+	resp := models.Refresh(tokens.RefreshToken, userID)
+	utils.Respond(w, resp)
+}
+
 //CreateOrg creates an org in the database and returns it
 var CreateOrg = func(w http.ResponseWriter, r *http.Request) {
 	org := &models.Organization{}

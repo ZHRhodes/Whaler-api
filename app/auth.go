@@ -17,7 +17,6 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",
-			"/api/workspace/create",
 			"/api/account/create",
 			"/api/contact/create"}
 		requestPath := r.URL.Path
@@ -76,7 +75,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		}
 
 		fmt.Sprintf("User %", tk.UserID)
-		ctx := context.WithValue(r.Context(), "user", tk.UserID)
+		ctx := context.WithValue(r.Context(), "userID", tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})

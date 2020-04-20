@@ -2,10 +2,8 @@ package models
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/heroku/whaler-api/utils"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
@@ -37,13 +35,11 @@ func (user *User) Create() map[string]interface{} {
 		return utils.Message(5001, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
 
-	tk := &AccessToken{UserID: user.ID}
-	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	user.Password = ""
+
+	accessTokenString := CreateAccessToken(user.ID)
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
-
-	user.Password = ""
 
 	data := map[string]interface{}{"user": user, "tokens": tokens}
 	response := utils.Message(2000, "User has been created", false, data)
@@ -69,9 +65,7 @@ func Login(email, password string) map[string]interface{} {
 
 	user.Password = ""
 
-	tk := &AccessToken{UserID: user.ID}
-	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
-	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	accessTokenString := CreateAccessToken(user.ID)
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 

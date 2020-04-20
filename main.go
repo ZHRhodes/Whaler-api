@@ -16,6 +16,7 @@ func main() {
 
 	router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
+	router.HandleFunc("/api/user/refresh", controllers.Refresh).Methods("POST")
 
 	//All these below should be access controlled or removed
 	router.HandleFunc("/api/org/create", controllers.CreateOrg).Methods("POST")
