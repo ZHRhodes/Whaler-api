@@ -33,7 +33,8 @@ const RefreshTokenValidTime = time.Hour * 72
 const AuthTokenValidTime = time.Minute * 15
 
 func CreateAccessToken(userID uint) string {
-	tk := &AccessToken{UserID: userID}
+	exp := time.Now().Add(AuthTokenValidTime).Unix()
+	tk := &AccessToken{UserID: userID, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
 	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	return accessTokenString
@@ -49,7 +50,7 @@ func CreateRefreshToken(userID uint) string {
 	valueEncrypted, _ := bcrypt.GenerateFromPassword(value[:], bcrypt.DefaultCost)
 	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
 	valueEncryptedAndEncoded := base64.StdEncoding.EncodeToString(valueEncrypted)
-	exp := time.Now().Add(AuthTokenValidTime)
+	exp := time.Now().Add(RefreshTokenValidTime)
 	refreshToken := RefreshToken{UserID: userID, Hash: valueEncryptedAndEncoded, Exp: exp}
 	refreshToken.StoreRefreshToken()
 	return valueEncoded
