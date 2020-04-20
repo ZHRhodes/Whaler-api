@@ -47,18 +47,34 @@ func CreateRefreshToken(userID uint) string {
 		fmt.Printf("Failed to generate a random refresh token %q", err)
 		panic(err)
 	}
-	valueEncrypted, _ := bcrypt.GenerateFromPassword(value[:], bcrypt.DefaultCost)
+
+	//base64 encode the random string
 	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
+
+	//encrypt the random string
+	valueEncrypted, _ := bcrypt.GenerateFromPassword(value[:], bcrypt.DefaultCost)
+
+	//base64 encode the encrypted string (from step 1)
 	valueEncryptedAndEncoded := base64.StdEncoding.EncodeToString(valueEncrypted)
+
 	exp := time.Now().Add(RefreshTokenValidTime)
+
+	//set the has to the encrypted and encoded value (from step 2)
 	refreshToken := RefreshToken{UserID: userID, Hash: valueEncryptedAndEncoded, Exp: exp}
+
 	refreshToken.StoreRefreshToken()
+
+	//return the string from step 3
 	return valueEncoded
 }
 
 func Retrieve(refreshTokenString string) (*RefreshToken, error) {
+	refreshTokenStringBytes := []byte(refreshTokenString)
+	refreshTokenEncrypted, _ := bcrypt.GenerateFromPassword(refreshTokenStringBytes, bcrypt.DefaultCost)
+	hash := base64.StdEncoding.EncodeToString(refreshTokenEncrypted)
+
 	refreshToken := &RefreshToken{}
-	err := DB().Table("refresh_tokens").Where("hash = ?", refreshTokenString).First(refreshToken).Error
+	err := DB().Table("refresh_tokens").Where("hash = ?", hash).First(refreshToken).Error
 
 	if err != nil {
 		fmt.Printf(err.Error())
