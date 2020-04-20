@@ -62,7 +62,7 @@ func CreateRefreshToken(userID uint) string {
 	//set the has to the encrypted and encoded value (from step 2)
 	refreshToken := RefreshToken{UserID: userID, Hash: valueEncryptedAndEncoded, Exp: exp}
 
-	refreshToken.StoreRefreshToken()
+	refreshToken.store()
 
 	//return the string from step 3
 	return valueEncoded
@@ -100,7 +100,7 @@ func (token RefreshToken) Validate(userId uint) bool {
 	return true
 }
 
-func (token RefreshToken) StoreRefreshToken() {
+func (token *RefreshToken) store() {
 	err := DB().Create(token).Error
 
 	if err != nil {
@@ -130,9 +130,9 @@ func Refresh(refreshTokenString string, userID uint) map[string]interface{} {
 	return resp
 }
 
-func (token RefreshToken) Invalidate() {
+func (token *RefreshToken) Invalidate() {
 	token.Exp = time.Now()
-	err := DB().Save(&token).Error
+	err := DB().Save(token).Error
 
 	if err != nil {
 		fmt.Printf("Failed to incalidate refresh token in DB\n")
