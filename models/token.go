@@ -52,15 +52,15 @@ func CreateRefreshToken(userID uint) string {
 	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
 
 	//encrypt the random string
-	valueEncrypted, _ := bcrypt.GenerateFromPassword(value[:], bcrypt.DefaultCost)
+	valueEncrypted, _ := bcrypt.GenerateFromPassword([]byte(valueEncoded), bcrypt.DefaultCost)
 
 	//base64 encode the encrypted string (from step 1)
-	valueEncryptedAndEncoded := base64.StdEncoding.EncodeToString(valueEncrypted)
+	hash := base64.StdEncoding.EncodeToString(valueEncrypted)
 
 	exp := time.Now().Add(RefreshTokenValidTime)
 
 	//set the has to the encrypted and encoded value (from step 2)
-	refreshToken := RefreshToken{UserID: userID, Hash: valueEncryptedAndEncoded, Exp: exp}
+	refreshToken := RefreshToken{UserID: userID, Hash: hash, Exp: exp}
 
 	refreshToken.store()
 
