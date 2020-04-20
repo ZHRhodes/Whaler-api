@@ -16,7 +16,6 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
-			"/api/user/refresh",
 			"/api/org/create",
 			"/api/account/create",
 			"/api/contact/create"}
@@ -67,7 +66,9 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return
 		}
 
-		if !token.Valid {
+		isNotRefreshEndpoint := r.URL.Path != "/api/user/refresh"
+
+		if !token.Valid && !isNotRefreshEndpoint {
 			response = utils.Message(4003, "Token is not valid.", true, map[string]interface{}{})
 			w.WriteHeader(http.StatusForbidden)
 			w.Header().Add("Content-Type", "application/json")
