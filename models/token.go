@@ -9,7 +9,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/heroku/whaler-api/utils"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AccessToken struct {
@@ -48,41 +47,19 @@ func CreateRefreshToken(userID uint) string {
 		panic(err)
 	}
 
-	//base64 encode the random string
-	valueEncoded := base64.StdEncoding.EncodeToString(value[:])
-	fmt.Printf("value encoded -- %s\n", valueEncoded)
-
-	//encrypt the random string
-	valueEncrypted, _ := bcrypt.GenerateFromPassword([]byte(valueEncoded), bcrypt.DefaultCost)
-	fmt.Printf("value encrypted -- %s\n", string(valueEncrypted))
-
-	//base64 encode the encrypted string (from step 1)
-	hash := base64.StdEncoding.EncodeToString(valueEncrypted)
-	fmt.Printf("hash -- %s\n", hash)
-
+	tokenValue := base64.StdEncoding.EncodeToString(value[:])
 	exp := time.Now().Add(RefreshTokenValidTime)
-
-	//set the has to the encrypted and encoded value (from step 2)
-	refreshToken := RefreshToken{UserID: userID, Hash: hash, Exp: exp}
+	refreshToken := RefreshToken{UserID: userID, Hash: tokenValue, Exp: exp}
 
 	refreshToken.store()
 
-	//return the string from step 3
-	return valueEncoded
+	return tokenValue
 }
 
 func Retrieve(refreshTokenString string) (*RefreshToken, error) {
-	fmt.Printf("retrieving refreshTokenString -- %s\n", refreshTokenString)
-	refreshTokenStringBytes := []byte(refreshTokenString)
-	refreshTokenEncrypted, _ := bcrypt.GenerateFromPassword(refreshTokenStringBytes, bcrypt.DefaultCost)
-	fmt.Printf("refreshTokenEncrypted -- %s\n", string(refreshTokenEncrypted))
-	hash := base64.StdEncoding.EncodeToString(refreshTokenEncrypted)
-	fmt.Printf("hash from input-- %s\n", hash)
-
 	refreshToken := &RefreshToken{}
-	fmt.Printf("Fetching refresh token with hash %s\n", hash)
-	err := DB().Table("refresh_tokens").Where("hash = ?", hash).First(refreshToken).Error
-	fmt.Printf("fetched refresh token with error: %q\n", err)
+	err := DB().Table("refresh_tokens").Where("hash = ?", refreshTokenString).First(refreshToken).Error
+
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
