@@ -10,6 +10,10 @@ func Message(code int, message string, hasError bool, data map[string]interface{
 	return map[string]interface{}{"code": code, "message": message, "hasError": hasError, "data": data}
 }
 
+func MessageWithTokens(code int, message string, hasError bool, data map[string]interface{}, tokens interface{}) map[string]interface{} {
+	return map[string]interface{}{"code": code, "message": message, "hasError": hasError, "data": data, "tokens": tokens}
+}
+
 //Respond adds headers and encodes as json
 func Respond(w http.ResponseWriter, data map[string]interface{}) {
 	w.Header().Add("Content-Type", "application/json")

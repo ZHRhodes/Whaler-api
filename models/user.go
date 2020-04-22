@@ -41,8 +41,8 @@ func (user *User) Create() map[string]interface{} {
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 
-	data := map[string]interface{}{"user": user, "tokens": tokens}
-	response := utils.Message(2000, "User has been created", false, data)
+	data := map[string]interface{}{"user": user}
+	response := utils.MessageWithTokens(2000, "User has been created", false, data, tokens)
 	return response
 }
 
@@ -61,7 +61,6 @@ func Login(email, password string) map[string]interface{} {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return utils.Message(4001, "Invalid login credentials", true, map[string]interface{}{})
 	}
-	user.Password = ""
 
 	user.Password = ""
 
@@ -69,9 +68,9 @@ func Login(email, password string) map[string]interface{} {
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 
-	data := map[string]interface{}{"user": user, "tokens": tokens}
+	data := map[string]interface{}{"user": user}
 
-	resp := utils.Message(1000, "Logged in", false, data)
+	resp := utils.MessageWithTokens(1000, "Logged in", false, data, tokens)
 	return resp
 }
 
