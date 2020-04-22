@@ -41,8 +41,7 @@ func (user *User) Create() map[string]interface{} {
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 
-	data := map[string]interface{}{"user": user}
-	response := utils.MessageWithTokens(2000, "User has been created", false, data, tokens)
+	response := utils.MessageWithTokens(2000, "User has been created", false, user, tokens)
 	return response
 }
 
@@ -68,9 +67,7 @@ func Login(email, password string) map[string]interface{} {
 	refreshTokenString := CreateRefreshToken(user.ID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 
-	data := map[string]interface{}{"user": user}
-
-	resp := utils.MessageWithTokens(1000, "Logged in", false, data, tokens)
+	resp := utils.MessageWithTokens(1000, "Logged in", false, user, tokens)
 	return resp
 }
 
