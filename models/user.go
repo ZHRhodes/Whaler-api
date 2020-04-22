@@ -12,7 +12,7 @@ import (
 type User struct {
 	DBModel
 	Email          string `json:"email" gorm:"unique, not null"`
-	Password       string `json:"-"`
+	Password       string `json:"password"`
 	FirstName      string `json:"firstName"`
 	LastName       string `json:"lastName"`
 	IsAdmin        bool   `json:"isAdmin"`
