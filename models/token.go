@@ -123,5 +123,8 @@ func (token *RefreshToken) Invalidate() {
 }
 
 func InvalidateTokens(userID uint) {
-	DB().Table("users").Where("user_id == ?", userID).Updates(map[string]interface{}{"Exp": time.Now()})
+	//this will re-invalidate all tokens a user has ever had
+	//to negate the perf impact, should either remove revoked tokens from db
+	//or invalidate the specific refresh token only
+	DB().Table("refresh_tokens").Where("user_id == ?", userID).Updates(map[string]interface{}{"Exp": time.Now()})
 }
