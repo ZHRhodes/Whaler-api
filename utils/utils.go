@@ -6,7 +6,7 @@ import (
 )
 
 //Message returns the code, message, hasError, data as a map
-func Message(code int, message string, hasError bool, data map[string]interface{}) map[string]interface{} {
+func Message(code int, message string, hasError bool, data interface{}) map[string]interface{} {
 	responseData := map[string]interface{}{"response": data}
 	return map[string]interface{}{"code": code, "message": message, "hasError": hasError, "data": responseData}
 }

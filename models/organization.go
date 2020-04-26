@@ -40,6 +40,5 @@ func FetchOrg(orgID string) map[string]interface{} {
 	}
 	DB().Model(&org).Related(&users).Find(&org.Users)
 
-	data := map[string]interface{}{"organization": org}
-	return utils.Message(2000, "Organization fetched successfully", false, data)
+	return utils.Message(2000, "Organization fetched successfully", false, org)
 }

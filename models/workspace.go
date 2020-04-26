@@ -10,6 +10,7 @@ type Workspace struct {
 }
 
 func (workspace *Workspace) Create() map[string]interface{} {
+	//check if workspace already exists?
 	DB().Create(workspace)
 
 	if workspace.ID <= 0 {
