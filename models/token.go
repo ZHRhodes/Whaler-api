@@ -121,3 +121,7 @@ func (token *RefreshToken) Invalidate() {
 		fmt.Printf("Failed to incalidate refresh token in DB\n")
 	}
 }
+
+func InvalidateTokens(userID uint) {
+	DB().Table("users").Where("user_id == ?", userID).Updates(map[string]interface{}{"Exp": time.Now()})
+}
