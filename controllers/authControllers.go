@@ -30,7 +30,7 @@ var Authenticate = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := models.Login(user.Email, user.Password)
+	resp := models.LogIn(user.Email, user.Password)
 	utils.Respond(w, resp)
 }
 
