@@ -27,7 +27,7 @@ func (workspace *Workspace) Create() map[string]interface{} {
 
 func FetchWorkspace(workspaceID string) map[string]interface{} {
 	workspace := &Workspace{}
-	err := DB().Table("workspaces").Where("id = ?", workspaceID).Preload("accounts").First(workspace).Error
+	err := DB().Table("workspaces").Where("id = ?", workspaceID).Preload("Accounts").First(workspace).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
