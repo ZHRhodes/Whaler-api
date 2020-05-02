@@ -109,7 +109,7 @@ var FetchOrg = func(w http.ResponseWriter, r *http.Request) {
 	utils.Respond(w, resp)
 }
 
-var FetchAccounts = func(w http.ResponseWriter, r *http.Request) {
+var FetchWorkspace = func(w http.ResponseWriter, r *http.Request) {
 	workspaceID := r.URL.Query().Get("workspaceID")
 	resp := models.FetchAccounts(workspaceID)
 	utils.Respond(w, resp)
