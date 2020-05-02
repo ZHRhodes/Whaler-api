@@ -19,12 +19,13 @@ func main() {
 	router.HandleFunc("/api/user/refresh", controllers.Refresh).Methods("POST")
 	router.HandleFunc("/api/user/logout", controllers.LogOut).Methods("POST")
 
-	//All these below should be access controlled or removed
 	router.HandleFunc("/api/org/create", controllers.CreateOrg).Methods("POST")
-	router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
 	router.HandleFunc("/api/workspace/create", controllers.CreateWorkspace).Methods("POST")
 	router.HandleFunc("/api/account/create", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/contact/create", controllers.CreateContact).Methods("POST")
+
+	router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
+	router.HandleFunc("/api/accounts", controllers.FetchAccounts).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {

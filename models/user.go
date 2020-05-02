@@ -45,7 +45,7 @@ func (user *User) Create() map[string]interface{} {
 	return response
 }
 
-func Login(email, password string) map[string]interface{} {
+func LogIn(email, password string) map[string]interface{} {
 	user := &User{}
 	err := DB().Table("users").Where("email = ?", email).First(user).Error
 
@@ -69,6 +69,10 @@ func Login(email, password string) map[string]interface{} {
 
 	resp := utils.MessageWithTokens(1000, "Logged in", false, user, tokens)
 	return resp
+}
+
+func LogOut() map[string]interface{} {
+	
 }
 
 func (user *User) validate() map[string]interface{} {

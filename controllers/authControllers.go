@@ -67,12 +67,6 @@ var CreateOrg = func(w http.ResponseWriter, r *http.Request) {
 	utils.Respond(w, resp)
 }
 
-var FetchOrg = func(w http.ResponseWriter, r *http.Request) {
-	orgID := r.URL.Query().Get("id")
-	resp := models.FetchOrg(orgID)
-	utils.Respond(w, resp)
-}
-
 var CreateWorkspace = func(w http.ResponseWriter, r *http.Request) {
 	workspace := &models.Workspace{}
 	err := json.NewDecoder(r.Body).Decode(workspace)
@@ -106,5 +100,17 @@ var CreateContact = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := contact.Create()
+	utils.Respond(w, resp)
+}
+
+var FetchOrg = func(w http.ResponseWriter, r *http.Request) {
+	orgID := r.URL.Query().Get("id")
+	resp := models.FetchOrg(orgID)
+	utils.Respond(w, resp)
+}
+
+var FetchAccounts = func(w http.ResponseWriter, r *http.Request) {
+	workspaceID := r.URL.Query().Get("workspaceID")
+	resp := models.FetchAccounts(workspaceID)
 	utils.Respond(w, resp)
 }
