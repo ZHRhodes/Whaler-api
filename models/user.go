@@ -71,10 +71,6 @@ func LogIn(email, password string) map[string]interface{} {
 	return resp
 }
 
-func LogOut() map[string]interface{} {
-	
-}
-
 func (user *User) validate() map[string]interface{} {
 	if !strings.Contains(user.Email, "@") {
 		return utils.Message(4001, "Email address is required", true, map[string]interface{}{})
