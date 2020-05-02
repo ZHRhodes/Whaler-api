@@ -5,7 +5,7 @@ import "github.com/heroku/whaler-api/utils"
 type Workspace struct {
 	DBModel
 	Name          string    `json:"name"`
-	Accounts      []Account `json:"accounts"`
+	Accounts      []Account `json:"accounts" gorm:"many2many:workspace_accounts;"`
 	Collaborators []User    `json:"collaborators"`
 }
 
