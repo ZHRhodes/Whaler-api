@@ -48,7 +48,7 @@ func (user *User) Create() map[string]interface{} {
 
 func LogIn(email, password string) map[string]interface{} {
 	user := &User{}
-	err := DB().Table("users").Where("email = ?", email).First(user).Error
+	err := DB().Table("users").Where("email = ?", email).Preload("Workspaces").First(user).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
