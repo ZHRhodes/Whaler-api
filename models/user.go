@@ -11,12 +11,13 @@ import (
 
 type User struct {
 	DBModel
-	Email          string `json:"email" gorm:"unique, not null"`
-	Password       string `json:"password"`
-	FirstName      string `json:"firstName"`
-	LastName       string `json:"lastName"`
-	IsAdmin        bool   `json:"isAdmin"`
-	OrganizationID uint   `json:"organizationId"`
+	Email          string      `json:"email" gorm:"unique, not null"`
+	Password       string      `json:"password"`
+	FirstName      string      `json:"firstName"`
+	LastName       string      `json:"lastName"`
+	IsAdmin        bool        `json:"isAdmin"`
+	OrganizationID uint        `json:"organizationId"`
+	Workspaces     []Workspace `json:"workspaces" gorm:"many2many:workspace_user"`
 }
 
 func (user *User) Create() map[string]interface{} {
