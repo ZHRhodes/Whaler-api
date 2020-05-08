@@ -108,8 +108,7 @@ func Refresh(refreshTokenString string, userID uint) map[string]interface{} {
 
 	accessTokenString := CreateAccessToken(userID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
-	data := map[string]interface{}{"tokens": tokens}
-	resp := utils.Message(1000, "Token refreshed", false, data)
+	resp := utils.MessageWithTokens(1000, "Tokens refreshed", false, interface{}{}, tokens)
 	return resp
 }
 
