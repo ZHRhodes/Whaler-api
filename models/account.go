@@ -9,13 +9,13 @@ type Account struct {
 	Name                string `json:"name"`
 	Industry            string `json:"industry"`
 	Description         string `json:"description"`
-	Tier                uint   `json:"tier"`
+	Tier                int    `json:"tier"`
 	URL                 string `json:"url"`
 	Location            string `json:"location"`
-	HeadcountUpperBound uint   `json:"headcountUpperBound"`
-	HeadcountLowerBound uint   `json:"headcountLowerBound"`
-	RevenueUpperBound   uint   `json:"revenueUpperBound"`
-	RevenueLowerBound   uint   `json:"RevenueLowerBound"`
+	HeadcountUpperBound int    `json:"headcountUpperBound"`
+	HeadcountLowerBound int    `json:"headcountLowerBound"`
+	RevenueUpperBound   int    `json:"revenueUpperBound"`
+	RevenueLowerBound   int    `json:"revenueLowerBound"`
 	AssignedTo          []User `json:"assignedTo"`
 	//notes
 	//contacts

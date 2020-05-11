@@ -16,7 +16,7 @@ type User struct {
 	FirstName      string      `json:"firstName"`
 	LastName       string      `json:"lastName"`
 	IsAdmin        bool        `json:"isAdmin"`
-	OrganizationID uint        `json:"organizationId"`
+	OrganizationID int         `json:"organizationId"`
 	Workspaces     []Workspace `json:"workspaces" gorm:"many2many:workspace_user"`
 }
 
@@ -95,7 +95,7 @@ func (user *User) validate() map[string]interface{} {
 	return utils.Message(4001, "Requirement passed", false, map[string]interface{}{})
 }
 
-func fetchUser(userID uint) *User {
+func fetchUser(userID int) *User {
 	acc := &User{}
 	DB().Table("users").Where("id = ?", userID).First(acc)
 	if acc.Email == "" {

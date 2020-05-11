@@ -1,0 +1,99 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Todo {
+  id: ID!
+  text: String!
+  done: Boolean!
+  user: User!
+}
+
+type User {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  isAdmin: Boolean!
+  organizationID: Int!
+}
+
+type Organization {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  users: [User]!
+}
+
+type Account {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  industry: String
+  description: String
+  tier: Int
+  url: String
+  location: String
+  headcountUpperBound: Int
+	headcountLowerBound:  Int
+	revenueUpperBound: Int 
+	revenueLowerBound: Int
+	assignedTo: [User]!
+}
+
+type Contact {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  firstName: String!
+  lastName: String!
+  state: String!
+  account: Account!
+  jobTitle: String
+  seniority: String
+  persona: String
+  email: String
+  phone: String
+  assignedTo: User
+}
+
+type Workspace {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  accounts: [Account]!
+  collaborators: [User]!
+}
+
+type Query {
+  todos: [Todo!]!
+}
+
+input NewTodo {
+  text: String!
+  userId: String!
+}
+
+type Mutation {
+  createTodo(input: NewTodo!): Todo!
+}
+
+type DBModel {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+}
+
+scalar Time
