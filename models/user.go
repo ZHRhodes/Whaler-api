@@ -55,7 +55,7 @@ func CreateUser(email string, password string) (*User, *error) {
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	user := User{Email: email, Password: string(hashedPassword)}
+	user := &User{Email: email, Password: string(hashedPassword)}
 
 	DB().Create(user)
 
@@ -66,7 +66,7 @@ func CreateUser(email string, password string) (*User, *error) {
 
 	user.Password = ""
 
-	return &user, nil
+	return user, nil
 }
 
 func LogIn(email, password string) map[string]interface{} {
