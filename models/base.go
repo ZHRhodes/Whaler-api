@@ -32,8 +32,6 @@ func init() {
 	}
 
 	db = conn
-	db.AutoMigrate(&Workspace{})
-	db.AutoMigrate(&User{})
 }
 
 func DB() *gorm.DB {

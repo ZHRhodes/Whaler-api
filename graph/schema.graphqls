@@ -28,7 +28,7 @@ type Organization {
   updatedAt: Time!
   deletedAt: Time
   name: String!
-  users: [User]!
+  users: [User!]!
 }
 
 type Account {
@@ -46,7 +46,7 @@ type Account {
 	headcountLowerBound:  Int
 	revenueUpperBound: Int 
 	revenueLowerBound: Int
-	assignedTo: [User]!
+	assignedTo: [User!]!
 }
 
 type Contact {
@@ -72,12 +72,13 @@ type Workspace {
   updatedAt: Time!
   deletedAt: Time
   name: String!
-  accounts: [Account]!
-  collaborators: [User]!
+  accounts: [Account!]!
+  collaborators: [User!]!
 }
 
 type Query {
   todos: [Todo!]!
+  workspaces: [Workspace!]!
 }
 
 input NewTodo {
@@ -85,8 +86,14 @@ input NewTodo {
   userId: String!
 }
 
+input NewUser {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  createUser(input: NewUser!): User!
 }
 
 type DBModel {

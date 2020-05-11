@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -20,6 +21,7 @@ type User struct {
 	Workspaces     []Workspace `json:"workspaces" gorm:"many2many:workspace_user"`
 }
 
+//DEPRECATED -- REST
 func (user *User) Create() map[string]interface{} {
 	resp := user.validate()
 	if resp["hasError"] == true {
@@ -44,6 +46,27 @@ func (user *User) Create() map[string]interface{} {
 
 	response := utils.MessageWithTokens(2000, "User has been created", false, user, tokens)
 	return response
+}
+
+func CreateUser(email string, password string) (*User, *error) {
+	err := validateUserCreds(email, password)
+	if err != nil {
+		return nil, err
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	user := User{Email: email, Password: string(hashedPassword)}
+
+	DB().Create(user)
+
+	if user.ID <= 0 {
+		err := errors.New("failed to create user, connection error")
+		return nil, &err
+	}
+
+	user.Password = ""
+
+	return &user, nil
 }
 
 func LogIn(email, password string) map[string]interface{} {
@@ -72,6 +95,7 @@ func LogIn(email, password string) map[string]interface{} {
 	return resp
 }
 
+//DEPRECATED -- REST
 func (user *User) validate() map[string]interface{} {
 	if !strings.Contains(user.Email, "@") {
 		return utils.Message(4001, "Email address is required", true, map[string]interface{}{})
@@ -93,6 +117,32 @@ func (user *User) validate() map[string]interface{} {
 	}
 
 	return utils.Message(4001, "Requirement passed", false, map[string]interface{}{})
+}
+
+func validateUserCreds(email string, password string) *error {
+	if !strings.Contains(email, "@") {
+		err := errors.New("Email address is required")
+		return &err
+	}
+
+	if len(password) < 6 {
+		err := errors.New("Password is required")
+		return &err
+	}
+
+	temp := &User{}
+
+	err := DB().Table("users").Where("email = ?", email).First(temp).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		err := fmt.Errorf("connection error. Please retry. temp: %q", err)
+		return &err
+	}
+	if temp.Email != "" {
+		err := errors.New("email address already in use by another user")
+		return &err
+	}
+
+	return nil
 }
 
 func fetchUser(userID int) *User {

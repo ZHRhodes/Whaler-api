@@ -23,8 +23,20 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	return todo, nil
 }
 
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
+	user, err := models.CreateUser(input.Email, input.Password)
+	if err != nil {
+		return nil, *err
+	}
+	return user, nil
+}
+
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	return r.todos, nil
+}
+
+func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.
