@@ -37,7 +37,7 @@ func main() {
 	//GraphQL
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 	//End GraphQL
 
