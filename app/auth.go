@@ -1,4 +1,4 @@
-package app
+package auth
 
 import (
 	"context"
@@ -11,6 +11,12 @@ import (
 	"github.com/heroku/whaler-api/models"
 	"github.com/heroku/whaler-api/utils"
 )
+
+var UserIDCtxKey = &contextKey{"userID"}
+
+type contextKey struct {
+	name string
+}
 
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -77,7 +83,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		}
 
 		fmt.Sprintf("User %", tk.UserID)
-		ctx := context.WithValue(r.Context(), "userID", tk.UserID)
+		ctx := context.WithValue(r.Context(), UserIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})

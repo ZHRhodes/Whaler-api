@@ -76,11 +76,6 @@ type Workspace {
   collaborators: [User!]!
 }
 
-type Query {
-  todos: [Todo!]!
-  workspaces: [Workspace!]!
-}
-
 input NewTodo {
   text: String!
   userId: String!
@@ -89,6 +84,11 @@ input NewTodo {
 input NewUser {
   email: String!
   password: String!
+}
+
+type Query {
+  todos: [Todo!]!
+  workspaces: [Workspace!]!
 }
 
 type Mutation {

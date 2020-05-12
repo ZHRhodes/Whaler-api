@@ -8,6 +8,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/heroku/whaler-api/controllers"
 	"github.com/heroku/whaler-api/graph"
 	"github.com/heroku/whaler-api/graph/generated"
 )
@@ -36,14 +37,20 @@ func main() {
 
 	//GraphQL
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	http.Handle("/query", srv)
 
 	http.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.HandleFunc("/api/user/login", func(w http.ResponseWriter, r *http.Request) {
+		controllers.Authenticate(w, r)
+	})
+	http.HandleFunc("/api/user/refresh", func(w http.ResponseWriter, r *http.Request) {
+		controllers.Refresh(w, r)
+	})
 	//End GraphQL
 
 	fmt.Println(port)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Printf("connect to port %s for GraphQL playground", port)
 
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
