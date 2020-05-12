@@ -8,6 +8,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gorilla/mux"
 	"github.com/heroku/whaler-api/controllers"
 	"github.com/heroku/whaler-api/graph"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -15,8 +16,15 @@ import (
 )
 
 func main() {
-	// router := mux.NewRouter()
-	// router.Use(app.JwtAuthentication)
+	router := mux.NewRouter()
+	router.Use(middleware.JwtAuthentication)
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	router.Handle("/query", srv)
+	router.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
+
+	http.HandleFunc("/api/user/login", controllers.Authenticate)
+	http.HandleFunc("/api/user/refresh", controllers.Refresh)
 
 	// router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	// router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
@@ -36,24 +44,9 @@ func main() {
 		port = "8080"
 	}
 
-	//GraphQL
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
-	http.Handle("/query", srv)
-
-	http.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
-	http.HandleFunc("/api/user/login", func(w http.ResponseWriter, r *http.Request) {
-		controllers.Authenticate(w, r)
-	})
-	http.HandleFunc("/api/user/refresh", func(w http.ResponseWriter, r *http.Request) {
-		controllers.Refresh(w, r)
-	})
-	//End GraphQL
-
-	fmt.Println(port)
-
 	log.Printf("connect to port %s for GraphQL playground", port)
 
-	err := http.ListenAndServe(":"+port, middleware.JwtAuthentication)
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		fmt.Print(err)
 	}
