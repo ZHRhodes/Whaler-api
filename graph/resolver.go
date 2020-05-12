@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"github.com/heroku/whaler-api/graph/model"
 	"github.com/jinzhu/gorm"
 )
 
@@ -9,6 +8,5 @@ import (
 
 // Resolver serves as dependency injection for your app, add any dependencies you require here.
 type Resolver struct {
-	db    *gorm.DB
-	todos []*model.Todo
+	DB *gorm.DB
 }

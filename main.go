@@ -13,13 +13,16 @@ import (
 	"github.com/heroku/whaler-api/graph"
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/middleware"
+	"github.com/heroku/whaler-api/models"
 )
 
 func main() {
 	router := mux.NewRouter()
 	router.Use(middleware.ParseUserIDFromToken)
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	resolver := graph.Resolver{DB: models.DB()}
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver}))
 	router.Handle("/query", srv)
 	router.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
 

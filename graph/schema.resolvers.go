@@ -20,7 +20,6 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		ID:   fmt.Sprintf("T%d", rand.Int()),
 		User: &models.User{FirstName: "zacky"},
 	}
-	r.todos = append(r.todos, todo)
 	return todo, nil
 }
 
@@ -33,12 +32,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+	return nil, nil
 }
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
-	return models.FetchWorkspaces(r.db, userID)
+	return models.FetchWorkspaces(r.DB, userID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
