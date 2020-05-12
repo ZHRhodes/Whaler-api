@@ -38,6 +38,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
+	return models.FetchWorkspaces(r.db, userID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
