@@ -8,6 +8,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/heroku/whaler-api/auth"
 	"github.com/heroku/whaler-api/controllers"
 	"github.com/heroku/whaler-api/graph"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -52,7 +53,7 @@ func main() {
 
 	log.Printf("connect to port %s for GraphQL playground", port)
 
-	err := http.ListenAndServe(":"+port, nil)
+	err := http.ListenAndServe(":"+port, auth.JwtAuthentication)
 	if err != nil {
 		fmt.Print(err)
 	}

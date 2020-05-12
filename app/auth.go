@@ -12,7 +12,7 @@ import (
 	"github.com/heroku/whaler-api/utils"
 )
 
-var UserIDCtxKey = &contextKey{"userID"}
+var userIDCtxKey = &contextKey{"userID"}
 
 type contextKey struct {
 	name string
@@ -83,8 +83,13 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		}
 
 		fmt.Sprintf("User %", tk.UserID)
-		ctx := context.WithValue(r.Context(), UserIDCtxKey, tk.UserID)
+		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func UserIDFromContext(ctx context.Context) int {
+	id, _ := ctx.Value(userIDCtxKey).(int)
+	return id
 }

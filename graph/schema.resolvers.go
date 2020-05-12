@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/rand"
 
+	"github.com/heroku/whaler-api/auth"
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/models"
@@ -36,7 +37,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 }
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
-	panic(fmt.Errorf("not implemented"))
+	userID := auth.UserIdFromContext(ctx)
 }
 
 // Mutation returns generated.MutationResolver implementation.
