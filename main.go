@@ -23,8 +23,8 @@ func main() {
 	router.Handle("/query", srv)
 	router.Handle("/schema", playground.Handler("GraphQL playground", "/query"))
 
-	http.HandleFunc("/api/user/login", controllers.Authenticate)
-	http.HandleFunc("/api/user/refresh", controllers.Refresh)
+	router.HandleFunc("/api/user/login", controllers.Authenticate)
+	router.HandleFunc("/api/user/refresh", controllers.Refresh)
 
 	// router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	// router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
