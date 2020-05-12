@@ -17,7 +17,7 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.Use(middleware.JwtAuthentication)
+	router.Use(middleware.ParseUserIDFromToken)
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 	router.Handle("/query", srv)

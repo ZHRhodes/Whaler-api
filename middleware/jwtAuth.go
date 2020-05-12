@@ -18,6 +18,7 @@ type contextKey struct {
 	name string
 }
 
+//DEPRECATED -- REST
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		notAuth := []string{"/api/user/create",
@@ -84,6 +85,23 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 		}
 
 		fmt.Sprintf("User %", tk.UserID)
+		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
+}
+
+var ParseUserIDFromToken = func(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tokenHeader := r.Header.Get("Authorization")
+
+		tk := &models.AccessToken{}
+
+		jwt.ParseWithClaims(tokenHeader, tk, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("JWT_SECRET")), nil
+		})
+
+		fmt.Sprintf("User %d", tk.UserID)
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
