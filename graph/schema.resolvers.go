@@ -6,7 +6,6 @@ package graph
 import (
 	"context"
 	"fmt"
-	"math/rand"
 
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/graph/model"
@@ -14,30 +13,49 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	todo := &model.Todo{
-		Text: input.Text,
-		ID:   fmt.Sprintf("T%d", rand.Int()),
-		User: &models.User{FirstName: "zacky"},
-	}
-	return todo, nil
-}
-
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
 	user, err := models.CreateUser(input.Email, input.Password)
 	if err != nil {
-		return nil, *err
+		return nil, err
 	}
 	return user, nil
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return nil, nil
+func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*models.Account, error) {
+	account, err := models.CreateAccount(input)
+	if err != nil {
+		return nil, err
+	}
+	return account, nil
+}
+
+func (r *mutationResolver) CreateContact(ctx context.Context, input model.NewContact) (*models.Contact, error) {
+	contact, err := models.CreateContact(input)
+	if err != nil {
+		return nil, err
+	}
+	return contact, nil
+}
+
+func (r *mutationResolver) CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error) {
+	workspace, err := models.CreateWorkspace(input)
+	if err != nil {
+		return nil, err
+	}
+	return workspace, nil
 }
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	return models.FetchWorkspaces(r.DB, userID)
+}
+
+func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Organization(ctx context.Context) (*models.Organization, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

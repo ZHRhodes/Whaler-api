@@ -2,12 +2,7 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
+# User
 
 type User {
   id: ID!
@@ -22,6 +17,17 @@ type User {
   organizationID: Int!
 }
 
+input NewUser {
+  email: String!
+  password: String!
+}
+
+input UserID {
+  id: String!
+}
+
+# Organization
+
 type Organization {
   id: ID!
   createdAt: Time!
@@ -30,6 +36,8 @@ type Organization {
   name: String!
   users: [User!]!
 }
+
+# Account
 
 type Account {
   id: ID!
@@ -49,6 +57,24 @@ type Account {
 	assignedTo: [User!]!
 }
 
+input NewAccount {
+  name: String!
+  industry: String
+  description: String
+  tier: Int
+  url: String
+  headcountUpperBound: Int
+	headcountLowerBound:  Int
+	revenueUpperBound: Int 
+	revenueLowerBound: Int
+}
+
+input AccountID {
+  id: ID!
+}
+
+# Contact
+
 type Contact {
   id: ID!
   createdAt: Time!
@@ -66,6 +92,20 @@ type Contact {
   assignedTo: User
 }
 
+input NewContact {
+  firstName: String!
+  lastName: String!
+  state: String
+  account: AccountID
+  jobTitle: String
+  seniority: String
+  persona: String
+  email: String
+  phone: String
+}
+
+# Workspace
+
 type Workspace {
   id: ID!
   createdAt: Time!
@@ -76,24 +116,23 @@ type Workspace {
   collaborators: [User!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
-}
-
-input NewUser {
-  email: String!
-  password: String!
+input NewWorkspace {
+  name: String!
 }
 
 type Query {
   todos: [Todo!]!
   workspaces: [Workspace!]!
+  accounts: [Account!]!
+  organization: Organization
 }
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   createUser(input: NewUser!): User!
+  createAccount(input: NewAccount!): Account!
+  createContact(input: NewContact!): Contact!
+  createWorkspace(input: NewWorkspace!): Workspace!
 }
 
 type DBModel {

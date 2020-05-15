@@ -48,7 +48,7 @@ func (user *User) Create() map[string]interface{} {
 	return response
 }
 
-func CreateUser(email string, password string) (*User, *error) {
+func CreateUser(email string, password string) (*User, error) {
 	err := validateUserCreds(email, password)
 	if err != nil {
 		return nil, err
@@ -57,11 +57,10 @@ func CreateUser(email string, password string) (*User, *error) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	user := &User{Email: email, Password: string(hashedPassword)}
 
-	DB().Create(user)
+	err := DB().Create(user).Error
 
 	if user.ID <= 0 {
-		err := errors.New("failed to create user, connection error")
-		return nil, &err
+		return nil, err
 	}
 
 	user.Password = ""

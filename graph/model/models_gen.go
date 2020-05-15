@@ -6,6 +6,34 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
+type AccountID struct {
+	ID string `json:"id"`
+}
+
+type NewAccount struct {
+	Name                string  `json:"name"`
+	Industry            *string `json:"industry"`
+	Description         *string `json:"description"`
+	Tier                *int    `json:"tier"`
+	URL                 *string `json:"url"`
+	HeadcountUpperBound *int    `json:"headcountUpperBound"`
+	HeadcountLowerBound *int    `json:"headcountLowerBound"`
+	RevenueUpperBound   *int    `json:"revenueUpperBound"`
+	RevenueLowerBound   *int    `json:"revenueLowerBound"`
+}
+
+type NewContact struct {
+	FirstName string     `json:"firstName"`
+	LastName  string     `json:"lastName"`
+	State     *string    `json:"state"`
+	Account   *AccountID `json:"account"`
+	JobTitle  *string    `json:"jobTitle"`
+	Seniority *string    `json:"seniority"`
+	Persona   *string    `json:"persona"`
+	Email     *string    `json:"email"`
+	Phone     *string    `json:"phone"`
+}
+
 type NewTodo struct {
 	Text   string `json:"text"`
 	UserID string `json:"userId"`
@@ -16,9 +44,18 @@ type NewUser struct {
 	Password string `json:"password"`
 }
 
+type NewWorkspace struct {
+	Name          string    `json:"name"`
+	Collaborators []*UserID `json:"collaborators"`
+}
+
 type Todo struct {
 	ID   string       `json:"id"`
 	Text string       `json:"text"`
 	Done bool         `json:"done"`
 	User *models.User `json:"user"`
+}
+
+type UserID struct {
+	ID string `json:"id"`
 }

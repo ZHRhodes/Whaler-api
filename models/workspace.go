@@ -12,6 +12,7 @@ type Workspace struct {
 	Collaborators []User    `json:"collaborators"`
 }
 
+//DEPRECATED -- REST
 func (workspace *Workspace) Create() map[string]interface{} {
 	//check if workspace already exists?
 	DB().Create(workspace)
@@ -23,6 +24,20 @@ func (workspace *Workspace) Create() map[string]interface{} {
 	data := map[string]interface{}{"workspace": workspace}
 	response := utils.Message(2000, "Workspace has been created", false, data)
 	return response
+}
+
+func CreateWorkspace(newWorkspace model.NewWorkspace) (*Workspace, error) {
+	workspace := &Workspace{
+		Name: newWorkspace.Name
+	}
+
+	err := DB().Create(workspace).Error
+
+	if workspace.ID <= 0 {
+		return nil, err
+	}	
+
+	return workspace, nil
 }
 
 //DEPRECATED -- REST

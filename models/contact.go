@@ -28,3 +28,25 @@ func (contact *Contact) Create() map[string]interface{} {
 	response := utils.Message(2000, "Contact has been created", false, data)
 	return response
 }
+
+func CreateContact(newContact model.NewContact) (*Contact, error) {
+	contact := Contact{
+		FirstName: newContact.FirstName,
+		LastName: newContact.LastName,
+		State: newContact.State,
+		//figure out how to use AccountID to tie this contact to an account in db
+		JobTitle: newContact.JobTitle,
+		Seniority: newContact.Seniority,
+		Peronsa: newContact.Persona,
+		Email: newContact.Email,
+		Phone: newContact.Phone
+	}
+
+	err := DB().Create(contact).Error
+
+	if account.ID <= 0 {
+		return nil, err
+	}
+
+	return contact, nil
+}

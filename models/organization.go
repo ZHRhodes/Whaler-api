@@ -27,16 +27,12 @@ func (org *Organization) Create() map[string]interface{} {
 	return response
 }
 
-func FetchOrg(orgID string) map[string]interface{} {
+func FetchOrganization(db *gorm.DB, orgID string) (*Organization, error) {
 	org := &Organization{}
-	err := DB().Table("organizations").Where("id = ?", orgID).Preload("Users").First(org).Error
+	//removed .Preload("Users") before .First.. how should i handle that with graphql, if at all?
+	err := db.Table("organizations").Where("id = ?", orgID).First(org).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return utils.Message(5001, "Organization with the given id not found", true, map[string]interface{}{})
-		} else {
-			return utils.Message(5001, "Unable to fetch organization, connection error", true, map[string]interface{}{})
-		}
+		return nil, err
 	}
-
-	return utils.Message(2000, "Organization fetched successfully", false, org)
+	return org, nil
 }
