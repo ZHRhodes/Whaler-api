@@ -121,14 +121,11 @@ input NewWorkspace {
 }
 
 type Query {
-  todos: [Todo!]!
   workspaces: [Workspace!]!
-  accounts: [Account!]!
   organization: Organization
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
   createUser(input: NewUser!): User!
   createAccount(input: NewAccount!): Account!
   createContact(input: NewContact!): Contact!

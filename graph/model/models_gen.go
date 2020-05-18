@@ -2,10 +2,6 @@
 
 package model
 
-import (
-	"github.com/heroku/whaler-api/models"
-)
-
 type AccountID struct {
 	ID string `json:"id"`
 }
@@ -34,26 +30,13 @@ type NewContact struct {
 	Phone     *string    `json:"phone"`
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
-}
-
 type NewUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
 type NewWorkspace struct {
-	Name          string    `json:"name"`
-	Collaborators []*UserID `json:"collaborators"`
-}
-
-type Todo struct {
-	ID   string       `json:"id"`
-	Text string       `json:"text"`
-	Done bool         `json:"done"`
-	User *models.User `json:"user"`
+	Name string `json:"name"`
 }
 
 type UserID struct {

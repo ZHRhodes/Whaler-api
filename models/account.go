@@ -37,16 +37,15 @@ func (account *Account) Create() map[string]interface{} {
 
 func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	account := &Account{
-		Name: newAccount.Name,
-		Industry: newAccount.Industry,
-		Description: newAccount.Description,
-		Tier: newAccount.Tier,
-		URL: newAccount.URL,
-		Location: newAccount.Location,
-		HeadcountUpperBound: newAccount.HeadcountUpperBound,
-		HeadcountLowerBound: newAccount.HeadcountLowerBound,
-		RevenueUpperBound: newAccount.RevenueLowerBound,
-		RevenueLowerBound: newAccount.RevenueLowerBound
+		Name:                newAccount.Name,
+		Industry:            *newAccount.Industry,
+		Description:         *newAccount.Description,
+		Tier:                *newAccount.Tier,
+		URL:                 *newAccount.URL,
+		HeadcountUpperBound: *newAccount.HeadcountUpperBound,
+		HeadcountLowerBound: *newAccount.HeadcountLowerBound,
+		RevenueUpperBound:   *newAccount.RevenueLowerBound,
+		RevenueLowerBound:   *newAccount.RevenueLowerBound,
 	}
 
 	err := DB().Create(account).Error

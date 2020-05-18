@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
 	"github.com/jinzhu/gorm"
 )
@@ -28,14 +29,14 @@ func (workspace *Workspace) Create() map[string]interface{} {
 
 func CreateWorkspace(newWorkspace model.NewWorkspace) (*Workspace, error) {
 	workspace := &Workspace{
-		Name: newWorkspace.Name
+		Name: newWorkspace.Name,
 	}
 
 	err := DB().Create(workspace).Error
 
 	if workspace.ID <= 0 {
 		return nil, err
-	}	
+	}
 
 	return workspace, nil
 }

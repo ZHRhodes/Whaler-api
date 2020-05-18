@@ -49,9 +49,9 @@ func (user *User) Create() map[string]interface{} {
 }
 
 func CreateUser(email string, password string) (*User, error) {
-	err := validateUserCreds(email, password)
-	if err != nil {
-		return nil, err
+	validatationErr := validateUserCreds(email, password)
+	if validatationErr != nil {
+		return nil, *validatationErr
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
