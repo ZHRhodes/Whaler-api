@@ -13,12 +13,12 @@ import (
 
 type AccessToken struct {
 	jwt.StandardClaims
-	UserID uint
+	UserID int
 }
 
 type RefreshToken struct {
 	DBModel
-	UserID uint
+	UserID int
 	Hash   string
 	Exp    time.Time
 }
@@ -31,7 +31,7 @@ type Tokens struct {
 const RefreshTokenValidTime = time.Hour * 72
 const AuthTokenValidTime = time.Minute * 15
 
-func CreateAccessToken(userID uint) string {
+func CreateAccessToken(userID int) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
 	tk := &AccessToken{UserID: userID, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
 	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
@@ -39,7 +39,7 @@ func CreateAccessToken(userID uint) string {
 	return accessTokenString
 }
 
-func CreateRefreshToken(userID uint) string {
+func CreateRefreshToken(userID int) string {
 	value := [256]byte{}
 	_, err := rand.Read(value[:])
 	if err != nil {
@@ -67,7 +67,7 @@ func Retrieve(refreshTokenString string) (*RefreshToken, error) {
 	return refreshToken, err
 }
 
-func (token RefreshToken) Validate(userId uint) bool {
+func (token RefreshToken) Validate(userId int) bool {
 	isExpired := token.Exp.Before(time.Now())
 	if isExpired {
 		fmt.Printf("Refresh token is expired\n")
@@ -91,7 +91,7 @@ func (token *RefreshToken) store() {
 	}
 }
 
-func Refresh(refreshTokenString string, userID uint) map[string]interface{} {
+func Refresh(refreshTokenString string, userID int) map[string]interface{} {
 	refreshToken, err := Retrieve(refreshTokenString)
 
 	if err != nil {
@@ -121,7 +121,7 @@ func (token *RefreshToken) Invalidate() {
 	}
 }
 
-func InvalidateTokens(userID uint) {
+func InvalidateTokens(userID int) {
 	//this will re-invalidate all tokens a user has ever had
 	//to negate the perf impact, should either remove revoked tokens from db
 	//or invalidate the specific refresh token only

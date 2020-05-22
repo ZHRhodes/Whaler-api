@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
 	"github.com/jinzhu/gorm"
 )
@@ -12,6 +13,7 @@ type Workspace struct {
 	Collaborators []User    `json:"collaborators"`
 }
 
+//DEPRECATED -- REST
 func (workspace *Workspace) Create() map[string]interface{} {
 	//check if workspace already exists?
 	DB().Create(workspace)
@@ -25,6 +27,21 @@ func (workspace *Workspace) Create() map[string]interface{} {
 	return response
 }
 
+func CreateWorkspace(newWorkspace model.NewWorkspace) (*Workspace, error) {
+	workspace := &Workspace{
+		Name: newWorkspace.Name,
+	}
+
+	err := DB().Create(workspace).Error
+
+	if workspace.ID <= 0 {
+		return nil, err
+	}
+
+	return workspace, nil
+}
+
+//DEPRECATED -- REST
 func FetchWorkspace(workspaceID string) map[string]interface{} {
 	workspace := &Workspace{}
 	err := DB().Table("workspaces").Where("id = ?", workspaceID).Preload("Accounts").First(workspace).Error
@@ -38,4 +55,15 @@ func FetchWorkspace(workspaceID string) map[string]interface{} {
 	}
 
 	return utils.Message(2000, "Workspace fetched successfully", false, workspace)
+}
+
+func FetchWorkspaces(db *gorm.DB, userID int) ([]*Workspace, error) {
+	user := User{}
+	user.ID = userID
+	workspaces := []*Workspace{}
+	err := db.Model(&user).Related(&workspaces, "Workspaces").Error
+	if err != nil {
+		return []*Workspace{}, err
+	}
+	return workspaces, nil
 }

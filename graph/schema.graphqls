@@ -1,0 +1,142 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+# User
+
+type User {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  isAdmin: Boolean!
+  organizationID: Int!
+}
+
+input NewUser {
+  email: String!
+  password: String!
+}
+
+input UserID {
+  id: String!
+}
+
+# Organization
+
+type Organization {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  users: [User!]!
+}
+
+# Account
+
+type Account {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  industry: String
+  description: String
+  tier: Int
+  url: String
+  location: String
+  headcountUpperBound: Int
+	headcountLowerBound:  Int
+	revenueUpperBound: Int 
+	revenueLowerBound: Int
+	assignedTo: [User!]!
+}
+
+input NewAccount {
+  name: String!
+  industry: String
+  description: String
+  tier: Int
+  url: String
+  headcountUpperBound: Int
+	headcountLowerBound:  Int
+	revenueUpperBound: Int 
+	revenueLowerBound: Int
+}
+
+input AccountID {
+  id: ID!
+}
+
+# Contact
+
+type Contact {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  firstName: String!
+  lastName: String!
+  state: String!
+  account: Account!
+  jobTitle: String
+  seniority: String
+  persona: String
+  email: String
+  phone: String
+  assignedTo: User
+}
+
+input NewContact {
+  firstName: String!
+  lastName: String!
+  state: String
+  account: AccountID
+  jobTitle: String
+  seniority: String
+  persona: String
+  email: String
+  phone: String
+}
+
+# Workspace
+
+type Workspace {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  name: String!
+  accounts: [Account!]!
+  collaborators: [User!]!
+}
+
+input NewWorkspace {
+  name: String!
+}
+
+type Query {
+  workspaces: [Workspace!]!
+  organization: Organization
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  createAccount(input: NewAccount!): Account!
+  createContact(input: NewContact!): Contact!
+  createWorkspace(input: NewWorkspace!): Workspace!
+}
+
+type DBModel {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+}
+
+scalar Time

@@ -12,7 +12,7 @@ import (
 )
 
 type DBModel struct {
-	ID        uint       `json:"id" gorm:"primary_key"`
+	ID        int        `json:"id" gorm:"primary_key"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
@@ -32,8 +32,11 @@ func init() {
 	}
 
 	db = conn
-	db.AutoMigrate(&Workspace{})
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Contact{})
+	db.AutoMigrate(&Organization{})
+	db.AutoMigrate(&Workspace{})
 }
 
 func DB() *gorm.DB {

@@ -1,6 +1,9 @@
 package models
 
-import "github.com/heroku/whaler-api/utils"
+import (
+	"github.com/heroku/whaler-api/graph/model"
+	"github.com/heroku/whaler-api/utils"
+)
 
 type Contact struct {
 	DBModel
@@ -27,4 +30,25 @@ func (contact *Contact) Create() map[string]interface{} {
 	data := map[string]interface{}{"contact": contact}
 	response := utils.Message(2000, "Contact has been created", false, data)
 	return response
+}
+
+func CreateContact(newContact model.NewContact) (*Contact, error) {
+	contact := &Contact{
+		FirstName: newContact.FirstName,
+		LastName:  newContact.LastName,
+		State:     *newContact.State,
+		//figure out how to use AccountID to tie this contact to an account in db
+		JobTitle:  *newContact.JobTitle,
+		Seniority: *newContact.Seniority,
+		Email:     *newContact.Email,
+		Phone:     *newContact.Phone,
+	}
+
+	err := DB().Create(contact).Error
+
+	if contact.ID <= 0 {
+		return nil, err
+	}
+
+	return contact, nil
 }

@@ -42,14 +42,14 @@ var Refresh = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Context().Value("userID").(uint)
+	userID := r.Context().Value("userID").(int)
 
 	resp := models.Refresh(tokens.RefreshToken, userID)
 	utils.Respond(w, resp)
 }
 
 var LogOut = func(w http.ResponseWriter, r *http.Request) {
-	userID := r.Context().Value("userID").(uint)
+	userID := r.Context().Value("userID").(int)
 	go models.InvalidateTokens(userID)
 	utils.Respond(w, utils.Message(2000, "success", false, map[string]interface{}{}))
 }
