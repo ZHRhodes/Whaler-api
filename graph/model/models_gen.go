@@ -3,7 +3,7 @@
 package model
 
 type AccountID struct {
-	ID string `json:"id"`
+	ID int `json:"id"`
 }
 
 type NewAccount struct {
@@ -40,5 +40,5 @@ type NewWorkspace struct {
 }
 
 type UserID struct {
-	ID string `json:"id"`
+	ID int `json:"id"`
 }

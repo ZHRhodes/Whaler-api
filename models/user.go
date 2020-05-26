@@ -10,6 +10,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+//use int (signed) as id (primary key) 
+//this will be supported across all platforms 
+//(graphql only supports int, not uint)
+//this requires fe changes too as i just changed them over to string
+//this will NOT require changing the id column type in postgres as DBModel is already using int for the id
+
 type User struct {
 	DBModel
 	Email          string      `json:"email" gorm:"unique, not null"`

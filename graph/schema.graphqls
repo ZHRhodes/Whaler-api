@@ -23,7 +23,7 @@ input NewUser {
 }
 
 input UserID {
-  id: String!
+  id: ID!
 }
 
 # Organization
