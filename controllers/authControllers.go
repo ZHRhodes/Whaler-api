@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
 	"github.com/heroku/whaler-api/utils"
 )
@@ -29,7 +30,7 @@ var Refresh = func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID := r.Context().Value("userID").(int)
+	userID := middleware.UserIDFromContext(r.Context())
 
 	resp := models.Refresh(tokens.RefreshToken, userID)
 	utils.Respond(w, resp)
