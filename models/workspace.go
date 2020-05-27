@@ -57,13 +57,38 @@ func FetchWorkspace(workspaceID string) map[string]interface{} {
 	return utils.Message(2000, "Workspace fetched successfully", false, workspace)
 }
 
-func FetchWorkspaces(db *gorm.DB, userID int) ([]*Workspace, error) {
+func FetchWorkspaces(db *gorm.DB, preloads []string, userID int) ([]*Workspace, error) {
 	user := User{}
 	user.ID = userID
 	workspaces := []*Workspace{}
-	err := db.Model(&user).Related(&workspaces, "Workspaces").Error
+
+	shouldFetchAccounts := false
+	shouldFetchCollaborators := false
+	for _, value := range preloads {
+		if value == "accounts" || value == "workspaces.accounts" {
+			shouldFetchAccounts = true
+		}
+
+		if value == "collaborators" || value == "workspaces.collaborators" {
+			shouldFetchCollaborators = true
+		}
+	}
+
+	res := DBModel(&user).Related(&workspaces, "Workspaces")
+
+	if shouldFetchAccounts {
+		res = res.Preload("Accounts")
+	}
+
+	if shouldFetchCollaborators {
+		res = res.Preload("Collaborators")
+	}
+
+	err := res.Error
+
 	if err != nil {
 		return []*Workspace{}, err
 	}
+
 	return workspaces, nil
 }
