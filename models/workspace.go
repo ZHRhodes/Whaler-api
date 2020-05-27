@@ -74,8 +74,8 @@ func FetchWorkspaces(db *gorm.DB, preloads []string, userID int) ([]*Workspace, 
 		}
 	}
 
-	res := DBModel(&user).Related(&workspaces, "Workspaces")
-
+	res := db.Model(&user).Related(&workspaces, "Workspaces")
+	
 	if shouldFetchAccounts {
 		res = res.Preload("Accounts")
 	}
