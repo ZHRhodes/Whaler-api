@@ -10,7 +10,7 @@ type Workspace struct {
 	DBModel
 	Name          string    `json:"name"`
 	Accounts      []Account `json:"accounts" gorm:"many2many:workspace_accounts;"`
-	Collaborators []User    `json:"collaborators" gorm:"many2many:workspace_collaborators;"`
+	Collaborators []User    `json:"collaborators" gorm:"many2many:workspace_user;"`
 }
 
 //DEPRECATED -- REST
