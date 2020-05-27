@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/middleware"
@@ -48,7 +49,7 @@ func (r *mutationResolver) CreateWorkspace(ctx context.Context, input model.NewW
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	preloads := getPreloads(ctx)
-	return models.FetchWorkspaces(r.DB, userID)
+	return models.FetchWorkspaces(r.DB, preloads, userID)
 }
 
 func (r *queryResolver) Organization(ctx context.Context) (*models.Organization, error) {
@@ -75,8 +76,8 @@ func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error)
 }
 
 func getPreloads(ctx context.Context) []string {
-	return GetNestedPreloads(
-		graphql.GetRequestContext(ctx),
+	return getNestedPreloads(
+		graphql.GetOperationContext(ctx),
 		graphql.CollectFieldsCtx(ctx, nil),
 		"",
 	)
@@ -84,10 +85,10 @@ func getPreloads(ctx context.Context) []string {
 
 func getNestedPreloads(ctx *graphql.RequestContext, fields []graphql.CollectedField, prefix string) (preloads []string) {
 	for _, column := range fields {
-		prefixColumn := GetPreloadString(prefix, column.Name)
+		prefixColumn := getPreloadString(prefix, column.Name)
 		preloads = append(preloads, prefixColumn)
-		preloads = append(preloads, GetNestedPreloads(ctx, graphql.CollectFields(ctx, column.SelectionSet, nil), prefixColumn)...)
-		preloads = append(preloads, GetNestedPreloads(ctx, graphql.CollectFields(ctx, column.Selections, nil), prefixColumn)...)
+		preloads = append(preloads, getNestedPreloads(ctx, graphql.CollectFields(ctx, column.SelectionSet, nil), prefixColumn)...)
+		preloads = append(preloads, getNestedPreloads(ctx, graphql.CollectFields(ctx, column.Selections, nil), prefixColumn)...)
 
 	}
 	return
