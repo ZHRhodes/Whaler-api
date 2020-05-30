@@ -13,8 +13,8 @@ import (
 
 type AccessToken struct {
 	jwt.StandardClaims
+	UserID int
 	HasuraClaims map[string]string `json:"https://hasura.io/jwt/claims"`
-
 }
 
 type RefreshToken struct {
@@ -34,12 +34,12 @@ const AuthTokenValidTime = time.Minute * 15
 
 func CreateAccessToken(userID int) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
-	hasuraClaims = {
-		"x-hasura-allowed-roles": ["editor", "user", "mod"],
+	hasuraClaims := map[string]string {
+		"x-hasura-allowed-roles": "[\"editor\", \"user\", \"mod\"]",
 		"x-hasura-default-role": "user",
-		"x-hasura-user-id": string(userId),
+		"x-hasura-user-id": string(userID),
 	}
-	tk := &AccessToken{HasuraClaims: hasuraClaims, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
+	tk := &AccessToken{UserID: userID, HasuraClaims: hasuraClaims, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
 	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	return accessTokenString
