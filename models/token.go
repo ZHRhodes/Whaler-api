@@ -14,7 +14,7 @@ import (
 type AccessToken struct {
 	jwt.StandardClaims
 	UserID int
-	HasuraClaims map[string]string `json:"https://hasura.io/jwt/claims"`
+	HasuraClaims map[string]interface{} `json:"https://hasura.io/jwt/claims"`
 }
 
 type RefreshToken struct {
@@ -34,10 +34,11 @@ const AuthTokenValidTime = time.Minute * 15
 
 func CreateAccessToken(userID int) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
+	allowedRoles := ["editor", "user", "mod"]
 	hasuraClaims := map[string]string {
-		"x-hasura-allowed-roles": "[\"editor\", \"user\", \"mod\"]",
+		"x-hasura-allowed-roles": allowedRoles,
 		"x-hasura-default-role": "user",
-		"x-hasura-user-id": string(userID),
+		"x-hasura-user-id": strconv.Itoa(userID),
 	}
 	tk := &AccessToken{UserID: userID, HasuraClaims: hasuraClaims, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
 	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
