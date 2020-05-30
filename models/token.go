@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"strconv"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/heroku/whaler-api/utils"
@@ -34,8 +35,8 @@ const AuthTokenValidTime = time.Minute * 15
 
 func CreateAccessToken(userID int) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
-	allowedRoles := ["editor", "user", "mod"]
-	hasuraClaims := map[string]string {
+	allowedRoles := [3]string{"editor", "user", "mod",}
+	hasuraClaims := map[string]interface{} {
 		"x-hasura-allowed-roles": allowedRoles,
 		"x-hasura-default-role": "user",
 		"x-hasura-user-id": strconv.Itoa(userID),
