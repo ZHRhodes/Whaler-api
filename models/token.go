@@ -5,8 +5,8 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/heroku/whaler-api/utils"
@@ -14,7 +14,7 @@ import (
 
 type AccessToken struct {
 	jwt.StandardClaims
-	UserID int
+	UserID       int
 	HasuraClaims map[string]interface{} `json:"https://hasura.io/jwt/claims"`
 }
 
@@ -35,13 +35,14 @@ const AuthTokenValidTime = time.Minute * 15
 
 func CreateAccessToken(userID int) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
-	allowedRoles := [3]string{"editor", "user", "mod",}
-	hasuraClaims := map[string]interface{} {
+	allowedRoles := [3]string{"editor", "user", "mod"}
+	hasuraClaims := map[string]interface{}{
 		"x-hasura-allowed-roles": allowedRoles,
-		"x-hasura-default-role": "user",
-		"x-hasura-user-id": strconv.Itoa(userID),
+		"x-hasura-default-role":  "user",
+		"x-hasura-user-id":       strconv.Itoa(userID),
 	}
-	tk := &AccessToken{UserID: userID, HasuraClaims: hasuraClaims, StandardClaims: jwt.StandardClaims{ExpiresAt: exp}}
+	standardClaims := jwt.StandardClaims{ExpiresAt: exp, Audience: "hasura", Issuer: "getwhaler-auth"}
+	tk := &AccessToken{UserID: userID, HasuraClaims: hasuraClaims, StandardClaims: standardClaims}
 	accessToken := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
 	accessTokenString, _ := accessToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	return accessTokenString
