@@ -74,7 +74,6 @@ type queryResolver struct{ *Resolver }
 func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error) {
 	panic(fmt.Errorf("not implemented"))
 }
-
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
 		graphql.GetOperationContext(ctx),
@@ -82,7 +81,6 @@ func getPreloads(ctx context.Context) []string {
 		"",
 	)
 }
-
 func getNestedPreloads(ctx *graphql.RequestContext, fields []graphql.CollectedField, prefix string) (preloads []string) {
 	for _, column := range fields {
 		prefixColumn := getPreloadString(prefix, column.Name)
@@ -93,7 +91,6 @@ func getNestedPreloads(ctx *graphql.RequestContext, fields []graphql.CollectedFi
 	}
 	return
 }
-
 func getPreloadString(prefix, name string) string {
 	if len(prefix) > 0 {
 		return prefix + "." + name

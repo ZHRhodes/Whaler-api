@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/heroku/whaler-api/models"
 	"github.com/heroku/whaler-api/utils"
 )
 
@@ -118,7 +117,7 @@ func Refresh(refreshTokenString string, userID int) map[string]interface{} {
 
 	accessTokenString := CreateAccessToken(userID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
-	user := models.FetchUser(userID)
+	user := FetchUser(userID)
 	resp := utils.MessageWithTokens(1000, "Tokens refreshed", false, user, tokens)
 	return resp
 }
