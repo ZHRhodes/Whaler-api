@@ -9,12 +9,13 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/heroku/whaler-api/models"
 	"github.com/heroku/whaler-api/utils"
 )
 
 type AccessToken struct {
 	jwt.StandardClaims
-	UserID       int
+	UserID       int                    `json:"userID"`
 	HasuraClaims map[string]interface{} `json:"https://hasura.io/jwt/claims"`
 }
 
@@ -117,7 +118,8 @@ func Refresh(refreshTokenString string, userID int) map[string]interface{} {
 
 	accessTokenString := CreateAccessToken(userID)
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
-	resp := utils.MessageWithTokens(1000, "Tokens refreshed", false, nil, tokens)
+	user := models.FetchUser(userID)
+	resp := utils.MessageWithTokens(1000, "Tokens refreshed", false, user, tokens)
 	return resp
 }
 
