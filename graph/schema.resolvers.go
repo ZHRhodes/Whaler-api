@@ -63,7 +63,8 @@ func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, er
 func (r *queryResolver) Organization(ctx context.Context) (*models.Organization, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	user := models.FetchUser(userID)
-	return models.FetchOrganization(r.DB, user.OrganizationID)
+	preloads := getPreloads(ctx)
+	return models.FetchOrganization(r.DB, preloads, user.OrganizationID)
 }
 
 func (r *queryResolver) AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {

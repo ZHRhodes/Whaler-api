@@ -27,10 +27,23 @@ func (org *Organization) Create() map[string]interface{} {
 	return response
 }
 
-func FetchOrganization(db *gorm.DB, orgID int) (*Organization, error) {
+func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization, error) {
+	shouldFetchUsers := false
+	for _, value := range preloads {
+		if value == "users" || value == "organization.users" {
+			shouldFetchUsers = true
+		}
+	}
+
 	org := &Organization{}
-	//removed .Preload("Users") before .First.. how should i handle that with graphql, if at all?
-	err := db.Table("organizations").Where("id = ?", orgID).First(org).Error
+	res := db.Table("organizations").Where("id = ?", orgID)
+
+	if shouldFetchUsers {
+		res = res.Preload("Users")
+	}
+
+	err := res.First(org).Error
+
 	if err != nil {
 		return nil, err
 	}
