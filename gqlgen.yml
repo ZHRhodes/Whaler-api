@@ -72,3 +72,6 @@ models:
   Workspace:
     model:
       - github.com/heroku/whaler-api/models.Workspace
+  ContactAssignmentEntry:
+    model:
+      - github.com/heroku/whaler-api/models.ContactAssignmentEntry

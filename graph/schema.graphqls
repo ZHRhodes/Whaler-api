@@ -104,6 +104,22 @@ input NewContact {
   phone: String
 }
 
+type ContactAssignmentEntry {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  contactId: ID!
+  assignedBy: ID!
+  assignedTo: ID!
+}
+
+input NewContactAssignmentEntry {
+  contactId: String!
+  assignedBy: String!
+  assignedTo: String!
+}
+
 # Workspace
 
 type Workspace {
@@ -123,6 +139,7 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
+  assignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
 }
 
 type Mutation {
@@ -130,6 +147,7 @@ type Mutation {
   createAccount(input: NewAccount!): Account!
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
+  createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
 }
 
 type DBModel {

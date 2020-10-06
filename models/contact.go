@@ -52,3 +52,38 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 	return contact, nil
 }
+
+type ContactAssignmentEntry struct {
+	DBModel
+	ContactID  string `json:"contactId"`
+	AssignedBy string `json:"assignedBy"`
+	AssignedTo string `json:"assignedTo"`
+}
+
+func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*ContactAssignmentEntry, error) {
+	entry := &ContactAssignmentEntry{
+		ContactID:  "",
+		AssignedBy: "",
+		AssignedTo: "",
+	}
+
+	err := DB().Create(entry).Error
+
+	if entry.ID <= 0 {
+		return nil, err
+	}
+
+	return entry, nil
+}
+
+func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
+	entries := []*ContactAssignmentEntry{}
+
+	err := DB().Where("contact_id <> ?", contactID).Find(&entries).Error
+
+	if err != nil {
+		return []*ContactAssignmentEntry{}, err
+	}
+
+	return entries, err
+}

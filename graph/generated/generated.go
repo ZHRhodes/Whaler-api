@@ -80,6 +80,16 @@ type ComplexityRoot struct {
 		UpdatedAt  func(childComplexity int) int
 	}
 
+	ContactAssignmentEntry struct {
+		AssignedBy func(childComplexity int) int
+		AssignedTo func(childComplexity int) int
+		ContactID  func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+	}
+
 	DBModel struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
@@ -88,10 +98,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateAccount   func(childComplexity int, input model.NewAccount) int
-		CreateContact   func(childComplexity int, input model.NewContact) int
-		CreateUser      func(childComplexity int, input model.NewUser) int
-		CreateWorkspace func(childComplexity int, input model.NewWorkspace) int
+		CreateAccount                func(childComplexity int, input model.NewAccount) int
+		CreateContact                func(childComplexity int, input model.NewContact) int
+		CreateContactAssignmentEntry func(childComplexity int, input model.NewContactAssignmentEntry) int
+		CreateUser                   func(childComplexity int, input model.NewUser) int
+		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
 	}
 
 	Organization struct {
@@ -104,8 +115,9 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Organization func(childComplexity int) int
-		Workspaces   func(childComplexity int) int
+		AssignmentEntries func(childComplexity int, contactID string) int
+		Organization      func(childComplexity int) int
+		Workspaces        func(childComplexity int) int
 	}
 
 	User struct {
@@ -137,10 +149,12 @@ type MutationResolver interface {
 	CreateAccount(ctx context.Context, input model.NewAccount) (*models.Account, error)
 	CreateContact(ctx context.Context, input model.NewContact) (*models.Contact, error)
 	CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error)
+	CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
 }
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
 	Organization(ctx context.Context) (*models.Organization, error)
+	AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
 }
 
 type executableSchema struct {
@@ -361,6 +375,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contact.UpdatedAt(childComplexity), true
 
+	case "ContactAssignmentEntry.assignedBy":
+		if e.complexity.ContactAssignmentEntry.AssignedBy == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.AssignedBy(childComplexity), true
+
+	case "ContactAssignmentEntry.assignedTo":
+		if e.complexity.ContactAssignmentEntry.AssignedTo == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.AssignedTo(childComplexity), true
+
+	case "ContactAssignmentEntry.contactId":
+		if e.complexity.ContactAssignmentEntry.ContactID == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.ContactID(childComplexity), true
+
+	case "ContactAssignmentEntry.createdAt":
+		if e.complexity.ContactAssignmentEntry.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.CreatedAt(childComplexity), true
+
+	case "ContactAssignmentEntry.deletedAt":
+		if e.complexity.ContactAssignmentEntry.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.DeletedAt(childComplexity), true
+
+	case "ContactAssignmentEntry.id":
+		if e.complexity.ContactAssignmentEntry.ID == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.ID(childComplexity), true
+
+	case "ContactAssignmentEntry.updatedAt":
+		if e.complexity.ContactAssignmentEntry.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ContactAssignmentEntry.UpdatedAt(childComplexity), true
+
 	case "DBModel.createdAt":
 		if e.complexity.DBModel.CreatedAt == nil {
 			break
@@ -412,6 +475,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateContact(childComplexity, args["input"].(model.NewContact)), true
+
+	case "Mutation.createContactAssignmentEntry":
+		if e.complexity.Mutation.CreateContactAssignmentEntry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createContactAssignmentEntry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateContactAssignmentEntry(childComplexity, args["input"].(model.NewContactAssignmentEntry)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -478,6 +553,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Organization.Users(childComplexity), true
+
+	case "Query.assignmentEntries":
+		if e.complexity.Query.AssignmentEntries == nil {
+			break
+		}
+
+		args, err := ec.field_Query_assignmentEntries_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AssignmentEntries(childComplexity, args["contactID"].(string)), true
 
 	case "Query.organization":
 		if e.complexity.Query.Organization == nil {
@@ -782,6 +869,22 @@ input NewContact {
   phone: String
 }
 
+type ContactAssignmentEntry {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  contactId: ID!
+  assignedBy: ID!
+  assignedTo: ID!
+}
+
+input NewContactAssignmentEntry {
+  contactId: String!
+  assignedBy: String!
+  assignedTo: String!
+}
+
 # Workspace
 
 type Workspace {
@@ -801,6 +904,7 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
+  assignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
 }
 
 type Mutation {
@@ -808,6 +912,7 @@ type Mutation {
   createAccount(input: NewAccount!): Account!
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
+  createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
 }
 
 type DBModel {
@@ -831,6 +936,20 @@ func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Contex
 	var arg0 model.NewAccount
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNNewAccount2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccount(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createContactAssignmentEntry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewContactAssignmentEntry
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNNewContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContactAssignmentEntry(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -892,6 +1011,20 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_assignmentEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["contactID"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contactID"] = arg0
 	return args, nil
 }
 
@@ -1866,6 +1999,241 @@ func (ec *executionContext) _Contact_assignedTo(ctx context.Context, field graph
 	return ec.marshalOUser2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐUser(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _ContactAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_deletedAt(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_contactId(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContactID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAssignmentEntry_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "ContactAssignmentEntry",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedTo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _DBModel_id(ctx context.Context, field graphql.CollectedField, obj *models.DBModel) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2163,6 +2531,47 @@ func (ec *executionContext) _Mutation_createWorkspace(ctx context.Context, field
 	return ec.marshalNWorkspace2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐWorkspace(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createContactAssignmentEntry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createContactAssignmentEntry_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateContactAssignmentEntry(rctx, args["input"].(model.NewContactAssignmentEntry))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.ContactAssignmentEntry)
+	fc.Result = res
+	return ec.marshalNContactAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Organization_id(ctx context.Context, field graphql.CollectedField, obj *models.Organization) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2427,6 +2836,47 @@ func (ec *executionContext) _Query_organization(ctx context.Context, field graph
 	res := resTmp.(*models.Organization)
 	fc.Result = res
 	return ec.marshalOOrganization2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐOrganization(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_assignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_assignmentEntries_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().AssignmentEntries(rctx, args["contactID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.ContactAssignmentEntry)
+	fc.Result = res
+	return ec.marshalNContactAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4275,6 +4725,36 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewContactAssignmentEntry(ctx context.Context, obj interface{}) (model.NewContactAssignmentEntry, error) {
+	var it model.NewContactAssignmentEntry
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactId":
+			var err error
+			it.ContactID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedBy":
+			var err error
+			it.AssignedBy, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedTo":
+			var err error
+			it.AssignedTo, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (model.NewUser, error) {
 	var it model.NewUser
 	var asMap = obj.(map[string]interface{})
@@ -4481,6 +4961,60 @@ func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var contactAssignmentEntryImplementors = []string{"ContactAssignmentEntry"}
+
+func (ec *executionContext) _ContactAssignmentEntry(ctx context.Context, sel ast.SelectionSet, obj *models.ContactAssignmentEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, contactAssignmentEntryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ContactAssignmentEntry")
+		case "id":
+			out.Values[i] = ec._ContactAssignmentEntry_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._ContactAssignmentEntry_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._ContactAssignmentEntry_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deletedAt":
+			out.Values[i] = ec._ContactAssignmentEntry_deletedAt(ctx, field, obj)
+		case "contactId":
+			out.Values[i] = ec._ContactAssignmentEntry_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assignedBy":
+			out.Values[i] = ec._ContactAssignmentEntry_assignedBy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assignedTo":
+			out.Values[i] = ec._ContactAssignmentEntry_assignedTo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var dBModelImplementors = []string{"DBModel"}
 
 func (ec *executionContext) _DBModel(ctx context.Context, sel ast.SelectionSet, obj *models.DBModel) graphql.Marshaler {
@@ -4552,6 +5086,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createWorkspace":
 			out.Values[i] = ec._Mutation_createWorkspace(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createContactAssignmentEntry":
+			out.Values[i] = ec._Mutation_createContactAssignmentEntry(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -4653,6 +5192,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_organization(ctx, field)
+				return res
+			})
+		case "assignmentEntries":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_assignmentEntries(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "__type":
@@ -5117,12 +5670,77 @@ func (ec *executionContext) marshalNContact2ᚖgithubᚗcomᚋherokuᚋwhalerᚑ
 	return ec._Contact(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v models.ContactAssignmentEntry) graphql.Marshaler {
+	return ec._ContactAssignmentEntry(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNContactAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.ContactAssignmentEntry) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNContactAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNContactAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v *models.ContactAssignmentEntry) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ContactAssignmentEntry(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{}) (int, error) {
 	return graphql.UnmarshalInt(v)
 }
 
 func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
+	return graphql.UnmarshalID(v)
+}
+
+func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5151,6 +5769,10 @@ func (ec *executionContext) unmarshalNNewAccount2githubᚗcomᚋherokuᚋwhaler�
 
 func (ec *executionContext) unmarshalNNewContact2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContact(ctx context.Context, v interface{}) (model.NewContact, error) {
 	return ec.unmarshalInputNewContact(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNNewContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContactAssignmentEntry(ctx context.Context, v interface{}) (model.NewContactAssignmentEntry, error) {
+	return ec.unmarshalInputNewContactAssignmentEntry(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {

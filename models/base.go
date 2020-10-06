@@ -32,6 +32,7 @@ func init() {
 	}
 
 	db = conn
+	db.CreateTable(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Account{})
 	db.AutoMigrate(&Contact{})

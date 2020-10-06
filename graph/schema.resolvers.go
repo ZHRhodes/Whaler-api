@@ -46,6 +46,14 @@ func (r *mutationResolver) CreateWorkspace(ctx context.Context, input model.NewW
 	return workspace, nil
 }
 
+func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error) {
+	entry, err := models.CreateContactAssignmentEntry(input)
+	if err != nil {
+		return nil, err
+	}
+	return entry, nil
+}
+
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	preloads := getPreloads(ctx)
@@ -54,6 +62,10 @@ func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, er
 
 func (r *queryResolver) Organization(ctx context.Context) (*models.Organization, error) {
 	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
+	return models.FetchContactAssignmentEntries(contactID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
