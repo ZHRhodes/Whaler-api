@@ -61,7 +61,9 @@ func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, er
 }
 
 func (r *queryResolver) Organization(ctx context.Context) (*models.Organization, error) {
-	panic(fmt.Errorf("not implemented"))
+	userID := middleware.UserIDFromContext(ctx)
+	user := models.FetchUser(userID)
+	return models.FetchOrganization(r.DB, user.OrganizationID)
 }
 
 func (r *queryResolver) AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
