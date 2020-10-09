@@ -46,8 +46,8 @@ func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization
 
 	err := res.First(org).Error
 
-	for _, user := range org.Users {
-		user.Password = ""
+	for idx := range org.Users {
+		org.Users[idx].Password = ""
 	}
 
 	if err != nil {
