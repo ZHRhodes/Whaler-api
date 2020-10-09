@@ -106,7 +106,7 @@ func LogIn(email, password string) map[string]interface{} {
 func FetchUser(userID int) *User {
 	user := &User{}
 	DB().Table("users").Where("id = ?", userID).First(user)
-	org, _ := FetchOrganization(DB(), []string{"Users"}, user.OrganizationID)
+	org, _ := FetchOrganization(DB(), []string{"users"}, user.OrganizationID)
 	user.Organization = org
 
 	if user.Email == "" {
