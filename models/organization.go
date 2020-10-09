@@ -35,7 +35,7 @@ func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization
 		}
 	}
 
-	fmt.Print(fmt.Sprint("Should fetch users: %t", shouldFetchUsers))
+	fmt.Printf(fmt.Sprint("Should fetch users: %t", shouldFetchUsers))
 
 	org := &Organization{}
 	res := db.Table("organizations").Where("id = ?", orgID)

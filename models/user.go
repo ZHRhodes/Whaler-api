@@ -78,7 +78,7 @@ func CreateUser(email string, password string) (*User, error) {
 func LogIn(email, password string) map[string]interface{} {
 	user := &User{}
 	err := DB().Table("users").Where("email = ?", email).Preload("Workspaces").First(user).Error
-	org, _ := FetchOrganization(DB(), []string{"Users"}, user.OrganizationID)
+	org, _ := FetchOrganization(DB(), []string{"users"}, user.OrganizationID)
 	user.Organization = org
 
 	if err != nil {
