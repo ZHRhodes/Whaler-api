@@ -11,7 +11,7 @@ import (
 type Organization struct {
 	DBModel
 	Name  string `json:"name"`
-	Users []User `json:"users" gorm:"foreignkey:OrganizationID"`
+	Users []User `json:"users"`
 }
 
 func (org *Organization) Create() map[string]interface{} {
@@ -35,6 +35,8 @@ func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization
 		}
 	}
 
+	fmt.Print(fmt.Sprint("Should fetch users: %t", shouldFetchUsers))
+
 	org := &Organization{}
 	res := db.Table("organizations").Where("id = ?", orgID)
 
@@ -45,6 +47,7 @@ func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization
 	err := res.First(org).Error
 
 	if err != nil {
+		fmt.Print(fmt.Sprint("Failed to fetch Organization", err))
 		return nil, err
 	}
 	return org, nil
