@@ -18,13 +18,14 @@ import (
 
 type User struct {
 	DBModel
-	Email          string      `json:"email" gorm:"unique, not null"`
-	Password       string      `json:"password"`
-	FirstName      string      `json:"firstName"`
-	LastName       string      `json:"lastName"`
-	IsAdmin        bool        `json:"isAdmin"`
-	OrganizationID int         `json:"organizationId"`
-	Workspaces     []Workspace `json:"workspaces" gorm:"many2many:workspace_user"`
+	Email          string        `json:"email" gorm:"unique, not null"`
+	Password       string        `json:"password"`
+	FirstName      string        `json:"firstName"`
+	LastName       string        `json:"lastName"`
+	IsAdmin        bool          `json:"isAdmin"`
+	OrganizationID int           `json:"organizationId"`
+	Workspaces     []Workspace   `json:"workspaces" gorm:"many2many:workspace_user"`
+	Organization   *Organization `json:"organization" gorm:"-"`
 }
 
 //DEPRECATED -- REST
@@ -77,6 +78,8 @@ func CreateUser(email string, password string) (*User, error) {
 func LogIn(email, password string) map[string]interface{} {
 	user := &User{}
 	err := DB().Table("users").Where("email = ?", email).Preload("Workspaces").First(user).Error
+	org, _ := FetchOrganization(DB(), []string{"Users"}, user.OrganizationID)
+	user.Organization = org
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -101,14 +104,17 @@ func LogIn(email, password string) map[string]interface{} {
 }
 
 func FetchUser(userID int) *User {
-	acc := &User{}
-	DB().Table("users").Where("id = ?", userID).First(acc)
-	if acc.Email == "" {
+	user := &User{}
+	DB().Table("users").Where("id = ?", userID).First(user)
+	org, _ := FetchOrganization(DB(), []string{"Users"}, user.OrganizationID)
+	user.Organization = org
+
+	if user.Email == "" {
 		return nil
 	}
 
-	acc.Password = ""
-	return acc
+	user.Password = ""
+	return user
 }
 
 //DEPRECATED -- REST
