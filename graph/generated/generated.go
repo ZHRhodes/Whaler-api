@@ -874,9 +874,9 @@ type ContactAssignmentEntry {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
-  contactId: ID!
-  assignedBy: ID!
-  assignedTo: ID!
+  contactId: String!
+  assignedBy: String!
+  assignedTo: String
 }
 
 input NewContactAssignmentEntry {
@@ -2163,7 +2163,7 @@ func (ec *executionContext) _ContactAssignmentEntry_contactId(ctx context.Contex
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ContactAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
@@ -2197,7 +2197,7 @@ func (ec *executionContext) _ContactAssignmentEntry_assignedBy(ctx context.Conte
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ContactAssignmentEntry_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
@@ -2224,14 +2224,11 @@ func (ec *executionContext) _ContactAssignmentEntry_assignedTo(ctx context.Conte
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _DBModel_id(ctx context.Context, field graphql.CollectedField, obj *models.DBModel) (ret graphql.Marshaler) {
@@ -5001,9 +4998,6 @@ func (ec *executionContext) _ContactAssignmentEntry(ctx context.Context, sel ast
 			}
 		case "assignedTo":
 			out.Values[i] = ec._ContactAssignmentEntry_assignedTo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5727,20 +5721,6 @@ func (ec *executionContext) unmarshalNID2int(ctx context.Context, v interface{})
 
 func (ec *executionContext) marshalNID2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
 	res := graphql.MarshalInt(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	return graphql.UnmarshalID(v)
-}
-
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
