@@ -882,7 +882,7 @@ type ContactAssignmentEntry {
 input NewContactAssignmentEntry {
   contactId: String!
   assignedBy: String!
-  assignedTo: String!
+  assignedTo: String
 }
 
 # Workspace
@@ -4745,7 +4745,7 @@ func (ec *executionContext) unmarshalInputNewContactAssignmentEntry(ctx context.
 			}
 		case "assignedTo":
 			var err error
-			it.AssignedTo, err = ec.unmarshalNString2string(ctx, v)
+			it.AssignedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -31,9 +31,9 @@ type NewContact struct {
 }
 
 type NewContactAssignmentEntry struct {
-	ContactID  string `json:"contactId"`
-	AssignedBy string `json:"assignedBy"`
-	AssignedTo string `json:"assignedTo"`
+	ContactID  string  `json:"contactId"`
+	AssignedBy string  `json:"assignedBy"`
+	AssignedTo *string `json:"assignedTo"`
 }
 
 type NewUser struct {

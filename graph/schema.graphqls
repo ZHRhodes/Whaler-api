@@ -117,7 +117,7 @@ type ContactAssignmentEntry {
 input NewContactAssignmentEntry {
   contactId: String!
   assignedBy: String!
-  assignedTo: String!
+  assignedTo: String
 }
 
 # Workspace
