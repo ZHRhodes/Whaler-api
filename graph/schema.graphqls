@@ -109,9 +109,9 @@ type ContactAssignmentEntry {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
-  contactId: ID!
-  assignedBy: ID!
-  assignedTo: ID!
+  contactId: String!
+  assignedBy: String!
+  assignedTo: String
 }
 
 input NewContactAssignmentEntry {
