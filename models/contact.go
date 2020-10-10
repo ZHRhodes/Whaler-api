@@ -55,16 +55,16 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 type ContactAssignmentEntry struct {
 	DBModel
-	ContactID  string `json:"contactId"`
-	AssignedBy string `json:"assignedBy"`
-	AssignedTo string `json:"assignedTo"`
+	ContactID  string  `json:"contactId"`
+	AssignedBy string  `json:"assignedBy"`
+	AssignedTo *string `json:"assignedTo"`
 }
 
 func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*ContactAssignmentEntry, error) {
 	entry := &ContactAssignmentEntry{
-		ContactID:  "",
-		AssignedBy: "",
-		AssignedTo: "",
+		ContactID:  newEntry.ContactID,
+		AssignedBy: newEntry.AssignedBy,
+		AssignedTo: newEntry.AssignedTo,
 	}
 
 	err := DB().Create(entry).Error
