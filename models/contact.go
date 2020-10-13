@@ -81,7 +81,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
 
 	var contact = Contact{}
-	err := db.Where("ID = ?", newEntry.ContactID).Last(&contact).Association("AssignmentEntries").Append(entry)
+	err := db.Where("ID = ?", newEntry.ContactID).Association("AssignmentEntries").Append(entry)
 
 	if err != nil {
 		fmt.Println(err)
