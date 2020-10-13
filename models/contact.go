@@ -71,13 +71,13 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		AssignedTo: newEntry.AssignedTo,
 	}
 
-	var err = DB().Create(entry).Error
+	var err = db.Debug().Create(entry).Error
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	err = db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry).Error
+	err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry).Error
 
 	if err != nil {
 		fmt.Println(err)
