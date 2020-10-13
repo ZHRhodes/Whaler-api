@@ -109,13 +109,13 @@ type ContactAssignmentEntry {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
-  contactId: String!
+  contactId: ID!
   assignedBy: String!
   assignedTo: String
 }
 
 input NewContactAssignmentEntry {
-  contactId: String!
+  contactId: ID!
   assignedBy: String!
   assignedTo: String
 }

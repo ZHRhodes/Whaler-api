@@ -17,6 +17,7 @@ type Contact struct {
 	Email                 string                 `json:"email"`
 	Phone                 string                 `json:"phone"`
 	AssignedTo            User                   `json:"assignedTo"`
+	ExternalID            string                 `json:"externalID"`
 	LatestAssignmentEntry ContactAssignmentEntry `json:"latestAssignmentEntry"`
 	//notes
 }
@@ -56,7 +57,7 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 type ContactAssignmentEntry struct {
 	DBModel
-	ContactID  string  `json:"contactId"`
+	ContactID  int     `json:"contactId"`
 	AssignedBy string  `json:"assignedBy"`
 	AssignedTo *string `json:"assignedTo"`
 }

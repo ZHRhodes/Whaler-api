@@ -874,13 +874,13 @@ type ContactAssignmentEntry {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
-  contactId: String!
+  contactId: ID!
   assignedBy: String!
   assignedTo: String
 }
 
 input NewContactAssignmentEntry {
-  contactId: String!
+  contactId: ID!
   assignedBy: String!
   assignedTo: String
 }
@@ -2161,9 +2161,9 @@ func (ec *executionContext) _ContactAssignmentEntry_contactId(ctx context.Contex
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ContactAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
@@ -4730,7 +4730,7 @@ func (ec *executionContext) unmarshalInputNewContactAssignmentEntry(ctx context.
 		switch k {
 		case "contactId":
 			var err error
-			it.ContactID, err = ec.unmarshalNString2string(ctx, v)
+			it.ContactID, err = ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
