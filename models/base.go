@@ -40,7 +40,7 @@ func init() {
 	// 	fmt.Println(err2)
 	// }
 	db.Debug().DropTable(&ContactAssignmentEntry{})
-	db.Debug().DropTable(&ContactAssignmentEntry{})
+	db.Debug().DropTable(&Contact{})
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
 }
