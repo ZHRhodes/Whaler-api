@@ -9,18 +9,18 @@ import (
 
 type Contact struct {
 	DBModel
-	FirstName             string                 `json:"firstName"`
-	LastName              string                 `json:"lastName"`
-	State                 string                 `json:"state"`
-	// Account               Account                `json:"account"`
-	JobTitle              string                 `json:"jobTitle"`
-	Seniority             string                 `json:"seniority"`
-	Persona               string                 `json:"persona"`
-	Email                 string                 `json:"email"`
-	Phone                 string                 `json:"phone"`
-	// AssignedTo            User                   `json:"assignedTo"`
-	ExternalID            string                 `json:"externalID"`
-	LatestAssignmentEntry ContactAssignmentEntry `json:"latestAssignmentEntry" gorm:"foreignKey:ContactID;references:ID"`
+	FirstName             string                     `json:"firstName"`
+	LastName              string                     `json:"lastName"`
+	State                 string                     `json:"state"`
+	// Account               Account                 `json:"account"`
+	JobTitle              string                     `json:"jobTitle"`
+	Seniority             string                     `json:"seniority"`
+	Persona               string                     `json:"persona"`
+	Email                 string                     `json:"email"`
+	Phone                 string                     `json:"phone"`
+	// AssignedTo            User                    `json:"assignedTo"`
+	ExternalID            string                     `json:"externalID"`
+	AssignmentEntries     []ContactAssignmentEntry   `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
 	//notes
 }
 
@@ -71,13 +71,16 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		AssignedTo: newEntry.AssignedTo,
 	}
 
-	var err = db.Debug().Create(entry).Error
+	// var err = db.Debug().Create(entry).Error
 
-	if err != nil {
-		fmt.Println(err)
-	}
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
-	err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
+	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
+	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
+
+	err := db.Model(&Contact{}).Association("AssignmentEntries").Append(entry)
 
 	if err != nil {
 		fmt.Println(err)
