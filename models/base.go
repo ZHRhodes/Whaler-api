@@ -2,11 +2,11 @@ package models
 
 import (
 	"fmt"
-	"os"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"gorm.io/gorm"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm/logger"
 
 	"github.com/joho/godotenv"
 )
@@ -26,7 +26,9 @@ func init() {
 		fmt.Print(e)
 	}
 
-	conn, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	conn, err := gorm.Open(postgres.Open("DATABASE_URL"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		fmt.Print(err)
 	}

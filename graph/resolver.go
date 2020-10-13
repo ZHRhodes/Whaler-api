@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // This file will not be regenerated automatically.

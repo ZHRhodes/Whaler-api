@@ -3,7 +3,7 @@ package models
 import (
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Workspace struct {
@@ -84,11 +84,11 @@ func FetchWorkspaces(db *gorm.DB, preloads []string, userID int) ([]*Workspace, 
 		res = res.Preload("Collaborators")
 	}
 
-	err := res.Related(&workspaces, "Workspaces").Error
+	// err := res.Related(&workspaces, "Workspaces").Error
 
-	if err != nil {
-		return []*Workspace{}, err
-	}
+	// if err != nil {
+	// 	return []*Workspace{}, err
+	// }
 
 	return workspaces, nil
 }
