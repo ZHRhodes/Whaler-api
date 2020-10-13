@@ -83,7 +83,7 @@ type Contact {
   firstName: String!
   lastName: String!
   state: String!
-  account: Account!
+  # account: Account!
   jobTitle: String
   seniority: String
   persona: String

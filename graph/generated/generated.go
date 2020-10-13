@@ -63,7 +63,6 @@ type ComplexityRoot struct {
 	}
 
 	Contact struct {
-		Account    func(childComplexity int) int
 		AssignedTo func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		DeletedAt  func(childComplexity int) int
@@ -268,13 +267,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.UpdatedAt(childComplexity), true
-
-	case "Contact.account":
-		if e.complexity.Contact.Account == nil {
-			break
-		}
-
-		return e.complexity.Contact.Account(childComplexity), true
 
 	case "Contact.assignedTo":
 		if e.complexity.Contact.AssignedTo == nil {
@@ -840,7 +832,7 @@ type Contact {
   firstName: String!
   lastName: String!
   state: String!
-  account: Account!
+  # account: Account!
   jobTitle: String
   seniority: String
   persona: String
@@ -1765,41 +1757,6 @@ func (ec *executionContext) _Contact_state(ctx context.Context, field graphql.Co
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Contact_account(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Contact",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Account, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(models.Account)
-	fc.Result = res
-	return ec.marshalNAccount2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contact_jobTitle(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
@@ -5045,11 +5002,6 @@ func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "state":
 			out.Values[i] = ec._Contact_state(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "account":
-			out.Values[i] = ec._Contact_account(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

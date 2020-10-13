@@ -12,7 +12,7 @@ type Contact struct {
 	FirstName             string                 `json:"firstName"`
 	LastName              string                 `json:"lastName"`
 	State                 string                 `json:"state"`
-	Account               Account                `json:"account"`
+	// Account               Account                `json:"account"`
 	JobTitle              string                 `json:"jobTitle"`
 	Seniority             string                 `json:"seniority"`
 	Persona               string                 `json:"persona"`
