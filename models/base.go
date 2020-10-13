@@ -35,7 +35,10 @@ func init() {
 	db.AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Account{})
-	db.AutoMigrate(&Contact{})
+	err2 := db.AutoMigrate(&Contact{}).Error
+	if err2 != nil {
+		fmt.Println(err2)
+	}
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
 }
