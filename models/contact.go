@@ -80,7 +80,8 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
 	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
 
-	err := db.Model(&Contact{}).Association("AssignmentEntries").Append(entry)
+	var contact = Contact{}
+	err := db.Where("ID = ?", newEntry.ContactID).Last(&contact).Association("AssignmentEntries").Append(entry)
 
 	if err != nil {
 		fmt.Println(err)
