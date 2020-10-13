@@ -17,7 +17,7 @@ type Account struct {
 	HeadcountLowerBound int    `json:"headcountLowerBound"`
 	RevenueUpperBound   int    `json:"revenueUpperBound"`
 	RevenueLowerBound   int    `json:"revenueLowerBound"`
-	AssignedTo          []User `json:"assignedTo"`
+	// AssignedTo          []User `json:"assignedTo"`
 	//notes
 	//contacts
 }
