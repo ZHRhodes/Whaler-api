@@ -7,16 +7,17 @@ import (
 
 type Contact struct {
 	DBModel
-	FirstName  string  `json:"firstName"`
-	LastName   string  `json:"lastName"`
-	State      string  `json:"state"`
-	Account    Account `json:"account"`
-	JobTitle   string  `json:"jobTitle"`
-	Seniority  string  `json:"seniority"`
-	Persona    string  `json:"persona"`
-	Email      string  `json:"email"`
-	Phone      string  `json:"phone"`
-	AssignedTo User    `json:"assignedTo"`
+	FirstName             string                  `json:"firstName"`
+	LastName              string                  `json:"lastName"`
+	State                 string                  `json:"state"`
+	Account               Account                 `json:"account"`
+	JobTitle              string                  `json:"jobTitle"`
+	Seniority             string                  `json:"seniority"`
+	Persona               string                  `json:"persona"`
+	Email                 string                  `json:"email"`
+	Phone                 string                  `json:"phone"`
+	AssignedTo            User                    `json:"assignedTo"`
+	LatestAssignmentEntry *ContactAssignmentEntry `json:"latestAssignmentEntry"`
 	//notes
 }
 
@@ -68,6 +69,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	}
 
 	err := DB().Create(entry).Error
+	db.Model(&User{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry)
 
 	if entry.ID <= 0 {
 		return nil, err
