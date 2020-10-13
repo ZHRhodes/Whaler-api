@@ -32,10 +32,10 @@ func init() {
 	}
 
 	db = conn
-	db.AutoMigrate(&ContactAssignmentEntry{})
+	db.Debug().AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Account{})
-	err2 := db.AutoMigrate(&Contact{}).Error
+	err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	if err2 != nil {
 		fmt.Println(err2)
 	}
