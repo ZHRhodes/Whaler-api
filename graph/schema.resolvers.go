@@ -14,6 +14,10 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
+func (r *contactAssignmentEntryResolver) ContactID(ctx context.Context, obj *models.ContactAssignmentEntry) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
 	user, err := models.CreateUser(input.Email, input.Password)
 	if err != nil {
@@ -71,12 +75,18 @@ func (r *queryResolver) AssignmentEntries(ctx context.Context, contactID string)
 	return models.FetchContactAssignmentEntries(contactID)
 }
 
+// ContactAssignmentEntry returns generated.ContactAssignmentEntryResolver implementation.
+func (r *Resolver) ContactAssignmentEntry() generated.ContactAssignmentEntryResolver {
+	return &contactAssignmentEntryResolver{r}
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type contactAssignmentEntryResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 

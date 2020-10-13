@@ -37,6 +37,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	ContactAssignmentEntry() ContactAssignmentEntryResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -144,6 +145,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type ContactAssignmentEntryResolver interface {
+	ContactID(ctx context.Context, obj *models.ContactAssignmentEntry) (string, error)
+}
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.NewUser) (*models.User, error)
 	CreateAccount(ctx context.Context, input model.NewAccount) (*models.Account, error)
@@ -880,7 +884,7 @@ type ContactAssignmentEntry {
 }
 
 input NewContactAssignmentEntry {
-  contactId: String!
+  contactId: ID!
   assignedBy: String!
   assignedTo: String
 }
@@ -2143,13 +2147,13 @@ func (ec *executionContext) _ContactAssignmentEntry_contactId(ctx context.Contex
 		Object:   "ContactAssignmentEntry",
 		Field:    field,
 		Args:     nil,
-		IsMethod: false,
+		IsMethod: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ContactID, nil
+		return ec.resolvers.ContactAssignmentEntry().ContactID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4730,7 +4734,7 @@ func (ec *executionContext) unmarshalInputNewContactAssignmentEntry(ctx context.
 		switch k {
 		case "contactId":
 			var err error
-			it.ContactID, err = ec.unmarshalNString2string(ctx, v)
+			it.ContactID, err = ec.unmarshalNID2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4972,29 +4976,38 @@ func (ec *executionContext) _ContactAssignmentEntry(ctx context.Context, sel ast
 		case "id":
 			out.Values[i] = ec._ContactAssignmentEntry_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "createdAt":
 			out.Values[i] = ec._ContactAssignmentEntry_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "updatedAt":
 			out.Values[i] = ec._ContactAssignmentEntry_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "deletedAt":
 			out.Values[i] = ec._ContactAssignmentEntry_deletedAt(ctx, field, obj)
 		case "contactId":
-			out.Values[i] = ec._ContactAssignmentEntry_contactId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._ContactAssignmentEntry_contactId(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "assignedBy":
 			out.Values[i] = ec._ContactAssignmentEntry_assignedBy(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "assignedTo":
 			out.Values[i] = ec._ContactAssignmentEntry_assignedTo(ctx, field, obj)
