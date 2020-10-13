@@ -68,8 +68,8 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		AssignedTo: newEntry.AssignedTo,
 	}
 
-	err := DB().Create(entry).Error
-	db.Model(&User{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry)
+	err1 := DB().Create(entry).Error
+	err2 := db.Model(&User{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry).Error
 
 	if entry.ID <= 0 {
 		return nil, err
