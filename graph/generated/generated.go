@@ -63,19 +63,19 @@ type ComplexityRoot struct {
 	}
 
 	Contact struct {
-		CreatedAt             func(childComplexity int) int
-		DeletedAt             func(childComplexity int) int
-		Email                 func(childComplexity int) int
-		FirstName             func(childComplexity int) int
-		ID                    func(childComplexity int) int
-		JobTitle              func(childComplexity int) int
-		LastName              func(childComplexity int) int
-		LatestAssignmentEntry func(childComplexity int) int
-		Persona               func(childComplexity int) int
-		Phone                 func(childComplexity int) int
-		Seniority             func(childComplexity int) int
-		State                 func(childComplexity int) int
-		UpdatedAt             func(childComplexity int) int
+		AssignmentEntries func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		Email             func(childComplexity int) int
+		FirstName         func(childComplexity int) int
+		ID                func(childComplexity int) int
+		JobTitle          func(childComplexity int) int
+		LastName          func(childComplexity int) int
+		Persona           func(childComplexity int) int
+		Phone             func(childComplexity int) int
+		Seniority         func(childComplexity int) int
+		State             func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
 	}
 
 	ContactAssignmentEntry struct {
@@ -268,6 +268,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.UpdatedAt(childComplexity), true
 
+	case "Contact.assignmentEntries":
+		if e.complexity.Contact.AssignmentEntries == nil {
+			break
+		}
+
+		return e.complexity.Contact.AssignmentEntries(childComplexity), true
+
 	case "Contact.createdAt":
 		if e.complexity.Contact.CreatedAt == nil {
 			break
@@ -316,13 +323,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Contact.LastName(childComplexity), true
-
-	case "Contact.latestAssignmentEntry":
-		if e.complexity.Contact.LatestAssignmentEntry == nil {
-			break
-		}
-
-		return e.complexity.Contact.LatestAssignmentEntry(childComplexity), true
 
 	case "Contact.persona":
 		if e.complexity.Contact.Persona == nil {
@@ -839,7 +839,7 @@ type Contact {
   email: String
   phone: String
   # assignedTo: User
-  latestAssignmentEntry: ContactAssignmentEntry
+  assignmentEntries: [ContactAssignmentEntry!]!
 }
 
 input NewContact {
@@ -1920,7 +1920,7 @@ func (ec *executionContext) _Contact_phone(ctx context.Context, field graphql.Co
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_latestAssignmentEntry(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_assignmentEntries(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1938,18 +1938,21 @@ func (ec *executionContext) _Contact_latestAssignmentEntry(ctx context.Context, 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.LatestAssignmentEntry, nil
+		return obj.AssignmentEntries, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(models.ContactAssignmentEntry)
+	res := resTmp.([]models.ContactAssignmentEntry)
 	fc.Result = res
-	return ec.marshalOContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx, field.Selections, res)
+	return ec.marshalNContactAssignmentEntry2ᚕgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _ContactAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *models.ContactAssignmentEntry) (ret graphql.Marshaler) {
@@ -5016,8 +5019,11 @@ func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Contact_email(ctx, field, obj)
 		case "phone":
 			out.Values[i] = ec._Contact_phone(ctx, field, obj)
-		case "latestAssignmentEntry":
-			out.Values[i] = ec._Contact_latestAssignmentEntry(ctx, field, obj)
+		case "assignmentEntries":
+			out.Values[i] = ec._Contact_assignmentEntries(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5740,6 +5746,43 @@ func (ec *executionContext) marshalNContactAssignmentEntry2githubᚗcomᚋheroku
 	return ec._ContactAssignmentEntry(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNContactAssignmentEntry2ᚕgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []models.ContactAssignmentEntry) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
 func (ec *executionContext) marshalNContactAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.ContactAssignmentEntry) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -6233,10 +6276,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
-}
-
-func (ec *executionContext) marshalOContactAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v models.ContactAssignmentEntry) graphql.Marshaler {
-	return ec._ContactAssignmentEntry(ctx, sel, &v)
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

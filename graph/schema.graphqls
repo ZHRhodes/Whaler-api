@@ -90,7 +90,7 @@ type Contact {
   email: String
   phone: String
   # assignedTo: User
-  latestAssignmentEntry: ContactAssignmentEntry
+  assignmentEntries: [ContactAssignmentEntry!]!
 }
 
 input NewContact {
