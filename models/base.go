@@ -29,7 +29,6 @@ func init() {
 
 	conn, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: os.Getenv("DATABASE_URL"), // data source name, refer https://github.com/jackc/pgx
-		PreferSimpleProtocol: true, // disables implicit prepared statement usage. By default pgx automatically uses the extended protocol
 	  }), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
