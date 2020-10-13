@@ -35,6 +35,7 @@ func init() {
 	db.AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Account{})
+	db.DropTable(&Contact{})
 	db.CreateTable(&Contact{})
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
