@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"time"
+	"os"
 
 	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
@@ -26,7 +27,9 @@ func init() {
 		fmt.Print(e)
 	}
 
-	conn, err := gorm.Open(postgres.Open("DATABASE_URL"), &gorm.Config{
+	// dsn := "user=gorm password=gorm DB.name=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := "uri=" + os.Getenv("DATABASE_URL") + "port=5432"
+	conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
