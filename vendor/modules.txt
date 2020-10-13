@@ -1,4 +1,4 @@
-# github.com/99designs/gqlgen v0.11.3
+# github.com/99designs/gqlgen v0.13.0
 github.com/99designs/gqlgen/complexity
 github.com/99designs/gqlgen/graphql
 github.com/99designs/gqlgen/graphql/errcode
@@ -9,32 +9,48 @@ github.com/99designs/gqlgen/graphql/handler/lru
 github.com/99designs/gqlgen/graphql/handler/transport
 github.com/99designs/gqlgen/graphql/introspection
 github.com/99designs/gqlgen/graphql/playground
-# github.com/agnivade/levenshtein v1.0.3
+# github.com/agnivade/levenshtein v1.1.0
 github.com/agnivade/levenshtein
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
-# github.com/gorilla/mux v1.7.4
+# github.com/gorilla/mux v1.8.0
 github.com/gorilla/mux
-# github.com/gorilla/websocket v1.2.0
+# github.com/gorilla/websocket v1.4.2
 github.com/gorilla/websocket
-# github.com/hashicorp/golang-lru v0.5.0
+# github.com/hashicorp/golang-lru v0.5.4
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
-# github.com/jinzhu/gorm v1.9.12
+# github.com/jackc/chunkreader/v2 v2.0.1
+github.com/jackc/chunkreader/v2
+# github.com/jackc/pgconn v1.7.0
+github.com/jackc/pgconn
+github.com/jackc/pgconn/internal/ctxwatch
+github.com/jackc/pgconn/stmtcache
+# github.com/jackc/pgio v1.0.0
+github.com/jackc/pgio
+# github.com/jackc/pgpassfile v1.0.0
+github.com/jackc/pgpassfile
+# github.com/jackc/pgproto3/v2 v2.0.5
+github.com/jackc/pgproto3/v2
+# github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b
+github.com/jackc/pgservicefile
+# github.com/jackc/pgtype v1.5.0
+github.com/jackc/pgtype
+# github.com/jackc/pgx/v4 v4.9.0
+github.com/jackc/pgx/v4
+github.com/jackc/pgx/v4/internal/sanitize
+github.com/jackc/pgx/v4/stdlib
+# github.com/jinzhu/gorm v1.9.16
 github.com/jinzhu/gorm
-github.com/jinzhu/gorm/dialects/postgres
 # github.com/jinzhu/inflection v1.0.0
 github.com/jinzhu/inflection
+# github.com/jinzhu/now v1.1.1
+github.com/jinzhu/now
 # github.com/joho/godotenv v1.3.0
 github.com/joho/godotenv
-# github.com/lib/pq v1.3.0
-github.com/lib/pq
-github.com/lib/pq/hstore
-github.com/lib/pq/oid
-github.com/lib/pq/scram
-# github.com/mitchellh/mapstructure v0.0.0-20180203102830-a4e142e9c047
+# github.com/mitchellh/mapstructure v1.3.3
 github.com/mitchellh/mapstructure
-# github.com/vektah/gqlparser/v2 v2.0.1
+# github.com/vektah/gqlparser/v2 v2.1.0
 github.com/vektah/gqlparser/v2
 github.com/vektah/gqlparser/v2/ast
 github.com/vektah/gqlparser/v2/gqlerror
@@ -42,6 +58,34 @@ github.com/vektah/gqlparser/v2/lexer
 github.com/vektah/gqlparser/v2/parser
 github.com/vektah/gqlparser/v2/validator
 github.com/vektah/gqlparser/v2/validator/rules
-# golang.org/x/crypto v0.0.0-20200403201458-baeed622b8d8
+# golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
+golang.org/x/crypto/pbkdf2
+# golang.org/x/text v0.3.3
+golang.org/x/text/cases
+golang.org/x/text/internal
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/tag
+golang.org/x/text/language
+golang.org/x/text/runes
+golang.org/x/text/secure/bidirule
+golang.org/x/text/secure/precis
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+golang.org/x/text/width
+# golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
+golang.org/x/xerrors
+golang.org/x/xerrors/internal
+# gorm.io/driver/postgres v1.0.2
+gorm.io/driver/postgres
+# gorm.io/gorm v1.20.2
+gorm.io/gorm
+gorm.io/gorm/callbacks
+gorm.io/gorm/clause
+gorm.io/gorm/logger
+gorm.io/gorm/migrator
+gorm.io/gorm/schema
+gorm.io/gorm/utils
