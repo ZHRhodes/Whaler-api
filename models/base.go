@@ -39,8 +39,8 @@ func init() {
 	// if err2 != nil {
 	// 	fmt.Println(err2)
 	// }
-	db.Debug().CreateTable(&ContactAssignmentEntry{})
-	db.Debug().CreateTable(&Contact{})
+	db.Debug().AutoMigrate(&ContactAssignmentEntry{})
+	db.Debug().AutoMigrate(&Contact{})
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
 }
