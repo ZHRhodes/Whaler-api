@@ -54,7 +54,7 @@ type Account {
 	headcountLowerBound:  Int
 	revenueUpperBound: Int 
 	revenueLowerBound: Int
-	assignedTo: [User!]!
+	# assignedTo: [User!]!
 }
 
 input NewAccount {
