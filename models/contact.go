@@ -77,7 +77,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		fmt.Println(err)
 	}
 
-	err = db.Model(&User{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry).Error
+	err = db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("latestAssignmentEntry", entry).Error
 
 	if err != nil {
 		fmt.Println(err)
