@@ -89,7 +89,8 @@ type Contact {
   persona: String
   email: String
   phone: String
-  assignedTo: User
+  # assignedTo: User
+  latestAssignmentEntry: ContactAssignmentEntry
 }
 
 input NewContact {
