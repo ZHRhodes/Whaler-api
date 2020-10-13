@@ -18,8 +18,8 @@ type Contact struct {
 	Persona               string                 `json:"persona"`
 	Email                 string                 `json:"email"`
 	Phone                 string                 `json:"phone"`
-	AssignedTo            User                   `json:"assignedTo"`
-	ExternalID            string                 `json:"externalID"`
+	// AssignedTo            User                   `json:"assignedTo"`
+	ExternalIDSon            string                 `json:"externalID"`
 	LatestAssignmentEntry ContactAssignmentEntry `json:"latestAssignmentEntry" gorm:"foreignKey:ContactID;references:ID"`
 	//notes
 }
