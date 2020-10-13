@@ -56,7 +56,7 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 type ContactAssignmentEntry struct {
 	DBModel
-	ContactID  int     `json:"contactId"`
+	ContactID  string  `json:"contactId"`
 	AssignedBy string  `json:"assignedBy"`
 	AssignedTo *string `json:"assignedTo"`
 }

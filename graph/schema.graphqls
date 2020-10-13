@@ -115,7 +115,7 @@ type ContactAssignmentEntry {
 }
 
 input NewContactAssignmentEntry {
-  contactId: ID!
+  contactId: String!
   assignedBy: String!
   assignedTo: String
 }
