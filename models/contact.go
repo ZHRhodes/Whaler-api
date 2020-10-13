@@ -20,7 +20,7 @@ type Contact struct {
 	Phone                 string                 `json:"phone"`
 	AssignedTo            User                   `json:"assignedTo"`
 	ExternalID            string                 `json:"externalID"`
-	LatestAssignmentEntry ContactAssignmentEntry `json:"latestAssignmentEntry"`
+	LatestAssignmentEntry ContactAssignmentEntry `json:"latestAssignmentEntry" gorm:"foreignKey:ContactID"`
 	//notes
 }
 
