@@ -32,13 +32,15 @@ func init() {
 	}
 
 	db = conn
-	db.Debug().AutoMigrate(&ContactAssignmentEntry{})
+	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Account{})
-	err2 := db.Debug().AutoMigrate(&Contact{}).Error
-	if err2 != nil {
-		fmt.Println(err2)
-	}
+	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
+	// if err2 != nil {
+	// 	fmt.Println(err2)
+	// }
+	db.Debug().DropTable(&ContactAssignmentEntry{})
+	db.Debug().DropTable(&ContactAssignmentEntry{})
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
 }
