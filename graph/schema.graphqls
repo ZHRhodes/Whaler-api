@@ -90,27 +90,26 @@ type Contact {
   deletedAt: Time
   firstName: String!
   lastName: String!
-  state: String!
-  # account: Account!
   jobTitle: String
-  seniority: String
-  persona: String
+  state: String
   email: String
   phone: String
-  # assignedTo: User
+  accountID: String
   assignmentEntries: [ContactAssignmentEntry!]!
+  # account: Account!
+  # seniority: String
+  # persona: String
+  # assignedTo: User
 }
 
 input NewContact {
   firstName: String!
   lastName: String!
-  state: String
-  account: AccountID
   jobTitle: String
-  seniority: String
-  persona: String
+  state: String
   email: String
   phone: String
+  accountID: String
 }
 
 type ContactAssignmentEntry {

@@ -11,16 +11,17 @@ type Contact struct {
 	DBModel
 	FirstName             string                     `json:"firstName"`
 	LastName              string                     `json:"lastName"`
-	State                 string                     `json:"state"`
-	// Account               Account                 `json:"account"`
 	JobTitle              string                     `json:"jobTitle"`
-	Seniority             string                     `json:"seniority"`
-	Persona               string                     `json:"persona"`
+	State                 string                     `json:"state"`
 	Email                 string                     `json:"email"`
 	Phone                 string                     `json:"phone"`
-	// AssignedTo            User                    `json:"assignedTo"`
-	ExternalID            string                     `json:"externalID"`
+	AccountID			  string					 `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
 	AssignmentEntries     []ContactAssignmentEntry   `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
+	// Account               Account                 `json:"account"`
+	// Seniority             string                     `json:"seniority"`
+	// Persona               string                     `json:"persona"`
+	// AssignedTo            User                    `json:"assignedTo"`
+	// ExternalID            string                     `json:"externalID"`
 	//notes
 }
 
@@ -40,12 +41,12 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 	contact := &Contact{
 		FirstName: newContact.FirstName,
 		LastName:  newContact.LastName,
-		State:     *newContact.State,
-		//figure out how to use AccountID to tie this contact to an account in db
 		JobTitle:  *newContact.JobTitle,
-		Seniority: *newContact.Seniority,
+		State:     *newContact.State,
 		Email:     *newContact.Email,
 		Phone:     *newContact.Phone,
+		AccountID: *newContact.AccountID,
+		//figure out how to use AccountID to tie this contact to an account in db
 	}
 
 	err := DB().Create(contact).Error

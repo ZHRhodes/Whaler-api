@@ -23,15 +23,13 @@ type NewAccount struct {
 }
 
 type NewContact struct {
-	FirstName string     `json:"firstName"`
-	LastName  string     `json:"lastName"`
-	State     *string    `json:"state"`
-	Account   *AccountID `json:"account"`
-	JobTitle  *string    `json:"jobTitle"`
-	Seniority *string    `json:"seniority"`
-	Persona   *string    `json:"persona"`
-	Email     *string    `json:"email"`
-	Phone     *string    `json:"phone"`
+	FirstName string  `json:"firstName"`
+	LastName  string  `json:"lastName"`
+	JobTitle  *string `json:"jobTitle"`
+	State     *string `json:"state"`
+	Email     *string `json:"email"`
+	Phone     *string `json:"phone"`
+	AccountID *string `json:"accountID"`
 }
 
 type NewContactAssignmentEntry struct {

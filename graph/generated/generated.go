@@ -66,6 +66,7 @@ type ComplexityRoot struct {
 	}
 
 	Contact struct {
+		AccountID         func(childComplexity int) int
 		AssignmentEntries func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
@@ -74,9 +75,7 @@ type ComplexityRoot struct {
 		ID                func(childComplexity int) int
 		JobTitle          func(childComplexity int) int
 		LastName          func(childComplexity int) int
-		Persona           func(childComplexity int) int
 		Phone             func(childComplexity int) int
-		Seniority         func(childComplexity int) int
 		State             func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
 	}
@@ -292,6 +291,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Website(childComplexity), true
 
+	case "Contact.accountID":
+		if e.complexity.Contact.AccountID == nil {
+			break
+		}
+
+		return e.complexity.Contact.AccountID(childComplexity), true
+
 	case "Contact.assignmentEntries":
 		if e.complexity.Contact.AssignmentEntries == nil {
 			break
@@ -348,26 +354,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contact.LastName(childComplexity), true
 
-	case "Contact.persona":
-		if e.complexity.Contact.Persona == nil {
-			break
-		}
-
-		return e.complexity.Contact.Persona(childComplexity), true
-
 	case "Contact.phone":
 		if e.complexity.Contact.Phone == nil {
 			break
 		}
 
 		return e.complexity.Contact.Phone(childComplexity), true
-
-	case "Contact.seniority":
-		if e.complexity.Contact.Seniority == nil {
-			break
-		}
-
-		return e.complexity.Contact.Seniority(childComplexity), true
 
 	case "Contact.state":
 		if e.complexity.Contact.State == nil {
@@ -863,27 +855,26 @@ type Contact {
   deletedAt: Time
   firstName: String!
   lastName: String!
-  state: String!
-  # account: Account!
   jobTitle: String
-  seniority: String
-  persona: String
+  state: String
   email: String
   phone: String
-  # assignedTo: User
+  accountID: String
   assignmentEntries: [ContactAssignmentEntry!]!
+  # account: Account!
+  # seniority: String
+  # persona: String
+  # assignedTo: User
 }
 
 input NewContact {
   firstName: String!
   lastName: String!
-  state: String
-  account: AccountID
   jobTitle: String
-  seniority: String
-  persona: String
+  state: String
   email: String
   phone: String
+  accountID: String
 }
 
 type ContactAssignmentEntry {
@@ -1856,41 +1847,6 @@ func (ec *executionContext) _Contact_lastName(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_state(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Contact",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.State, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
 func (ec *executionContext) _Contact_jobTitle(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1923,7 +1879,7 @@ func (ec *executionContext) _Contact_jobTitle(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contact_seniority(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contact_state(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1941,39 +1897,7 @@ func (ec *executionContext) _Contact_seniority(ctx context.Context, field graphq
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Seniority, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Contact_persona(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Contact",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Persona, nil
+		return obj.State, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2038,6 +1962,38 @@ func (ec *executionContext) _Contact_phone(ctx context.Context, field graphql.Co
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Phone, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Contact_accountID(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Contact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4893,22 +4849,6 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "state":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
-			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "account":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
-			it.Account, err = ec.unmarshalOAccountID2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountID(ctx, v)
-			if err != nil {
-				return it, err
-			}
 		case "jobTitle":
 			var err error
 
@@ -4917,19 +4857,11 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "seniority":
+		case "state":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("seniority"))
-			it.Seniority, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "persona":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("persona"))
-			it.Persona, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
+			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4946,6 +4878,14 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
 			it.Phone, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "accountID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+			it.AccountID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5176,21 +5116,16 @@ func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "state":
-			out.Values[i] = ec._Contact_state(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "jobTitle":
 			out.Values[i] = ec._Contact_jobTitle(ctx, field, obj)
-		case "seniority":
-			out.Values[i] = ec._Contact_seniority(ctx, field, obj)
-		case "persona":
-			out.Values[i] = ec._Contact_persona(ctx, field, obj)
+		case "state":
+			out.Values[i] = ec._Contact_state(ctx, field, obj)
 		case "email":
 			out.Values[i] = ec._Contact_email(ctx, field, obj)
 		case "phone":
 			out.Values[i] = ec._Contact_phone(ctx, field, obj)
+		case "accountID":
+			out.Values[i] = ec._Contact_accountID(ctx, field, obj)
 		case "assignmentEntries":
 			out.Values[i] = ec._Contact_assignmentEntries(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6416,14 +6351,6 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalOAccountID2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountID(ctx context.Context, v interface{}) (*model.AccountID, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputAccountID(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
