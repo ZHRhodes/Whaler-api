@@ -8,17 +8,19 @@ import (
 type Account struct {
 	DBModel
 	Name                string `json:"name"`
+	Owner 				string `json:"owner"`
 	Industry            string `json:"industry"`
 	Description         string `json:"description"`
-	Tier                int    `json:"tier"`
-	URL                 string `json:"url"`
-	Location            string `json:"location"`
-	HeadcountUpperBound int    `json:"headcountUpperBound"`
-	HeadcountLowerBound int    `json:"headcountLowerBound"`
-	RevenueUpperBound   int    `json:"revenueUpperBound"`
-	RevenueLowerBound   int    `json:"revenueLowerBound"`
+	NumberOfEmployees   string `json:"numberOfEmployees"`
+	AnnualRevenue       string `json:"annualRevenue"`
+	BillingCity			string `json:"billingCity"`
+	BillingState        string `json:"billingState"`
+	Phone				string `json:"phone"`
+	Website             string `json:"website"`
+	Type				string `json:"type"`
+	State 				string `json:"state"`
+	Notes				string `json:"notes"`	
 	// AssignedTo          []User `json:"assignedTo"`
-	//notes
 	//contacts
 }
 
@@ -38,14 +40,18 @@ func (account *Account) Create() map[string]interface{} {
 func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	account := &Account{
 		Name:                newAccount.Name,
+		Owner:				 newAccount.Owner,
 		Industry:            *newAccount.Industry,
 		Description:         *newAccount.Description,
-		Tier:                *newAccount.Tier,
-		URL:                 *newAccount.URL,
-		HeadcountUpperBound: *newAccount.HeadcountUpperBound,
-		HeadcountLowerBound: *newAccount.HeadcountLowerBound,
-		RevenueUpperBound:   *newAccount.RevenueLowerBound,
-		RevenueLowerBound:   *newAccount.RevenueLowerBound,
+		NumberOfEmployees:   *newAccount.NumberOfEmployees,
+		AnnualRevenue:       *newAccount.AnnualRevenue,
+		BillingCity:         *newAccount.BillingCity,
+		BillingState:        *newAccount.BillingState,
+		Phone:               *newAccount.Phone,
+		Website:             *newAccount.Website,
+		Type:                *newAccount.Type,
+		State:               *newAccount.State,
+		Notes:               *newAccount.Notes,
 	}
 
 	err := DB().Create(account).Error

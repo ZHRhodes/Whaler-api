@@ -45,28 +45,36 @@ type Account {
   updatedAt: Time!
   deletedAt: Time
   name: String!
+  owner: String!
   industry: String
   description: String
-  tier: Int
-  url: String
-  location: String
-  headcountUpperBound: Int
-	headcountLowerBound:  Int
-	revenueUpperBound: Int 
-	revenueLowerBound: Int
+  numberOfEmployees: String
+  annualRevenue: String
+  billingCity: String
+  billingState: String
+  phone: String
+  website: String
+  type: String
+  state: String
+  notes: String
+  # tier: Int
 	# assignedTo: [User!]!
 }
 
 input NewAccount {
   name: String!
+  owner: String!
   industry: String
   description: String
-  tier: Int
-  url: String
-  headcountUpperBound: Int
-	headcountLowerBound:  Int
-	revenueUpperBound: Int 
-	revenueLowerBound: Int
+  numberOfEmployees: String
+  annualRevenue: String
+  billingCity: String
+  billingState: String
+  phone: String
+  website: String
+  type: String
+  state: String
+  notes: String
 }
 
 input AccountID {

@@ -7,15 +7,19 @@ type AccountID struct {
 }
 
 type NewAccount struct {
-	Name                string  `json:"name"`
-	Industry            *string `json:"industry"`
-	Description         *string `json:"description"`
-	Tier                *int    `json:"tier"`
-	URL                 *string `json:"url"`
-	HeadcountUpperBound *int    `json:"headcountUpperBound"`
-	HeadcountLowerBound *int    `json:"headcountLowerBound"`
-	RevenueUpperBound   *int    `json:"revenueUpperBound"`
-	RevenueLowerBound   *int    `json:"revenueLowerBound"`
+	Name              string  `json:"name"`
+	Owner             string  `json:"owner"`
+	Industry          *string `json:"industry"`
+	Description       *string `json:"description"`
+	NumberOfEmployees *string `json:"numberOfEmployees"`
+	AnnualRevenue     *string `json:"annualRevenue"`
+	BillingCity       *string `json:"billingCity"`
+	BillingState      *string `json:"billingState"`
+	Phone             *string `json:"phone"`
+	Website           *string `json:"website"`
+	Type              *string `json:"type"`
+	State             *string `json:"state"`
+	Notes             *string `json:"notes"`
 }
 
 type NewContact struct {

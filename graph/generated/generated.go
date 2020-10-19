@@ -46,20 +46,23 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Account struct {
-		CreatedAt           func(childComplexity int) int
-		DeletedAt           func(childComplexity int) int
-		Description         func(childComplexity int) int
-		HeadcountLowerBound func(childComplexity int) int
-		HeadcountUpperBound func(childComplexity int) int
-		ID                  func(childComplexity int) int
-		Industry            func(childComplexity int) int
-		Location            func(childComplexity int) int
-		Name                func(childComplexity int) int
-		RevenueLowerBound   func(childComplexity int) int
-		RevenueUpperBound   func(childComplexity int) int
-		Tier                func(childComplexity int) int
-		URL                 func(childComplexity int) int
-		UpdatedAt           func(childComplexity int) int
+		AnnualRevenue     func(childComplexity int) int
+		BillingCity       func(childComplexity int) int
+		BillingState      func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		Description       func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Industry          func(childComplexity int) int
+		Name              func(childComplexity int) int
+		Notes             func(childComplexity int) int
+		NumberOfEmployees func(childComplexity int) int
+		Owner             func(childComplexity int) int
+		Phone             func(childComplexity int) int
+		State             func(childComplexity int) int
+		Type              func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+		Website           func(childComplexity int) int
 	}
 
 	Contact struct {
@@ -170,6 +173,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Account.annualRevenue":
+		if e.complexity.Account.AnnualRevenue == nil {
+			break
+		}
+
+		return e.complexity.Account.AnnualRevenue(childComplexity), true
+
+	case "Account.billingCity":
+		if e.complexity.Account.BillingCity == nil {
+			break
+		}
+
+		return e.complexity.Account.BillingCity(childComplexity), true
+
+	case "Account.billingState":
+		if e.complexity.Account.BillingState == nil {
+			break
+		}
+
+		return e.complexity.Account.BillingState(childComplexity), true
+
 	case "Account.createdAt":
 		if e.complexity.Account.CreatedAt == nil {
 			break
@@ -191,20 +215,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Description(childComplexity), true
 
-	case "Account.headcountLowerBound":
-		if e.complexity.Account.HeadcountLowerBound == nil {
-			break
-		}
-
-		return e.complexity.Account.HeadcountLowerBound(childComplexity), true
-
-	case "Account.headcountUpperBound":
-		if e.complexity.Account.HeadcountUpperBound == nil {
-			break
-		}
-
-		return e.complexity.Account.HeadcountUpperBound(childComplexity), true
-
 	case "Account.id":
 		if e.complexity.Account.ID == nil {
 			break
@@ -219,13 +229,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Industry(childComplexity), true
 
-	case "Account.location":
-		if e.complexity.Account.Location == nil {
-			break
-		}
-
-		return e.complexity.Account.Location(childComplexity), true
-
 	case "Account.name":
 		if e.complexity.Account.Name == nil {
 			break
@@ -233,33 +236,47 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Name(childComplexity), true
 
-	case "Account.revenueLowerBound":
-		if e.complexity.Account.RevenueLowerBound == nil {
+	case "Account.notes":
+		if e.complexity.Account.Notes == nil {
 			break
 		}
 
-		return e.complexity.Account.RevenueLowerBound(childComplexity), true
+		return e.complexity.Account.Notes(childComplexity), true
 
-	case "Account.revenueUpperBound":
-		if e.complexity.Account.RevenueUpperBound == nil {
+	case "Account.numberOfEmployees":
+		if e.complexity.Account.NumberOfEmployees == nil {
 			break
 		}
 
-		return e.complexity.Account.RevenueUpperBound(childComplexity), true
+		return e.complexity.Account.NumberOfEmployees(childComplexity), true
 
-	case "Account.tier":
-		if e.complexity.Account.Tier == nil {
+	case "Account.owner":
+		if e.complexity.Account.Owner == nil {
 			break
 		}
 
-		return e.complexity.Account.Tier(childComplexity), true
+		return e.complexity.Account.Owner(childComplexity), true
 
-	case "Account.url":
-		if e.complexity.Account.URL == nil {
+	case "Account.phone":
+		if e.complexity.Account.Phone == nil {
 			break
 		}
 
-		return e.complexity.Account.URL(childComplexity), true
+		return e.complexity.Account.Phone(childComplexity), true
+
+	case "Account.state":
+		if e.complexity.Account.State == nil {
+			break
+		}
+
+		return e.complexity.Account.State(childComplexity), true
+
+	case "Account.type":
+		if e.complexity.Account.Type == nil {
+			break
+		}
+
+		return e.complexity.Account.Type(childComplexity), true
 
 	case "Account.updatedAt":
 		if e.complexity.Account.UpdatedAt == nil {
@@ -267,6 +284,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.UpdatedAt(childComplexity), true
+
+	case "Account.website":
+		if e.complexity.Account.Website == nil {
+			break
+		}
+
+		return e.complexity.Account.Website(childComplexity), true
 
 	case "Contact.assignmentEntries":
 		if e.complexity.Contact.AssignmentEntries == nil {
@@ -794,28 +818,36 @@ type Account {
   updatedAt: Time!
   deletedAt: Time
   name: String!
+  owner: String!
   industry: String
   description: String
-  tier: Int
-  url: String
-  location: String
-  headcountUpperBound: Int
-	headcountLowerBound:  Int
-	revenueUpperBound: Int 
-	revenueLowerBound: Int
+  numberOfEmployees: String
+  annualRevenue: String
+  billingCity: String
+  billingState: String
+  phone: String
+  website: String
+  type: String
+  state: String
+  notes: String
+  # tier: Int
 	# assignedTo: [User!]!
 }
 
 input NewAccount {
   name: String!
+  owner: String!
   industry: String
   description: String
-  tier: Int
-  url: String
-  headcountUpperBound: Int
-	headcountLowerBound:  Int
-	revenueUpperBound: Int 
-	revenueLowerBound: Int
+  numberOfEmployees: String
+  annualRevenue: String
+  billingCity: String
+  billingState: String
+  phone: String
+  website: String
+  type: String
+  state: String
+  notes: String
 }
 
 input AccountID {
@@ -1230,6 +1262,41 @@ func (ec *executionContext) _Account_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Account_owner(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Owner, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Account_industry(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -1294,7 +1361,7 @@ func (ec *executionContext) _Account_description(ctx context.Context, field grap
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_tier(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_numberOfEmployees(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1312,39 +1379,7 @@ func (ec *executionContext) _Account_tier(ctx context.Context, field graphql.Col
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Tier, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Account_url(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Account",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.URL, nil
+		return obj.NumberOfEmployees, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1358,7 +1393,7 @@ func (ec *executionContext) _Account_url(ctx context.Context, field graphql.Coll
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_location(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_annualRevenue(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1376,7 +1411,7 @@ func (ec *executionContext) _Account_location(ctx context.Context, field graphql
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Location, nil
+		return obj.AnnualRevenue, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1390,7 +1425,7 @@ func (ec *executionContext) _Account_location(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_headcountUpperBound(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_billingCity(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1408,7 +1443,7 @@ func (ec *executionContext) _Account_headcountUpperBound(ctx context.Context, fi
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.HeadcountUpperBound, nil
+		return obj.BillingCity, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1417,12 +1452,12 @@ func (ec *executionContext) _Account_headcountUpperBound(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_headcountLowerBound(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_billingState(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1440,7 +1475,7 @@ func (ec *executionContext) _Account_headcountLowerBound(ctx context.Context, fi
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.HeadcountLowerBound, nil
+		return obj.BillingState, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1449,12 +1484,12 @@ func (ec *executionContext) _Account_headcountLowerBound(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_revenueUpperBound(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_phone(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1472,7 +1507,7 @@ func (ec *executionContext) _Account_revenueUpperBound(ctx context.Context, fiel
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RevenueUpperBound, nil
+		return obj.Phone, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1481,12 +1516,12 @@ func (ec *executionContext) _Account_revenueUpperBound(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_revenueLowerBound(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_website(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1504,7 +1539,7 @@ func (ec *executionContext) _Account_revenueLowerBound(ctx context.Context, fiel
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RevenueLowerBound, nil
+		return obj.Website, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1513,9 +1548,105 @@ func (ec *executionContext) _Account_revenueLowerBound(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOInt2int(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_type(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_state(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.State, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_notes(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Notes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
@@ -4638,6 +4769,14 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
+		case "owner":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("owner"))
+			it.Owner, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "industry":
 			var err error
 
@@ -4654,51 +4793,75 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "tier":
+		case "numberOfEmployees":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tier"))
-			it.Tier, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("numberOfEmployees"))
+			it.NumberOfEmployees, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "url":
+		case "annualRevenue":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
-			it.URL, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("annualRevenue"))
+			it.AnnualRevenue, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "headcountUpperBound":
+		case "billingCity":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("headcountUpperBound"))
-			it.HeadcountUpperBound, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingCity"))
+			it.BillingCity, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "headcountLowerBound":
+		case "billingState":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("headcountLowerBound"))
-			it.HeadcountLowerBound, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("billingState"))
+			it.BillingState, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "revenueUpperBound":
+		case "phone":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("revenueUpperBound"))
-			it.RevenueUpperBound, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
+			it.Phone, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "revenueLowerBound":
+		case "website":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("revenueLowerBound"))
-			it.RevenueLowerBound, err = ec.unmarshalOInt2ᚖint(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("website"))
+			it.Website, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "type":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "state":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("state"))
+			it.State, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "notes":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notes"))
+			it.Notes, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4937,24 +5100,33 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "owner":
+			out.Values[i] = ec._Account_owner(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "industry":
 			out.Values[i] = ec._Account_industry(ctx, field, obj)
 		case "description":
 			out.Values[i] = ec._Account_description(ctx, field, obj)
-		case "tier":
-			out.Values[i] = ec._Account_tier(ctx, field, obj)
-		case "url":
-			out.Values[i] = ec._Account_url(ctx, field, obj)
-		case "location":
-			out.Values[i] = ec._Account_location(ctx, field, obj)
-		case "headcountUpperBound":
-			out.Values[i] = ec._Account_headcountUpperBound(ctx, field, obj)
-		case "headcountLowerBound":
-			out.Values[i] = ec._Account_headcountLowerBound(ctx, field, obj)
-		case "revenueUpperBound":
-			out.Values[i] = ec._Account_revenueUpperBound(ctx, field, obj)
-		case "revenueLowerBound":
-			out.Values[i] = ec._Account_revenueLowerBound(ctx, field, obj)
+		case "numberOfEmployees":
+			out.Values[i] = ec._Account_numberOfEmployees(ctx, field, obj)
+		case "annualRevenue":
+			out.Values[i] = ec._Account_annualRevenue(ctx, field, obj)
+		case "billingCity":
+			out.Values[i] = ec._Account_billingCity(ctx, field, obj)
+		case "billingState":
+			out.Values[i] = ec._Account_billingState(ctx, field, obj)
+		case "phone":
+			out.Values[i] = ec._Account_phone(ctx, field, obj)
+		case "website":
+			out.Values[i] = ec._Account_website(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._Account_type(ctx, field, obj)
+		case "state":
+			out.Values[i] = ec._Account_state(ctx, field, obj)
+		case "notes":
+			out.Values[i] = ec._Account_notes(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6276,30 +6448,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*v)
-}
-
-func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {
-	res, err := graphql.UnmarshalInt(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
-	return graphql.MarshalInt(v)
-}
-
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalInt(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.SelectionSet, v *int) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalInt(*v)
 }
 
 func (ec *executionContext) marshalOOrganization2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐOrganization(ctx context.Context, sel ast.SelectionSet, v *models.Organization) graphql.Marshaler {

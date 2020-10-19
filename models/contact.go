@@ -70,13 +70,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		AssignedBy: newEntry.AssignedBy,
 		AssignedTo: newEntry.AssignedTo,
 	}
-
-	// var err = db.Debug().Create(entry).Error
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
+	
 	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
 	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
 

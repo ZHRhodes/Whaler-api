@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/heroku/whaler-api/utils"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
 
