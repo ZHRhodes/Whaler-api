@@ -41,13 +41,14 @@ func init() {
 	db.AutoMigrate(&User{})
 	db.Migrator().DropTable(&Account{})
 	db.Migrator().CreateTable(&Account{})
+	db.Migrator().DropTable(&Contact{})
+	db.Migrator().CreateTable(&Contact{})
 	// db.AutoMigrate(&Account{})
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	// if err2 != nil {
 	// 	fmt.Println(err2)
 	// }
 	db.Debug().AutoMigrate(&ContactAssignmentEntry{})
-	db.Debug().AutoMigrate(&Contact{})
 	db.AutoMigrate(&Organization{})
 	db.AutoMigrate(&Workspace{})
 }
