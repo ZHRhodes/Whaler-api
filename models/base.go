@@ -38,32 +38,34 @@ func init() {
 
 	db = conn
 	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
-	db.AutoMigrate(&User{})
 
-	db.Migrator().DropTable(&Account{})
-	db.Debug().Migrator().CreateTable(&Account{})
-	db.Migrator().DropTable(&Contact{})
-	db.Migrator().CreateTable(&Contact{})
-	db.Migrator().DropTable(&ContactAssignmentEntry{})
-	db.Migrator().CreateTable(&ContactAssignmentEntry{})
-	db.Migrator().DropTable(&Organization{})
-	db.Migrator().CreateTable(&Organization{})
-	db.Migrator().DropTable(&RefreshToken{})
-	db.Migrator().CreateTable(&RefreshToken{})
-	db.Migrator().DropTable(&User{})
-	db.Migrator().CreateTable(&User{})
-	db.Migrator().DropTable(&Workspace{})
-	db.Migrator().CreateTable(&Workspace{})
-	// db.AutoMigrate(&Account{})
-	// db.AutoMigrate(&Contact{})
+	// db.Migrator().DropTable(&Account{})
+	// db.Debug().Migrator().CreateTable(&Account{})
+	// db.Migrator().DropTable(&Contact{})
+	// db.Migrator().CreateTable(&Contact{})
+	// db.Migrator().DropTable(&ContactAssignmentEntry{})
+	// db.Migrator().CreateTable(&ContactAssignmentEntry{})
+	// db.Migrator().DropTable(&Organization{})
+	// db.Migrator().CreateTable(&Organization{})
+	// db.Migrator().DropTable(&RefreshToken{})
+	// db.Migrator().CreateTable(&RefreshToken{})
+	// db.Migrator().DropTable(&User{})
+	// db.Migrator().CreateTable(&User{})
+	// db.Migrator().DropTable(&Workspace{})
+	// db.Migrator().CreateTable(&Workspace{})
+
+	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Contact{})
+	db.AutoMigrate(&ContactAssignmentEntry{})
+	db.AutoMigrate(&Organization{})
+	db.AutoMigrate(&RefreshToken{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Workspace{})
+
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	// if err2 != nil {
 	// 	fmt.Println(err2)
 	// }
-
-	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
-	// db.AutoMigrate(&Organization{})
-	// db.AutoMigrate(&Workspace{})
 }
 
 func DB() *gorm.DB {

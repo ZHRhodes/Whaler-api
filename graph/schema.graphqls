@@ -96,6 +96,7 @@ type Contact {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
+  salesforceID: String
   firstName: String!
   lastName: String!
   jobTitle: String

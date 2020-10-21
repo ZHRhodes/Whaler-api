@@ -8,14 +8,15 @@ import (
 
 type Contact struct {
 	DBModel
-	FirstName             string                     `json:"firstName"`
-	LastName              string                     `json:"lastName"`
+	FirstName             string                      `json:"firstName"`
+	LastName              string                      `json:"lastName"`
+	SalesforceID          *string                     `json:"salesforceID"`
 	JobTitle              *string                     `json:"jobTitle"`
 	State                 *string                     `json:"state"`
 	Email                 *string                     `json:"email"`
 	Phone                 *string                     `json:"phone"`
-	AccountID			  *string					 `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
-	AssignmentEntries     []ContactAssignmentEntry   `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
+	AccountID			  *string					  `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
+	AssignmentEntries     []ContactAssignmentEntry    `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
 	// Account               Account                 `json:"account"`
 	// Seniority             string                     `json:"seniority"`
 	// Persona               string                     `json:"persona"`
