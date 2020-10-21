@@ -14,7 +14,7 @@ import (
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
-	user, err := models.CreateUser(input.Email, input.Password)
+	user, err := models.CreateUser(input.Email, input.Password, input.OrganizationID)
 	if err != nil {
 		return nil, err
 	}
@@ -93,6 +93,8 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
+type userResolver struct{ *Resolver }
+
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
 		graphql.GetOperationContext(ctx),

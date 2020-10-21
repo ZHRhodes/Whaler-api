@@ -14,12 +14,13 @@ type User {
   firstName: String!
   lastName: String!
   isAdmin: Boolean!
-  organizationID: Int!
+  organizationID: ID!
 }
 
 input NewUser {
   email: String!
   password: String!
+  organizationID: ID!
 }
 
 input UserID {

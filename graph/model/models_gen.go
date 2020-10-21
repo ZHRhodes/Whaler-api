@@ -41,8 +41,9 @@ type NewContactAssignmentEntry struct {
 }
 
 type NewUser struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email          string `json:"email"`
+	Password       string `json:"password"`
+	OrganizationID string `json:"organizationID"`
 }
 
 type NewWorkspace struct {

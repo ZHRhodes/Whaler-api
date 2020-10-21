@@ -27,7 +27,7 @@ func (org *Organization) Create() map[string]interface{} {
 	return response
 }
 
-func FetchOrganization(db *gorm.DB, preloads []string, orgID int) (*Organization, error) {
+func FetchOrganization(db *gorm.DB, preloads []string, orgID string) (*Organization, error) {
 	shouldFetchUsers := false
 	for _, value := range preloads {
 		if value == "users" || value == "organization.users" {

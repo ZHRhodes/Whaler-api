@@ -10,12 +10,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//use int (signed) as id (primary key)
-//this will be supported across all platforms
-//(graphql only supports int, not uint)
-//this requires fe changes too as i just changed them over to string
-//this will NOT require changing the id column type in postgres as DBModel is already using int for the id
-
 type User struct {
 	DBModel
 	Email          string        `json:"email" gorm:"unique, not null"`
@@ -23,7 +17,7 @@ type User struct {
 	FirstName      string        `json:"firstName"`
 	LastName       string        `json:"lastName"`
 	IsAdmin        bool          `json:"isAdmin"`
-	OrganizationID int           `json:"organizationId"`
+	OrganizationID string        `json:"organizationId"`
 	Workspaces     []Workspace   `json:"workspaces" gorm:"many2many:workspace_user"`
 	Organization   *Organization `json:"organization" gorm:"-"`
 }
@@ -55,14 +49,14 @@ func (user *User) Create() map[string]interface{} {
 	return response
 }
 
-func CreateUser(email string, password string) (*User, error) {
+func CreateUser(email string, password string, organizationID string) (*User, error) {
 	validatationErr := validateUserCreds(email, password)
 	if validatationErr != nil {
 		return nil, *validatationErr
 	}
 
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	user := &User{Email: email, Password: string(hashedPassword)}
+	user := &User{Email: email, Password: string(hashedPassword), OrganizationID: organizationID}
 
 	err := DB().Create(user).Error
 
