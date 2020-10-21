@@ -13,7 +13,7 @@ import (
 )
 
 type DBModel struct {
-	ID        string     `json:"id" gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	ID        string     `json:"id" gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
@@ -41,7 +41,7 @@ func init() {
 	db.AutoMigrate(&User{})
 
 	db.Migrator().DropTable(&Account{})
-	db.Migrator().CreateTable(&Account{})
+	db.Debug().Migrator().CreateTable(&Account{})
 	db.Migrator().DropTable(&Contact{})
 	db.Migrator().CreateTable(&Contact{})
 	// db.AutoMigrate(&Account{})
