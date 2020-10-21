@@ -70,7 +70,12 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
+	var id = 0
+	if newAccount.ID != nil {
+		id = *newAccount.ID
+	}
 	return &Account{
+		DBModel:           DBModel{ID: id},
 		Name:              newAccount.Name,
 		Owner:             newAccount.Owner,
 		SalesforceID:      newAccount.SalesforceID,
