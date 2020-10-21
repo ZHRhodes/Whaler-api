@@ -65,6 +65,10 @@ func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewA
 	return accounts, err
 }
 
+func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error) {
+	return models.SaveContacts(input)
+}
+
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	preloads := getPreloads(ctx)

@@ -1,21 +1,20 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
+	"gorm.io/gorm/clause"
 )
 
 type Contact struct {
 	DBModel
 	FirstName             string                     `json:"firstName"`
 	LastName              string                     `json:"lastName"`
-	JobTitle              string                     `json:"jobTitle"`
-	State                 string                     `json:"state"`
-	Email                 string                     `json:"email"`
-	Phone                 string                     `json:"phone"`
-	AccountID			  string					 `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
+	JobTitle              *string                     `json:"jobTitle"`
+	State                 *string                     `json:"state"`
+	Email                 *string                     `json:"email"`
+	Phone                 *string                     `json:"phone"`
+	AccountID			  *string					 `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
 	AssignmentEntries     []ContactAssignmentEntry   `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
 	// Account               Account                 `json:"account"`
 	// Seniority             string                     `json:"seniority"`
@@ -38,16 +37,7 @@ func (contact *Contact) Create() map[string]interface{} {
 }
 
 func CreateContact(newContact model.NewContact) (*Contact, error) {
-	contact := &Contact{
-		FirstName: newContact.FirstName,
-		LastName:  newContact.LastName,
-		JobTitle:  *newContact.JobTitle,
-		State:     *newContact.State,
-		Email:     *newContact.Email,
-		Phone:     *newContact.Phone,
-		AccountID: *newContact.AccountID,
-		//figure out how to use AccountID to tie this contact to an account in db
-	}
+	contact := createContactFromNewContact(newContact)
 
 	err := DB().Create(contact).Error
 
@@ -58,44 +48,35 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 	return contact, nil
 }
 
-type ContactAssignmentEntry struct {
-	DBModel
-	ContactID  string  `json:"contactId"`
-	AssignedBy string  `json:"assignedBy"`
-	AssignedTo *string `json:"assignedTo"`
+func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
+	var contacts = []*Contact{}
+	for _, newContact := range newContacts {
+		contacts = append(contacts, createContactFromNewContact(*newContact))
+	}
+
+	err := DB().Clauses(clause.OnConflict{
+		Columns: []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"first_name", "last_name", "job_title",
+			"state", "email", "phone", "account_id"}),
+	}).Create(&contacts).Error
+
+	return contacts, err
 }
 
-func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*ContactAssignmentEntry, error) {
-	entry := &ContactAssignmentEntry{
-		ContactID:  newEntry.ContactID,
-		AssignedBy: newEntry.AssignedBy,
-		AssignedTo: newEntry.AssignedTo,
+func createContactFromNewContact(newContact model.NewContact) *Contact {
+	var id string
+	if newContact.ID != nil {
+		id = *newContact.ID
 	}
-	
-	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
-	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
-
-	err := db.First(&Contact{}, newEntry.ContactID).Association("AssignmentEntries").Append(entry)
-
-	if err != nil {
-		fmt.Println(err)
+	return &Contact{
+		DBModel:   DBModel{ID: id},
+		FirstName: newContact.FirstName,
+		LastName:  newContact.LastName,
+		JobTitle:  newContact.JobTitle,
+		State:     newContact.State,
+		Email:     newContact.Email,
+		Phone:     newContact.Phone,
+		AccountID: newContact.AccountID,
+		//figure out how to use AccountID to tie this contact to an account in db
 	}
-
-	if len(entry.ID) == 0 {
-		return nil, err
-	}
-
-	return entry, nil
-}
-
-func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
-	entries := []*ContactAssignmentEntry{}
-
-	err := DB().Where("contact_id <> ?", contactID).Find(&entries).Error
-
-	if err != nil {
-		return []*ContactAssignmentEntry{}, err
-	}
-
-	return entries, err
 }

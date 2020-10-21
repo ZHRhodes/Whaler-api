@@ -25,6 +25,7 @@ type NewAccount struct {
 }
 
 type NewContact struct {
+	ID        *string `json:"id"`
 	FirstName string  `json:"firstName"`
 	LastName  string  `json:"lastName"`
 	JobTitle  *string `json:"jobTitle"`
