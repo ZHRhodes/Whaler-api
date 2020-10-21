@@ -61,12 +61,8 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 		Columns: []clause.Column{{Name: "id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"name", "owner", "industry",
 			"salesforce_id", "industry", "description", "number_of_employees", "annual_revenue",
-			"billing_cycle", "billing_state", "phone", "website", "type", "state", "notes"}),
+			"billing_city", "billing_state", "phone", "website", "type", "state", "notes"}),
 	}).Create(&accounts).Error
-
-	// err := DB().Clauses(clause.OnConflict{DoNothing: true}).Create(&accounts).Error
-
-	// err := DB().Save(&accounts).Error
 
 	return accounts, err
 }
