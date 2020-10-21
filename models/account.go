@@ -8,19 +8,19 @@ import (
 
 type Account struct {
 	DBModel
-	Name              string `json:"name"`
-	Owner             string `json:"owner"`
-	Industry          string `json:"industry"`
-	Description       string `json:"description"`
-	NumberOfEmployees string `json:"numberOfEmployees"`
-	AnnualRevenue     string `json:"annualRevenue"`
-	BillingCity       string `json:"billingCity"`
-	BillingState      string `json:"billingState"`
-	Phone             string `json:"phone"`
-	Website           string `json:"website"`
-	Type              string `json:"type"`
-	State             string `json:"state"`
-	Notes             string `json:"notes"`
+	Name              string  `json:"name"`
+	Owner             string  `json:"owner"`
+	Industry          *string `json:"industry"`
+	Description       *string `json:"description"`
+	NumberOfEmployees *string `json:"numberOfEmployees"`
+	AnnualRevenue     *string `json:"annualRevenue"`
+	BillingCity       *string `json:"billingCity"`
+	BillingState      *string `json:"billingState"`
+	Phone             *string `json:"phone"`
+	Website           *string `json:"website"`
+	Type              *string `json:"type"`
+	State             *string `json:"state"`
+	Notes             *string `json:"notes"`
 	// AssignedTo          []User `json:"assignedTo"`
 	//contacts
 }
@@ -68,16 +68,16 @@ func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 	return &Account{
 		Name:              newAccount.Name,
 		Owner:             newAccount.Owner,
-		Industry:          *newAccount.Industry,
-		Description:       *newAccount.Description,
-		NumberOfEmployees: *newAccount.NumberOfEmployees,
-		AnnualRevenue:     *newAccount.AnnualRevenue,
-		BillingCity:       *newAccount.BillingCity,
-		BillingState:      *newAccount.BillingState,
-		Phone:             *newAccount.Phone,
-		Website:           *newAccount.Website,
-		Type:              *newAccount.Type,
-		State:             *newAccount.State,
-		Notes:             *newAccount.Notes,
+		Industry:          newAccount.Industry,
+		Description:       newAccount.Description,
+		NumberOfEmployees: newAccount.NumberOfEmployees,
+		AnnualRevenue:     newAccount.AnnualRevenue,
+		BillingCity:       newAccount.BillingCity,
+		BillingState:      newAccount.BillingState,
+		Phone:             newAccount.Phone,
+		Website:           newAccount.Website,
+		Type:              newAccount.Type,
+		State:             newAccount.State,
+		Notes:             newAccount.Notes,
 	}
 }

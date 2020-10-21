@@ -1346,9 +1346,9 @@ func (ec *executionContext) _Account_industry(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_description(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1378,9 +1378,9 @@ func (ec *executionContext) _Account_description(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_numberOfEmployees(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1410,9 +1410,9 @@ func (ec *executionContext) _Account_numberOfEmployees(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_annualRevenue(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1442,9 +1442,9 @@ func (ec *executionContext) _Account_annualRevenue(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_billingCity(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1474,9 +1474,9 @@ func (ec *executionContext) _Account_billingCity(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_billingState(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1506,9 +1506,9 @@ func (ec *executionContext) _Account_billingState(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_phone(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1538,9 +1538,9 @@ func (ec *executionContext) _Account_phone(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_website(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1570,9 +1570,9 @@ func (ec *executionContext) _Account_website(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_type(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1602,9 +1602,9 @@ func (ec *executionContext) _Account_type(ctx context.Context, field graphql.Col
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_state(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1634,9 +1634,9 @@ func (ec *executionContext) _Account_state(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_notes(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
@@ -1666,9 +1666,9 @@ func (ec *executionContext) _Account_notes(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contact_id(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
