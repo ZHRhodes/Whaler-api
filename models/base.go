@@ -40,12 +40,12 @@ func init() {
 	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
 
-	// db.Migrator().DropTable(&Account{})
-	// db.Migrator().CreateTable(&Account{})
-	// db.Migrator().DropTable(&Contact{})
-	// db.Migrator().CreateTable(&Contact{})
-	db.AutoMigrate(&Account{})
-	db.AutoMigrate(&Contact{})
+	db.Migrator().DropTable(&Account{})
+	db.Migrator().CreateTable(&Account{})
+	db.Migrator().DropTable(&Contact{})
+	db.Migrator().CreateTable(&Contact{})
+	// db.AutoMigrate(&Account{})
+	// db.AutoMigrate(&Contact{})
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	// if err2 != nil {
 	// 	fmt.Println(err2)
