@@ -13,7 +13,7 @@ import (
 )
 
 type DBModel struct {
-	ID        string     `json:"id" gorm:"column:id;" sql:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	ID        string     `json:"id" gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
