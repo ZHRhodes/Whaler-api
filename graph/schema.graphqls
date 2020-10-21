@@ -156,6 +156,8 @@ type Mutation {
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
+
+  saveAccounts(input: [NewAccount!]!): [Account]
 }
 
 type DBModel {

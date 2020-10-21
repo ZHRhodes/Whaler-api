@@ -3,23 +3,24 @@ package models
 import (
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
+	"gorm.io/gorm/clause"
 )
 
 type Account struct {
 	DBModel
-	Name                string `json:"name"`
-	Owner 				string `json:"owner"`
-	Industry            string `json:"industry"`
-	Description         string `json:"description"`
-	NumberOfEmployees   string `json:"numberOfEmployees"`
-	AnnualRevenue       string `json:"annualRevenue"`
-	BillingCity			string `json:"billingCity"`
-	BillingState        string `json:"billingState"`
-	Phone				string `json:"phone"`
-	Website             string `json:"website"`
-	Type				string `json:"type"`
-	State 				string `json:"state"`
-	Notes				string `json:"notes"`	
+	Name              string `json:"name"`
+	Owner             string `json:"owner"`
+	Industry          string `json:"industry"`
+	Description       string `json:"description"`
+	NumberOfEmployees string `json:"numberOfEmployees"`
+	AnnualRevenue     string `json:"annualRevenue"`
+	BillingCity       string `json:"billingCity"`
+	BillingState      string `json:"billingState"`
+	Phone             string `json:"phone"`
+	Website           string `json:"website"`
+	Type              string `json:"type"`
+	State             string `json:"state"`
+	Notes             string `json:"notes"`
 	// AssignedTo          []User `json:"assignedTo"`
 	//contacts
 }
@@ -38,21 +39,7 @@ func (account *Account) Create() map[string]interface{} {
 }
 
 func CreateAccount(newAccount model.NewAccount) (*Account, error) {
-	account := &Account{
-		Name:                newAccount.Name,
-		Owner:				 newAccount.Owner,
-		Industry:            *newAccount.Industry,
-		Description:         *newAccount.Description,
-		NumberOfEmployees:   *newAccount.NumberOfEmployees,
-		AnnualRevenue:       *newAccount.AnnualRevenue,
-		BillingCity:         *newAccount.BillingCity,
-		BillingState:        *newAccount.BillingState,
-		Phone:               *newAccount.Phone,
-		Website:             *newAccount.Website,
-		Type:                *newAccount.Type,
-		State:               *newAccount.State,
-		Notes:               *newAccount.Notes,
-	}
+	account := createAccountFromNewAccount(newAccount)
 
 	err := DB().Create(account).Error
 
@@ -61,4 +48,36 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	}
 
 	return account, nil
+}
+
+func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
+	var accounts = []*Account{}
+	for _, newAccount := range newAccounts {
+		accounts = append(accounts, createAccountFromNewAccount(*newAccount))
+	}
+
+	err := DB().Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"*"}),
+	}).Create(&accounts).Error
+
+	return accounts, err
+}
+
+func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
+	return &Account{
+		Name:              newAccount.Name,
+		Owner:             newAccount.Owner,
+		Industry:          *newAccount.Industry,
+		Description:       *newAccount.Description,
+		NumberOfEmployees: *newAccount.NumberOfEmployees,
+		AnnualRevenue:     *newAccount.AnnualRevenue,
+		BillingCity:       *newAccount.BillingCity,
+		BillingState:      *newAccount.BillingState,
+		Phone:             *newAccount.Phone,
+		Website:           *newAccount.Website,
+		Type:              *newAccount.Type,
+		State:             *newAccount.State,
+		Notes:             *newAccount.Notes,
+	}
 }

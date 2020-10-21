@@ -54,6 +54,14 @@ func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, inp
 	return entry, nil
 }
 
+func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
+	accounts, err := models.SaveAccounts(input)
+	if err != nil {
+		return nil, err
+	}
+	return accounts, err
+}
+
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	preloads := getPreloads(ctx)
