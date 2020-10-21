@@ -59,7 +59,7 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 
 	err := DB().Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.Assignments(map[string]interface{}{"role": "user"}),
+		DoUpdates: clause.AssignmentColumns([]string{"name"}),
 	}).Create(&accounts).Error
 
 	// err := DB().Clauses(clause.OnConflict{DoNothing: true}).Create(&accounts).Error
