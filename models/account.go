@@ -59,7 +59,7 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 
 	err := DB().Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name"}),
+		DoUpdates: clause.AssignmentColumns([]string{"name", "owner"}),
 	}).Create(&accounts).Error
 
 	// err := DB().Clauses(clause.OnConflict{DoNothing: true}).Create(&accounts).Error
@@ -70,7 +70,7 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
-	var id = 0
+	var id int
 	if newAccount.ID != nil {
 		id = *newAccount.ID
 	}
