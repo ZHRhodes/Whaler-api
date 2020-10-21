@@ -10,6 +10,7 @@ type Account struct {
 	DBModel
 	Name              string  `json:"name"`
 	Owner             string  `json:"owner"`
+	SalesforceID      *string `json:"salesforceID"`
 	Industry          *string `json:"industry"`
 	Description       *string `json:"description"`
 	NumberOfEmployees *string `json:"numberOfEmployees"`
@@ -69,6 +70,7 @@ func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 	return &Account{
 		Name:              newAccount.Name,
 		Owner:             newAccount.Owner,
+		SalesforceID:      newAccount.SalesforceID,
 		Industry:          newAccount.Industry,
 		Description:       newAccount.Description,
 		NumberOfEmployees: newAccount.NumberOfEmployees,
