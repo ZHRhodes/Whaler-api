@@ -56,10 +56,11 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 		accounts = append(accounts, createAccountFromNewAccount(*newAccount))
 	}
 
-	err := DB().Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"name, owner, industry, description, numberOfEmployees, annualRevenue, billingCity, billingState, phone, website, type, state, notes"}),
-	}).Create(&accounts).Error
+	// err := DB().Clauses(clause.OnConflict{
+	// 	Columns:   []clause.Column{{Name: "id"}},
+	// 	DoUpdates: clause.AssignmentColumns([]string{"name, owner, industry, description, numberOfEmployees, annualRevenue, billingCity, billingState, phone, website, type, state, notes"}),
+	// }).Create(&accounts).Error
+	err := DB().Clauses(clause.OnConflict{DoNothing: true}).Create(&accounts).Error
 
 	return accounts, err
 }
