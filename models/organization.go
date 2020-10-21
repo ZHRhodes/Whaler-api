@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/heroku/whaler-api/utils"
+	"github.com/heroku/whaler-api/graph/model"
 )
 
 type Organization struct {
@@ -25,6 +26,16 @@ func (org *Organization) Create() map[string]interface{} {
 	data := map[string]interface{}{"organization": org}
 	response := utils.Message(2000, "Organization has been created", false, data)
 	return response
+}
+
+func CreateOrganization(db *gorm.DB, newOrganization model.NewOrganization) (*Organization, error) {
+	organization := &Organization{
+		Name: newOrganization.Name,
+	}
+
+	err := db.Create(organization).Error
+
+	return organization, err
 }
 
 func FetchOrganization(db *gorm.DB, preloads []string, orgID string) (*Organization, error) {

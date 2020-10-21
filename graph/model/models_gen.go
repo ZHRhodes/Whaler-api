@@ -40,6 +40,10 @@ type NewContactAssignmentEntry struct {
 	AssignedTo *string `json:"assignedTo"`
 }
 
+type NewOrganization struct {
+	Name string `json:"name"`
+}
+
 type NewUser struct {
 	Email          string `json:"email"`
 	Password       string `json:"password"`

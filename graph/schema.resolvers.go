@@ -21,6 +21,10 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return user, nil
 }
 
+func (r *mutationResolver) CreateOrganization(ctx context.Context, input model.NewOrganization) (*models.Organization, error) {
+	return models.CreateOrganization(r.DB, input)
+}
+
 func (r *mutationResolver) CreateAccount(ctx context.Context, input model.NewAccount) (*models.Account, error) {
 	account, err := models.CreateAccount(input)
 	if err != nil {

@@ -38,6 +38,10 @@ type Organization {
   users: [User!]!
 }
 
+input NewOrganization {
+  name: String!
+}
+
 # Account
 
 type Account {
@@ -156,6 +160,7 @@ type Query {
 
 type Mutation {
   createUser(input: NewUser!): User!
+  createOrganization(input: NewOrganization!): Organization!
   createAccount(input: NewAccount!): Account!
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
