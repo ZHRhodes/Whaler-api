@@ -2,11 +2,11 @@ package models
 
 import (
 	"fmt"
-	"time"
 	"os"
+	"time"
 
-	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
 	"github.com/joho/godotenv"
@@ -29,7 +29,7 @@ func init() {
 
 	conn, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: os.Getenv("DATABASE_URL"), // data source name, refer https://github.com/jackc/pgx
-	  }), &gorm.Config{
+	}), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
@@ -39,11 +39,13 @@ func init() {
 	db = conn
 	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&User{})
-	db.Migrator().DropTable(&Account{})
-	db.Migrator().CreateTable(&Account{})
-	db.Migrator().DropTable(&Contact{})
-	db.Migrator().CreateTable(&Contact{})
-	// db.AutoMigrate(&Account{})
+
+	// db.Migrator().DropTable(&Account{})
+	// db.Migrator().CreateTable(&Account{})
+	// db.Migrator().DropTable(&Contact{})
+	// db.Migrator().CreateTable(&Contact{})
+	db.AutoMigrate(&Account{})
+	db.AutoMigrate(&Contact{})
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	// if err2 != nil {
 	// 	fmt.Println(err2)
