@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -94,17 +93,6 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-type accountResolver struct{ *Resolver }
-
-func (r *contactAssignmentEntryResolver) ContactID(ctx context.Context, obj *models.ContactAssignmentEntry) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
-type contactAssignmentEntryResolver struct{ *Resolver }
-
-func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error) {
-	panic(fmt.Errorf("not implemented"))
-}
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
 		graphql.GetOperationContext(ctx),

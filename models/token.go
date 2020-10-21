@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -14,13 +13,13 @@ import (
 
 type AccessToken struct {
 	jwt.StandardClaims
-	UserID       int                    `json:"userID"`
+	UserID       string                    `json:"userID"`
 	HasuraClaims map[string]interface{} `json:"https://hasura.io/jwt/claims"`
 }
 
 type RefreshToken struct {
 	DBModel
-	UserID int
+	UserID string
 	Hash   string
 	Exp    time.Time
 }
@@ -33,13 +32,13 @@ type Tokens struct {
 const RefreshTokenValidTime = time.Hour * 72
 const AuthTokenValidTime = time.Minute * 15
 
-func CreateAccessToken(userID int) string {
+func CreateAccessToken(userID string) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
 	allowedRoles := [3]string{"editor", "user", "mod"}
 	hasuraClaims := map[string]interface{}{
 		"x-hasura-allowed-roles": allowedRoles,
 		"x-hasura-default-role":  "user",
-		"x-hasura-user-id":       strconv.Itoa(userID),
+		"x-hasura-user-id":       userID,
 	}
 	standardClaims := jwt.StandardClaims{ExpiresAt: exp, Audience: "hasura", Issuer: "getwhaler-auth"}
 	tk := &AccessToken{UserID: userID, HasuraClaims: hasuraClaims, StandardClaims: standardClaims}
@@ -48,7 +47,7 @@ func CreateAccessToken(userID int) string {
 	return accessTokenString
 }
 
-func CreateRefreshToken(userID int) string {
+func CreateRefreshToken(userID string) string {
 	value := [256]byte{}
 	_, err := rand.Read(value[:])
 	if err != nil {
@@ -76,7 +75,7 @@ func Retrieve(refreshTokenString string) (*RefreshToken, error) {
 	return refreshToken, err
 }
 
-func (token RefreshToken) Validate(userId int) bool {
+func (token RefreshToken) Validate(userId string) bool {
 	isExpired := token.Exp.Before(time.Now())
 	if isExpired {
 		fmt.Printf("Refresh token is expired\n")
@@ -100,7 +99,7 @@ func (token *RefreshToken) store() {
 	}
 }
 
-func Refresh(refreshTokenString string, userID int) map[string]interface{} {
+func Refresh(refreshTokenString string, userID string) map[string]interface{} {
 	refreshToken, err := Retrieve(refreshTokenString)
 
 	if err != nil {

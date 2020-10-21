@@ -17,8 +17,8 @@ type Organization struct {
 func (org *Organization) Create() map[string]interface{} {
 	DB().Create(org)
 
-	if org.ID <= 0 {
-		fmt.Print(fmt.Sprint("the org id was less than zero"))
+	if len(org.ID) == 0 {
+		fmt.Print(fmt.Sprint("the org id was not set"))
 		return utils.Message(5001, "Failed to create organization, connection error", true, map[string]interface{}{})
 	}
 

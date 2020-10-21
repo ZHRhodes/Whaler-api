@@ -28,7 +28,7 @@ type Contact struct {
 func (contact *Contact) Create() map[string]interface{} {
 	DB().Create(contact)
 
-	if contact.ID <= 0 {
+	if len(contact.ID) == 0 {
 		return utils.Message(5001, "Failed to create contact, connection error", true, map[string]interface{}{})
 	}
 
@@ -51,7 +51,7 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 	err := DB().Create(contact).Error
 
-	if contact.ID <= 0 {
+	if len(contact.ID) == 0 {
 		return nil, err
 	}
 
@@ -60,7 +60,7 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 
 type ContactAssignmentEntry struct {
 	DBModel
-	ContactID  int     `json:"contactId"`
+	ContactID  string  `json:"contactId"`
 	AssignedBy string  `json:"assignedBy"`
 	AssignedTo *string `json:"assignedTo"`
 }
@@ -81,7 +81,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		fmt.Println(err)
 	}
 
-	if entry.ID <= 0 {
+	if len(entry.ID) == 0 {
 		return nil, err
 	}
 

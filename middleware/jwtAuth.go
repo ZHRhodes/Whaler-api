@@ -108,7 +108,7 @@ var ParseUserIDFromToken = func(next http.Handler) http.Handler {
 	})
 }
 
-func UserIDFromContext(ctx context.Context) int {
-	id, _ := ctx.Value(userIDCtxKey).(int)
+func UserIDFromContext(ctx context.Context) string {
+	id, _ := ctx.Value(userIDCtxKey).(string)
 	return id
 }

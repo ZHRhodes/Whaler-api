@@ -18,7 +18,7 @@ func (workspace *Workspace) Create() map[string]interface{} {
 	//check if workspace already exists?
 	DB().Create(workspace)
 
-	if workspace.ID <= 0 {
+	if len(workspace.ID) == 0 {
 		return utils.Message(5001, "Failed to create workspace, connection error", true, map[string]interface{}{})
 	}
 
@@ -34,7 +34,7 @@ func CreateWorkspace(newWorkspace model.NewWorkspace) (*Workspace, error) {
 
 	err := DB().Create(workspace).Error
 
-	if workspace.ID <= 0 {
+	if len(workspace.ID) == 0 {
 		return nil, err
 	}
 
@@ -57,7 +57,7 @@ func FetchWorkspace(workspaceID string) map[string]interface{} {
 	return utils.Message(2000, "Workspace fetched successfully", false, workspace)
 }
 
-func FetchWorkspaces(db *gorm.DB, preloads []string, userID int) ([]*Workspace, error) {
+func FetchWorkspaces(db *gorm.DB, preloads []string, userID string) ([]*Workspace, error) {
 	user := User{}
 	user.ID = userID
 	workspaces := []*Workspace{}

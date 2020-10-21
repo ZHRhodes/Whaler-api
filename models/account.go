@@ -30,7 +30,7 @@ type Account struct {
 func (account *Account) Create() map[string]interface{} {
 	DB().Create(account)
 
-	if account.ID <= 0 {
+	if len(account.ID) == 0 {
 		return utils.Message(5001, "Failed to create account, connection error", true, map[string]interface{}{})
 	}
 
@@ -44,7 +44,7 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 
 	err := DB().Create(account).Error
 
-	if account.ID <= 0 {
+	if len(account.ID) == 0 {
 		return nil, err
 	}
 
@@ -68,7 +68,7 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
-	var id int
+	var id string
 	if newAccount.ID != nil {
 		id = *newAccount.ID
 	}

@@ -3,11 +3,11 @@
 package model
 
 type AccountID struct {
-	ID int `json:"id"`
+	ID string `json:"id"`
 }
 
 type NewAccount struct {
-	ID                *int    `json:"id"`
+	ID                *string `json:"id"`
 	SalesforceID      *string `json:"salesforceID"`
 	Name              string  `json:"name"`
 	Owner             string  `json:"owner"`
@@ -35,7 +35,7 @@ type NewContact struct {
 }
 
 type NewContactAssignmentEntry struct {
-	ContactID  int     `json:"contactId"`
+	ContactID  string  `json:"contactId"`
 	AssignedBy string  `json:"assignedBy"`
 	AssignedTo *string `json:"assignedTo"`
 }
@@ -50,5 +50,5 @@ type NewWorkspace struct {
 }
 
 type UserID struct {
-	ID int `json:"id"`
+	ID string `json:"id"`
 }

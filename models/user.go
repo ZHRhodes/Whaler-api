@@ -40,7 +40,7 @@ func (user *User) Create() map[string]interface{} {
 
 	DB().Create(user)
 
-	if user.ID <= 0 {
+	if len(user.ID) == 0 {
 		fmt.Print(fmt.Sprint("the user id was less than zero"))
 		return utils.Message(5001, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
@@ -66,7 +66,7 @@ func CreateUser(email string, password string) (*User, error) {
 
 	err := DB().Create(user).Error
 
-	if user.ID <= 0 {
+	if len(user.ID) == 0 {
 		return nil, err
 	}
 
@@ -103,7 +103,7 @@ func LogIn(email, password string) map[string]interface{} {
 	return resp
 }
 
-func FetchUser(userID int) *User {
+func FetchUser(userID string) *User {
 	user := &User{}
 	DB().Table("users").Where("id = ?", userID).First(user)
 	org, _ := FetchOrganization(DB(), []string{"users"}, user.OrganizationID)
