@@ -41,10 +41,7 @@ func init() {
 	db.AutoMigrate(&User{})
 
 	db.Migrator().DropTable(&Account{})
-	err2 := db.Debug().Migrator().CreateTable(&Account{}).Error 
-	if err2 != nil {
-		fmt.Println(err2)
-	}
+	db.Debug().Migrator().CreateTable(&Account{})
 	db.Migrator().DropTable(&Contact{})
 	db.Migrator().CreateTable(&Contact{})
 	// db.AutoMigrate(&Account{})
