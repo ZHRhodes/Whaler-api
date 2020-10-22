@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/heroku/whaler-api/graph/model"
 )
 
@@ -22,16 +20,13 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	
 	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
 	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
-
-	err := db.First(&Contact{}, newEntry.ContactID).Association("AssignmentEntries").Append(entry)
-
-	if err != nil {
-		fmt.Println(err)
-	}
+	var err = db.Create(entry).Error
 
 	if len(entry.ID) == 0 {
 		return nil, err
 	}
+
+	db.First(&Contact{}, newEntry.ContactID).Association("AssignmentEntries").Append(entry)
 
 	return entry, nil
 }
