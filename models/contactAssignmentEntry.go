@@ -33,8 +33,6 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 
 func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
 	entries := []*ContactAssignmentEntry{}
-
-	DB().First(&Contact{}, contactID).Association("AssignmentEntries").Find(&entries)
-
+	db.First(&Contact{}, contactID).Association("AssignmentEntries").Find(&entries)
 	return entries, nil
 }
