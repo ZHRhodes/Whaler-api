@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/heroku/whaler-api/graph/model"
 )
 
@@ -35,18 +33,6 @@ func FetchAccountAssignmentEntries(accountID string) ([]*AccountAssignmentEntry,
 	entries := []*AccountAssignmentEntry{}
 
 	var account Account
-	var err = DB().Debug().First(&account, "id = ?", accountID).Error
-
-	fmt.Println("The account fetched is")
-	fmt.Println(account.ID)
-	association := DB().Model(&account).Association("AssignmentEntries")
-
-	association.Find(&entries)
-
-	if err != nil {
-		fmt.Println("Something bad happened here...")
-		fmt.Println(err)
-	}
-
+	db.First(&account, "id = ?", accountID).Model(&account).Association("AssignmentEntries").Find(&entries)
 	return entries, nil
 }
