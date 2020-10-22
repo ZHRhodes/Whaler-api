@@ -24,6 +24,12 @@ type NewAccount struct {
 	Notes             *string `json:"notes"`
 }
 
+type NewAccountAssignmentEntry struct {
+	AccountID  string  `json:"accountId"`
+	AssignedBy string  `json:"assignedBy"`
+	AssignedTo *string `json:"assignedTo"`
+}
+
 type NewContact struct {
 	ID           *string `json:"id"`
 	SalesforceID *string `json:"salesforceID"`

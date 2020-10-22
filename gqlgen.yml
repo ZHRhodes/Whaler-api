@@ -75,3 +75,6 @@ models:
   ContactAssignmentEntry:
     model:
       - github.com/heroku/whaler-api/models.ContactAssignmentEntry
+  AccountAssignmentEntry:
+    model:
+      - github.com/heroku/whaler-api/models.AccountAssignmentEntry

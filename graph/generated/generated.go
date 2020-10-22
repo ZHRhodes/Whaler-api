@@ -47,6 +47,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Account struct {
 		AnnualRevenue     func(childComplexity int) int
+		AssignmentEntries func(childComplexity int) int
 		BillingCity       func(childComplexity int) int
 		BillingState      func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
@@ -64,6 +65,16 @@ type ComplexityRoot struct {
 		Type              func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
 		Website           func(childComplexity int) int
+	}
+
+	AccountAssignmentEntry struct {
+		AccountID  func(childComplexity int) int
+		AssignedBy func(childComplexity int) int
+		AssignedTo func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		ID         func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
 	}
 
 	Contact struct {
@@ -187,6 +198,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.AnnualRevenue(childComplexity), true
 
+	case "Account.assignmentEntries":
+		if e.complexity.Account.AssignmentEntries == nil {
+			break
+		}
+
+		return e.complexity.Account.AssignmentEntries(childComplexity), true
+
 	case "Account.billingCity":
 		if e.complexity.Account.BillingCity == nil {
 			break
@@ -305,6 +323,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.Website(childComplexity), true
+
+	case "AccountAssignmentEntry.accountId":
+		if e.complexity.AccountAssignmentEntry.AccountID == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.AccountID(childComplexity), true
+
+	case "AccountAssignmentEntry.assignedBy":
+		if e.complexity.AccountAssignmentEntry.AssignedBy == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.AssignedBy(childComplexity), true
+
+	case "AccountAssignmentEntry.assignedTo":
+		if e.complexity.AccountAssignmentEntry.AssignedTo == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.AssignedTo(childComplexity), true
+
+	case "AccountAssignmentEntry.createdAt":
+		if e.complexity.AccountAssignmentEntry.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.CreatedAt(childComplexity), true
+
+	case "AccountAssignmentEntry.deletedAt":
+		if e.complexity.AccountAssignmentEntry.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.DeletedAt(childComplexity), true
+
+	case "AccountAssignmentEntry.id":
+		if e.complexity.AccountAssignmentEntry.ID == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.ID(childComplexity), true
+
+	case "AccountAssignmentEntry.updatedAt":
+		if e.complexity.AccountAssignmentEntry.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AccountAssignmentEntry.UpdatedAt(childComplexity), true
 
 	case "Contact.accountID":
 		if e.complexity.Contact.AccountID == nil {
@@ -886,6 +953,7 @@ type Account {
   type: String
   state: String
   notes: String
+  assignmentEntries: [AccountAssignmentEntry!]!
   # tier: Int
 	# assignedTo: [User!]!
 }
@@ -910,6 +978,22 @@ input NewAccount {
 
 input AccountID {
   id: ID!
+}
+
+type AccountAssignmentEntry {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  accountId: ID!
+  assignedBy: String!
+  assignedTo: String
+}
+
+input NewAccountAssignmentEntry {
+  accountId: ID!
+  assignedBy: String!
+  assignedTo: String
 }
 
 # Contact
@@ -1777,6 +1861,280 @@ func (ec *executionContext) _Account_notes(ctx context.Context, field graphql.Co
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Notes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_assignmentEntries(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignmentEntries, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]models.AccountAssignmentEntry)
+	fc.Result = res
+	return ec.marshalNAccountAssignmentEntry2ᚕgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_deletedAt(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_accountId(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _AccountAssignmentEntry_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "AccountAssignmentEntry",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedTo, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5151,6 +5509,42 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewAccountAssignmentEntry(ctx context.Context, obj interface{}) (model.NewAccountAssignmentEntry, error) {
+	var it model.NewAccountAssignmentEntry
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "accountId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+			it.AccountID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedBy":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assignedBy"))
+			it.AssignedBy, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedTo":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assignedTo"))
+			it.AssignedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj interface{}) (model.NewContact, error) {
 	var it model.NewContact
 	var asMap = obj.(map[string]interface{})
@@ -5437,6 +5831,62 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Account_state(ctx, field, obj)
 		case "notes":
 			out.Values[i] = ec._Account_notes(ctx, field, obj)
+		case "assignmentEntries":
+			out.Values[i] = ec._Account_assignmentEntries(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var accountAssignmentEntryImplementors = []string{"AccountAssignmentEntry"}
+
+func (ec *executionContext) _AccountAssignmentEntry(ctx context.Context, sel ast.SelectionSet, obj *models.AccountAssignmentEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, accountAssignmentEntryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AccountAssignmentEntry")
+		case "id":
+			out.Values[i] = ec._AccountAssignmentEntry_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._AccountAssignmentEntry_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._AccountAssignmentEntry_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deletedAt":
+			out.Values[i] = ec._AccountAssignmentEntry_deletedAt(ctx, field, obj)
+		case "accountId":
+			out.Values[i] = ec._AccountAssignmentEntry_accountId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assignedBy":
+			out.Values[i] = ec._AccountAssignmentEntry_assignedBy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "assignedTo":
+			out.Values[i] = ec._AccountAssignmentEntry_assignedTo(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6242,6 +6692,47 @@ func (ec *executionContext) marshalNAccount2ᚖgithubᚗcomᚋherokuᚋwhalerᚑ
 		return graphql.Null
 	}
 	return ec._Account(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAccountAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v models.AccountAssignmentEntry) graphql.Marshaler {
+	return ec._AccountAssignmentEntry(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAccountAssignmentEntry2ᚕgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []models.AccountAssignmentEntry) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAccountAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

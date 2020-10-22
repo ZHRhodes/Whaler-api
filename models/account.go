@@ -8,20 +8,21 @@ import (
 
 type Account struct {
 	DBModel
-	Name              string  `json:"name"`
-	Owner             string  `json:"owner"`
-	SalesforceID      *string `json:"salesforceID"`
-	Industry          *string `json:"industry"`
-	Description       *string `json:"description"`
-	NumberOfEmployees *string `json:"numberOfEmployees"`
-	AnnualRevenue     *string `json:"annualRevenue"`
-	BillingCity       *string `json:"billingCity"`
-	BillingState      *string `json:"billingState"`
-	Phone             *string `json:"phone"`
-	Website           *string `json:"website"`
-	Type              *string `json:"type"`
-	State             *string `json:"state"`
-	Notes             *string `json:"notes"`
+	Name                  string  `json:"name"`
+	Owner                 string  `json:"owner"`
+	SalesforceID          *string `json:"salesforceID"`
+	Industry              *string `json:"industry"`
+	Description           *string `json:"description"`
+	NumberOfEmployees     *string `json:"numberOfEmployees"`
+	AnnualRevenue         *string `json:"annualRevenue"`
+	BillingCity           *string `json:"billingCity"`
+	BillingState          *string `json:"billingState"`
+	Phone                 *string `json:"phone"`
+	Website               *string `json:"website"`
+	Type                  *string `json:"type"`
+	State                 *string `json:"state"`
+	Notes             	  *string `json:"notes"`
+	AssignmentEntries     []AccountAssignmentEntry    `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
 	// AssignedTo          []User `json:"assignedTo"`
 	//contacts
 }

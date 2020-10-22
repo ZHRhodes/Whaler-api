@@ -63,6 +63,7 @@ type Account {
   type: String
   state: String
   notes: String
+  assignmentEntries: [AccountAssignmentEntry!]!
   # tier: Int
 	# assignedTo: [User!]!
 }
@@ -87,6 +88,22 @@ input NewAccount {
 
 input AccountID {
   id: ID!
+}
+
+type AccountAssignmentEntry {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  accountId: ID!
+  assignedBy: String!
+  assignedTo: String
+}
+
+input NewAccountAssignmentEntry {
+  accountId: ID!
+  assignedBy: String!
+  assignedTo: String
 }
 
 # Contact
