@@ -35,7 +35,7 @@ func FetchAccountAssignmentEntries(accountID string) ([]*AccountAssignmentEntry,
 	entries := []*AccountAssignmentEntry{}
 
 	var account Account
-	var err = DB().Debug().First(&account, accountID).Error
+	var err = DB().Debug().First(&account, "id = ?", accountID).Error
 
 	fmt.Println("The account fetched is")
 	fmt.Println(account.ID)
