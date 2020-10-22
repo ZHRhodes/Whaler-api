@@ -175,7 +175,8 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
-  assignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
+  contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
+  accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
 
 type Mutation {

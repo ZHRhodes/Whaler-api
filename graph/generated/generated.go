@@ -132,9 +132,10 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AssignmentEntries func(childComplexity int, contactID string) int
-		Organization      func(childComplexity int) int
-		Workspaces        func(childComplexity int) int
+		AccountAssignmentEntries func(childComplexity int, accountID string) int
+		ContactAssignmentEntries func(childComplexity int, contactID string) int
+		Organization             func(childComplexity int) int
+		Workspaces               func(childComplexity int) int
 	}
 
 	User struct {
@@ -175,7 +176,8 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
 	Organization(ctx context.Context) (*models.Organization, error)
-	AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
+	ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
+	AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error)
 }
 
 type executableSchema struct {
@@ -693,17 +695,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Organization.Users(childComplexity), true
 
-	case "Query.assignmentEntries":
-		if e.complexity.Query.AssignmentEntries == nil {
+	case "Query.accountAssignmentEntries":
+		if e.complexity.Query.AccountAssignmentEntries == nil {
 			break
 		}
 
-		args, err := ec.field_Query_assignmentEntries_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_accountAssignmentEntries_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AssignmentEntries(childComplexity, args["contactID"].(string)), true
+		return e.complexity.Query.AccountAssignmentEntries(childComplexity, args["accountID"].(string)), true
+
+	case "Query.contactAssignmentEntries":
+		if e.complexity.Query.ContactAssignmentEntries == nil {
+			break
+		}
+
+		args, err := ec.field_Query_contactAssignmentEntries_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ContactAssignmentEntries(childComplexity, args["contactID"].(string)), true
 
 	case "Query.organization":
 		if e.complexity.Query.Organization == nil {
@@ -1079,7 +1093,8 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
-  assignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
+  contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
+  accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
 
 type Mutation {
@@ -1260,7 +1275,22 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_assignmentEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_accountAssignmentEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["accountID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["accountID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_contactAssignmentEntries_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -3640,7 +3670,7 @@ func (ec *executionContext) _Query_organization(ctx context.Context, field graph
 	return ec.marshalOOrganization2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐOrganization(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Query_assignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_contactAssignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -3657,7 +3687,7 @@ func (ec *executionContext) _Query_assignmentEntries(ctx context.Context, field 
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Query_assignmentEntries_args(ctx, rawArgs)
+	args, err := ec.field_Query_contactAssignmentEntries_args(ctx, rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -3665,7 +3695,7 @@ func (ec *executionContext) _Query_assignmentEntries(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AssignmentEntries(rctx, args["contactID"].(string))
+		return ec.resolvers.Query().ContactAssignmentEntries(rctx, args["contactID"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3680,6 +3710,48 @@ func (ec *executionContext) _Query_assignmentEntries(ctx context.Context, field 
 	res := resTmp.([]*models.ContactAssignmentEntry)
 	fc.Result = res
 	return ec.marshalNContactAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_accountAssignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_accountAssignmentEntries_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().AccountAssignmentEntries(rctx, args["accountID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.AccountAssignmentEntry)
+	fc.Result = res
+	return ec.marshalNAccountAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -6286,7 +6358,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_organization(ctx, field)
 				return res
 			})
-		case "assignmentEntries":
+		case "contactAssignmentEntries":
 			field := field
 			out.Concurrently(i, func() (res graphql.Marshaler) {
 				defer func() {
@@ -6294,7 +6366,21 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_assignmentEntries(ctx, field)
+				res = ec._Query_contactAssignmentEntries(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "accountAssignmentEntries":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_accountAssignmentEntries(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -6800,6 +6886,43 @@ func (ec *executionContext) marshalNAccountAssignmentEntry2ᚕgithubᚗcomᚋher
 				defer wg.Done()
 			}
 			ret[i] = ec.marshalNAccountAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNAccountAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.AccountAssignmentEntry) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

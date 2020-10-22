@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -59,7 +58,7 @@ func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, inp
 }
 
 func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
-	panic(fmt.Errorf("not implemented"))
+	return models.CreateAccountAssignmentEntry(input)
 }
 
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
@@ -87,8 +86,12 @@ func (r *queryResolver) Organization(ctx context.Context) (*models.Organization,
 	return models.FetchOrganization(r.DB, preloads, user.OrganizationID)
 }
 
-func (r *queryResolver) AssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
+func (r *queryResolver) ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
 	return models.FetchContactAssignmentEntries(contactID)
+}
+
+func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error) {
+	return models.FetchAccountAssignmentEntries(accountID)
 }
 
 // Mutation returns generated.MutationResolver implementation.
@@ -106,8 +109,6 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-type contactAssignmentEntryResolver struct{ *Resolver }
-type userResolver struct{ *Resolver }
 
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
