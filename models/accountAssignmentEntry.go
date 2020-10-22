@@ -35,12 +35,17 @@ func FetchAccountAssignmentEntries(accountID string) ([]*AccountAssignmentEntry,
 	entries := []*AccountAssignmentEntry{}
 
 	var account Account
-	DB().Debug().First(&account, accountID)
+	var err = DB().Debug().First(&account, accountID).Error
+	if err != nil {
+		fmt.Println("Something bad happened RIGHT HERE...")
+		fmt.Println(err)
+	}
+
 	fmt.Println("The account fetched is")
 	fmt.Println(account.ID)
 	association := DB().Model(&account).Association("AssignmentEntries")
-	
-	err := association.Find(&entries).Error
+
+	association.Find(&entries)
 
 	if err != nil {
 		fmt.Println("Something bad happened here...")
