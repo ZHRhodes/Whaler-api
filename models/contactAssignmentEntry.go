@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+	
 	"github.com/heroku/whaler-api/graph/model"
 )
 
@@ -33,6 +35,16 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 
 func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
 	entries := []*ContactAssignmentEntry{}
-	db.First(&Contact{}, contactID).Association("AssignmentEntries").Find(&entries)
+	
+	var contact Contact
+	var err = DB().Debug().First(&contact, "id = ?", contactID).Error
+	association := DB().Model(&contact).Association("AssignmentEntries")
+	association.Find(&entries)
+
+	if err != nil {
+		fmt.Println("Something bad happened here...")
+		fmt.Println(err)
+	}
+
 	return entries, nil
 }
