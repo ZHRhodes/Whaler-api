@@ -25,14 +25,15 @@ type NewAccount struct {
 }
 
 type NewContact struct {
-	ID        *string `json:"id"`
-	FirstName string  `json:"firstName"`
-	LastName  string  `json:"lastName"`
-	JobTitle  *string `json:"jobTitle"`
-	State     *string `json:"state"`
-	Email     *string `json:"email"`
-	Phone     *string `json:"phone"`
-	AccountID *string `json:"accountID"`
+	ID           *string `json:"id"`
+	SalesforceID *string `json:"salesforceID"`
+	FirstName    string  `json:"firstName"`
+	LastName     string  `json:"lastName"`
+	JobTitle     *string `json:"jobTitle"`
+	State        *string `json:"state"`
+	Email        *string `json:"email"`
+	Phone        *string `json:"phone"`
+	AccountID    *string `json:"accountID"`
 }
 
 type NewContactAssignmentEntry struct {

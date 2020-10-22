@@ -936,6 +936,7 @@ type Contact {
 
 input NewContact {
   id: ID
+  salesforceID: String
   firstName: String!
   lastName: String!
   jobTitle: String
@@ -5161,6 +5162,14 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			it.ID, err = ec.unmarshalOID2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "salesforceID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salesforceID"))
+			it.SalesforceID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

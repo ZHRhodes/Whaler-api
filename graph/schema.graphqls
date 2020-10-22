@@ -113,6 +113,7 @@ type Contact {
 
 input NewContact {
   id: ID
+  salesforceID: String
   firstName: String!
   lastName: String!
   jobTitle: String

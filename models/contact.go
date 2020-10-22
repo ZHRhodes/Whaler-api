@@ -70,14 +70,15 @@ func createContactFromNewContact(newContact model.NewContact) *Contact {
 		id = *newContact.ID
 	}
 	return &Contact{
-		DBModel:   DBModel{ID: id},
-		FirstName: newContact.FirstName,
-		LastName:  newContact.LastName,
-		JobTitle:  newContact.JobTitle,
-		State:     newContact.State,
-		Email:     newContact.Email,
-		Phone:     newContact.Phone,
-		AccountID: newContact.AccountID,
+		DBModel:     DBModel{ID: id},
+		FirstName:   newContact.FirstName,
+		LastName:    newContact.LastName,
+		SalesforceID: newContact.SalesforceID,
+		JobTitle:    newContact.JobTitle,
+		State:       newContact.State,
+		Email:       newContact.Email,
+		Phone:       newContact.Phone,
+		AccountID:   newContact.AccountID,
 		//figure out how to use AccountID to tie this contact to an account in db
 	}
 }
