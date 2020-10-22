@@ -34,11 +34,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
 	entries := []*ContactAssignmentEntry{}
 
-	err := DB().Where("contact_id <> ?", contactID).Find(&entries).Error
+	DB().First(&Contact{}, contactID).Association("AssignmentEntries").Find(&entries)
 
-	if err != nil {
-		return []*ContactAssignmentEntry{}, err
-	}
-
-	return entries, err
+	return entries, nil
 }
