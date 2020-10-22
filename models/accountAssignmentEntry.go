@@ -33,19 +33,8 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 
 func FetchAccountAssignmentEntries(accountID string) ([]*AccountAssignmentEntry, error) {
 	entries := []*AccountAssignmentEntry{}
-
 	var account Account
-	var err = DB().Debug().First(&account, "id = ?", accountID).Error
-	if err != nil {
-		fmt.Println("Something bad happened RIGHT HERE...")
-		fmt.Println(err)
-	}
-
-	fmt.Println("The account fetched is")
-	fmt.Println(account.ID)
-	association := DB().Model(&account).Association("AssignmentEntries")
-
-	association.Find(&entries)
+	err := db.First(&account, accountID).Association("AssignmentEntries").Find(&entries).Error
 
 	if err != nil {
 		fmt.Println("Something bad happened here...")
