@@ -112,6 +112,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateAccount                func(childComplexity int, input model.NewAccount) int
+		CreateAccountAssignmentEntry func(childComplexity int, input model.NewAccountAssignmentEntry) int
 		CreateContact                func(childComplexity int, input model.NewContact) int
 		CreateContactAssignmentEntry func(childComplexity int, input model.NewContactAssignmentEntry) int
 		CreateOrganization           func(childComplexity int, input model.NewOrganization) int
@@ -167,6 +168,7 @@ type MutationResolver interface {
 	CreateContact(ctx context.Context, input model.NewContact) (*models.Contact, error)
 	CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error)
 	CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
+	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
 }
@@ -552,6 +554,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateAccount(childComplexity, args["input"].(model.NewAccount)), true
+
+	case "Mutation.createAccountAssignmentEntry":
+		if e.complexity.Mutation.CreateAccountAssignmentEntry == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAccountAssignmentEntry_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAccountAssignmentEntry(childComplexity, args["input"].(model.NewAccountAssignmentEntry)), true
 
 	case "Mutation.createContact":
 		if e.complexity.Mutation.CreateContact == nil {
@@ -1075,6 +1089,7 @@ type Mutation {
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
+  createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
@@ -1094,6 +1109,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createAccountAssignmentEntry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewAccountAssignmentEntry
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewAccountAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccountAssignmentEntry(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -3208,6 +3238,48 @@ func (ec *executionContext) _Mutation_createContactAssignmentEntry(ctx context.C
 	res := resTmp.(*models.ContactAssignmentEntry)
 	fc.Result = res
 	return ec.marshalNContactAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactAssignmentEntry(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createAccountAssignmentEntry(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createAccountAssignmentEntry_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAccountAssignmentEntry(rctx, args["input"].(model.NewAccountAssignmentEntry))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.AccountAssignmentEntry)
+	fc.Result = res
+	return ec.marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_saveAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -6099,6 +6171,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createAccountAssignmentEntry":
+			out.Values[i] = ec._Mutation_createAccountAssignmentEntry(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "saveAccounts":
 			out.Values[i] = ec._Mutation_saveAccounts(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -6735,6 +6812,16 @@ func (ec *executionContext) marshalNAccountAssignmentEntry2ᚕgithubᚗcomᚋher
 	return ret
 }
 
+func (ec *executionContext) marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v *models.AccountAssignmentEntry) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._AccountAssignmentEntry(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -6933,6 +7020,11 @@ func (ec *executionContext) unmarshalNNewAccount2ᚕᚖgithubᚗcomᚋherokuᚋw
 func (ec *executionContext) unmarshalNNewAccount2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccount(ctx context.Context, v interface{}) (*model.NewAccount, error) {
 	res, err := ec.unmarshalInputNewAccount(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewAccountAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccountAssignmentEntry(ctx context.Context, v interface{}) (model.NewAccountAssignmentEntry, error) {
+	res, err := ec.unmarshalInputNewAccountAssignmentEntry(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNNewContact2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContact(ctx context.Context, v interface{}) (model.NewContact, error) {

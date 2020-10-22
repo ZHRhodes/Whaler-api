@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -55,6 +56,10 @@ func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, inp
 		return nil, err
 	}
 	return entry, nil
+}
+
+func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {

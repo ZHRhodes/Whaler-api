@@ -185,6 +185,7 @@ type Mutation {
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
+  createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
