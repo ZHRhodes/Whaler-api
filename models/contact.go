@@ -58,7 +58,7 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 	err := DB().Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"first_name", "last_name", "job_title",
-			"state", "email", "phone", "account_id"}),
+			"salesforce_id", "state", "email", "phone", "account_id"}),
 	}).Create(&contacts).Error
 
 	return contacts, err
