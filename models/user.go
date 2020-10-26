@@ -19,8 +19,8 @@ type User struct {
 	IsAdmin               bool          `json:"isAdmin"`
 	OrganizationID        string        `json:"organizationId"`
 	Organization          *Organization `json:"organization" gorm:"-"`
-	OwnedAccounts         []Account     `json:"ownedAccounts" gorm:"foreignKey:OwnerID"`
-	CollaboratingAccounts []Account     `json:"collaboratingAccount" gorm:"many2many:account_collaborators;"`
+	OwnedAccounts         []*Account    `json:"ownedAccounts" gorm:"foreignKey:OwnerID"`
+	CollaboratingAccounts []*Account    `json:"collaboratingAccount" gorm:"many2many:account_collaborators;"`
 }
 
 //DEPRECATED -- REST
