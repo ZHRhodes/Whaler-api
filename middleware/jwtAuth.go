@@ -84,7 +84,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Sprintf("User %", tk.UserID)
+		fmt.Printf("User %s\n", tk.UserID)
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
