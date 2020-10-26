@@ -72,7 +72,7 @@ func CreateUser(email string, password string, organizationID string) (*User, er
 
 func LogIn(email string, password string) map[string]interface{} {
 	user := &User{}
-	err := DB().Table("users").Where("email = ?", email).Preload("Workspaces").First(user).Error
+	err := DB().Table("users").Where("email = ?", email).First(user).Error
 	org, _ := FetchOrganization(DB(), []string{"users"}, user.OrganizationID)
 	user.Organization = org
 
