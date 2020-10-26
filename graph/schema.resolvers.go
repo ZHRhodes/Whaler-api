@@ -100,16 +100,12 @@ func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID 
 	return models.FetchAccountAssignmentEntries(accountID)
 }
 
-// Account returns generated.AccountResolver implementation.
-func (r *Resolver) Account() generated.AccountResolver { return &accountResolver{r} }
-
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-type accountResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 
@@ -119,6 +115,8 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
+type accountResolver struct{ *Resolver }
+
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
 		graphql.GetOperationContext(ctx),

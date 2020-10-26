@@ -50,7 +50,7 @@ type Account {
   updatedAt: Time!
   deletedAt: Time
   name: String!
-  owner: String!
+  ownerID: String!
   salesforceID: String
   salesforceOwnerID: String
   industry: String

@@ -37,7 +37,6 @@ type Config struct {
 }
 
 type ResolverRoot interface {
-	Account() AccountResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -59,7 +58,7 @@ type ComplexityRoot struct {
 		Name              func(childComplexity int) int
 		Notes             func(childComplexity int) int
 		NumberOfEmployees func(childComplexity int) int
-		Owner             func(childComplexity int) int
+		OwnerID           func(childComplexity int) int
 		Phone             func(childComplexity int) int
 		SalesforceID      func(childComplexity int) int
 		SalesforceOwnerID func(childComplexity int) int
@@ -165,9 +164,6 @@ type ComplexityRoot struct {
 	}
 }
 
-type AccountResolver interface {
-	Owner(ctx context.Context, obj *models.Account) (string, error)
-}
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.NewUser) (*models.User, error)
 	CreateOrganization(ctx context.Context, input model.NewOrganization) (*models.Organization, error)
@@ -286,12 +282,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.NumberOfEmployees(childComplexity), true
 
-	case "Account.owner":
-		if e.complexity.Account.Owner == nil {
+	case "Account.ownerID":
+		if e.complexity.Account.OwnerID == nil {
 			break
 		}
 
-		return e.complexity.Account.Owner(childComplexity), true
+		return e.complexity.Account.OwnerID(childComplexity), true
 
 	case "Account.phone":
 		if e.complexity.Account.Phone == nil {
@@ -989,7 +985,7 @@ type Account {
   updatedAt: Time!
   deletedAt: Time
   name: String!
-  owner: String!
+  ownerID: String!
   salesforceID: String
   salesforceOwnerID: String
   industry: String
@@ -1539,7 +1535,7 @@ func (ec *executionContext) _Account_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_owner(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_ownerID(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1550,14 +1546,14 @@ func (ec *executionContext) _Account_owner(ctx context.Context, field graphql.Co
 		Object:     "Account",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
+		IsMethod:   false,
+		IsResolver: false,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Account().Owner(rctx, obj)
+		return obj.OwnerID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6026,39 +6022,30 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 		case "id":
 			out.Values[i] = ec._Account_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "createdAt":
 			out.Values[i] = ec._Account_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "updatedAt":
 			out.Values[i] = ec._Account_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		case "deletedAt":
 			out.Values[i] = ec._Account_deletedAt(ctx, field, obj)
 		case "name":
 			out.Values[i] = ec._Account_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
-		case "owner":
-			field := field
-			out.Concurrently(i, func() (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Account_owner(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&invalids, 1)
-				}
-				return res
-			})
+		case "ownerID":
+			out.Values[i] = ec._Account_ownerID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "salesforceID":
 			out.Values[i] = ec._Account_salesforceID(ctx, field, obj)
 		case "salesforceOwnerID":
@@ -6088,7 +6075,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 		case "assignmentEntries":
 			out.Values[i] = ec._Account_assignmentEntries(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
+				invalids++
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
