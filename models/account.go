@@ -86,9 +86,9 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 }
 
 func FetchAccounts(userID string) ([]*Account, error) {
-	var accounts []*Account
+	var accounts = []*Account{}
 	err := db.Model(&User{DBModel: DBModel{ID: userID}}).Association("CollaboratingAccounts").Find(&accounts).Error
-	return accounts, errors.New(err())
+	return accounts, errors.New(err())s
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
