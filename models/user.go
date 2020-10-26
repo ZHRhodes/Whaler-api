@@ -70,7 +70,7 @@ func CreateUser(email string, password string, organizationID string) (*User, er
 	return user, nil
 }
 
-func LogIn(email, password string) map[string]interface{} {
+func LogIn(email string, password string) map[string]interface{} {
 	user := &User{}
 	err := DB().Table("users").Where("email = ?", email).Preload("Workspaces").First(user).Error
 	org, _ := FetchOrganization(DB(), []string{"users"}, user.OrganizationID)

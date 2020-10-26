@@ -25,7 +25,7 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 	if len(entry.ID) == 0 {
 		return nil, err
 	}
-	
+
 	db.First(&Account{}, newEntry.AccountID).Association("AssignmentEntries").Append(entry)
 
 	return entry, nil
