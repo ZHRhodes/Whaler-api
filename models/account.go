@@ -26,7 +26,7 @@ type Account struct {
 	State             *string                  `json:"state"`
 	Notes             *string                  `json:"notes"`
 	AssignmentEntries []AccountAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
-	Collaborators     []User                   `json:"collaborators gorm:"many2many:account_collaborators;"`
+	Collaborators     []User                   `json:"collaborators" gorm:"many2many:account_collaborators;"`
 	// AssignedTo          []User `json:"assignedTo"`
 	//contacts
 }
