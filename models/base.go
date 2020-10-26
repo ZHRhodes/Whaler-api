@@ -39,8 +39,8 @@ func init() {
 	db = conn
 	// db.Debug().AutoMigrate(&ContactAssignmentEntry{})
 
-	// db.Migrator().DropTable(&Account{})
-	// db.Debug().Migrator().CreateTable(&Account{})
+	db.Migrator().DropTable(&Account{})
+	db.Debug().Migrator().CreateTable(&Account{})
 	// db.Migrator().DropTable(&Contact{})
 	// db.Migrator().CreateTable(&Contact{})
 	// db.Migrator().DropTable(&ContactAssignmentEntry{})
@@ -56,7 +56,7 @@ func init() {
 	// db.Migrator().DropTable(&Workspace{})
 	// db.Migrator().CreateTable(&Workspace{})
 
-	db.AutoMigrate(&Account{})
+	// db.AutoMigrate(&Account{})
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&ContactAssignmentEntry{})
 	db.AutoMigrate(&AccountAssignmentEntry{})
