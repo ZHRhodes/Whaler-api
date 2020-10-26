@@ -1013,7 +1013,7 @@ input NewAccount {
   salesforceID: String
   salesforceOwnerID: String
   name: String!
-  ownerID: String!
+  ownerID: String
   industry: String
   description: String
   numberOfEmployees: String
@@ -5654,7 +5654,7 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerID"))
-			it.OwnerID, err = ec.unmarshalNString2string(ctx, v)
+			it.OwnerID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

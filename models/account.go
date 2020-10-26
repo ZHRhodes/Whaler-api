@@ -61,7 +61,11 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, error) {
 	var accounts = []*Account{}
 	for _, newAccount := range newAccounts {
-		accounts = append(accounts, createAccountFromNewAccount(*newAccount))
+		account := createAccountFromNewAccount(*newAccount)
+		if account.OwnerID == "" {
+			account.OwnerID = userID
+		}
+		accounts = append(accounts, account)
 	}
 
 	err := DB().Clauses(clause.OnConflict{
@@ -88,14 +92,13 @@ func FetchAccounts(userID string) ([]*Account, error) {
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
-	var id string
-	if newAccount.ID != nil {
-		id = *newAccount.ID
-	}
+	id := SafelyUnwrap(newAccount.ID)
+	ownerID := SafelyUnwrap(newAccount.OwnerID)
+
 	return &Account{
 		DBModel:           DBModel{ID: id},
 		Name:              newAccount.Name,
-		OwnerID:           newAccount.OwnerID,
+		OwnerID:           ownerID,
 		SalesforceID:      newAccount.SalesforceID,
 		Industry:          newAccount.Industry,
 		Description:       newAccount.Description,
@@ -108,5 +111,14 @@ func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 		Type:              newAccount.Type,
 		State:             newAccount.State,
 		Notes:             newAccount.Notes,
+	}
+}
+
+//Move this
+func SafelyUnwrap(value *string) string {
+	if value != nil {
+		return *value
+	} else {
+		return ""
 	}
 }

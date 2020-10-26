@@ -74,7 +74,7 @@ input NewAccount {
   salesforceID: String
   salesforceOwnerID: String
   name: String!
-  ownerID: String!
+  ownerID: String
   industry: String
   description: String
   numberOfEmployees: String
