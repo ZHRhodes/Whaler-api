@@ -18,7 +18,8 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.Use(middleware.ParseUserIDFromToken)
+	router.Use(middleware.JwtAuthentication)
+	// router.Use(middleware.ParseUserIDFromToken)
 
 	resolver := graph.Resolver{DB: models.DB()}
 

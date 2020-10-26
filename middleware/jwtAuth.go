@@ -21,6 +21,7 @@ type contextKey struct {
 //DEPRECATED -- REST
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("Beginning jtw auth")
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",
@@ -84,7 +85,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Printf("User %s\n", tk.UserID)
+		fmt.Println(fmt.Sprintf("User %s", tk.UserID))
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
@@ -101,7 +102,7 @@ var ParseUserIDFromToken = func(next http.Handler) http.Handler {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
-		fmt.Sprintf("User %d", tk.UserID)
+		fmt.Println(fmt.Sprintf("User %d", tk.UserID))
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
