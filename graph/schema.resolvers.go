@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -13,10 +12,6 @@ import (
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
 )
-
-func (r *accountResolver) Owner(ctx context.Context, obj *models.Account) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
 	user, err := models.CreateUser(input.Email, input.Password, input.OrganizationID)
