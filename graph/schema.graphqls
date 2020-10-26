@@ -52,6 +52,7 @@ type Account {
   name: String!
   owner: String!
   salesforceID: String
+  salesforceOwnerID: String
   industry: String
   description: String
   numberOfEmployees: String
@@ -71,8 +72,9 @@ type Account {
 input NewAccount {
   id: ID
   salesforceID: String
+  salesforceOwnerID: String
   name: String!
-  owner: String!
+  ownerID: String!
   industry: String
   description: String
   numberOfEmployees: String
@@ -175,6 +177,7 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
+  accounts: [Account!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }

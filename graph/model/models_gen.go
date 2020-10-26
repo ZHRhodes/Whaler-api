@@ -9,8 +9,9 @@ type AccountID struct {
 type NewAccount struct {
 	ID                *string `json:"id"`
 	SalesforceID      *string `json:"salesforceID"`
+	SalesforceOwnerID *string `json:"salesforceOwnerID"`
 	Name              string  `json:"name"`
-	Owner             string  `json:"owner"`
+	OwnerID           string  `json:"ownerID"`
 	Industry          *string `json:"industry"`
 	Description       *string `json:"description"`
 	NumberOfEmployees *string `json:"numberOfEmployees"`

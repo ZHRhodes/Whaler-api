@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
 	"gorm.io/gorm/clause"
@@ -8,21 +10,23 @@ import (
 
 type Account struct {
 	DBModel
-	Name                  string  `json:"name"`
-	Owner                 string  `json:"owner"`
-	SalesforceID          *string `json:"salesforceID"`
-	Industry              *string `json:"industry"`
-	Description           *string `json:"description"`
-	NumberOfEmployees     *string `json:"numberOfEmployees"`
-	AnnualRevenue         *string `json:"annualRevenue"`
-	BillingCity           *string `json:"billingCity"`
-	BillingState          *string `json:"billingState"`
-	Phone                 *string `json:"phone"`
-	Website               *string `json:"website"`
-	Type                  *string `json:"type"`
-	State                 *string `json:"state"`
-	Notes             	  *string `json:"notes"`
-	AssignmentEntries     []AccountAssignmentEntry    `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
+	Name              string                   `json:"name"`
+	OwnerID           string                   `json:"ownerID"`
+	SalesforceOwnerID *string                  `json:"salesforceOwnerID"`
+	SalesforceID      *string                  `json:"salesforceID"`
+	Industry          *string                  `json:"industry"`
+	Description       *string                  `json:"description"`
+	NumberOfEmployees *string                  `json:"numberOfEmployees"`
+	AnnualRevenue     *string                  `json:"annualRevenue"`
+	BillingCity       *string                  `json:"billingCity"`
+	BillingState      *string                  `json:"billingState"`
+	Phone             *string                  `json:"phone"`
+	Website           *string                  `json:"website"`
+	Type              *string                  `json:"type"`
+	State             *string                  `json:"state"`
+	Notes             *string                  `json:"notes"`
+	AssignmentEntries []AccountAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
+	Collaborators     []User                   `json:"collaborators gorm:"many2many:account_collaborators;"`
 	// AssignedTo          []User `json:"assignedTo"`
 	//contacts
 }
@@ -68,6 +72,13 @@ func SaveAccounts(newAccounts []*model.NewAccount) ([]*Account, error) {
 	return accounts, err
 }
 
+func FetchAccounts(userID string) ([]*Account, error) {
+	// err := db.Where("ownerID", ).Find(&users).Error
+	var accounts []*Account
+	err := db.Model(&User{DBModel: DBModel{ID: userID}}).Association("CollaboratingAccounts").Find(&accounts).Error
+	return accounts, errors.New(err())
+}
+
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 	var id string
 	if newAccount.ID != nil {
@@ -76,7 +87,7 @@ func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 	return &Account{
 		DBModel:           DBModel{ID: id},
 		Name:              newAccount.Name,
-		Owner:             newAccount.Owner,
+		OwnerID:           newAccount.OwnerID,
 		SalesforceID:      newAccount.SalesforceID,
 		Industry:          newAccount.Industry,
 		Description:       newAccount.Description,

@@ -37,6 +37,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Account() AccountResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 }
@@ -61,6 +62,7 @@ type ComplexityRoot struct {
 		Owner             func(childComplexity int) int
 		Phone             func(childComplexity int) int
 		SalesforceID      func(childComplexity int) int
+		SalesforceOwnerID func(childComplexity int) int
 		State             func(childComplexity int) int
 		Type              func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
@@ -133,6 +135,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AccountAssignmentEntries func(childComplexity int, accountID string) int
+		Accounts                 func(childComplexity int) int
 		ContactAssignmentEntries func(childComplexity int, contactID string) int
 		Organization             func(childComplexity int) int
 		Workspaces               func(childComplexity int) int
@@ -162,6 +165,9 @@ type ComplexityRoot struct {
 	}
 }
 
+type AccountResolver interface {
+	Owner(ctx context.Context, obj *models.Account) (string, error)
+}
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.NewUser) (*models.User, error)
 	CreateOrganization(ctx context.Context, input model.NewOrganization) (*models.Organization, error)
@@ -176,6 +182,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
 	Organization(ctx context.Context) (*models.Organization, error)
+	Accounts(ctx context.Context) ([]*models.Account, error)
 	ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
 	AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error)
 }
@@ -299,6 +306,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.SalesforceID(childComplexity), true
+
+	case "Account.salesforceOwnerID":
+		if e.complexity.Account.SalesforceOwnerID == nil {
+			break
+		}
+
+		return e.complexity.Account.SalesforceOwnerID(childComplexity), true
 
 	case "Account.state":
 		if e.complexity.Account.State == nil {
@@ -707,6 +721,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AccountAssignmentEntries(childComplexity, args["accountID"].(string)), true
 
+	case "Query.accounts":
+		if e.complexity.Query.Accounts == nil {
+			break
+		}
+
+		return e.complexity.Query.Accounts(childComplexity), true
+
 	case "Query.contactAssignmentEntries":
 		if e.complexity.Query.ContactAssignmentEntries == nil {
 			break
@@ -970,6 +991,7 @@ type Account {
   name: String!
   owner: String!
   salesforceID: String
+  salesforceOwnerID: String
   industry: String
   description: String
   numberOfEmployees: String
@@ -989,8 +1011,9 @@ type Account {
 input NewAccount {
   id: ID
   salesforceID: String
+  salesforceOwnerID: String
   name: String!
-  owner: String!
+  ownerID: String!
   industry: String
   description: String
   numberOfEmployees: String
@@ -1093,6 +1116,7 @@ input NewWorkspace {
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
+  accounts: [Account!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
@@ -1526,14 +1550,14 @@ func (ec *executionContext) _Account_owner(ctx context.Context, field graphql.Co
 		Object:     "Account",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Owner, nil
+		return ec.resolvers.Account().Owner(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1569,6 +1593,38 @@ func (ec *executionContext) _Account_salesforceID(ctx context.Context, field gra
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SalesforceID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_salesforceOwnerID(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SalesforceOwnerID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3670,6 +3726,41 @@ func (ec *executionContext) _Query_organization(ctx context.Context, field graph
 	return ec.marshalOOrganization2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐOrganization(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_accounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Accounts(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Account)
+	fc.Result = res
+	return ec.marshalNAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_contactAssignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -5543,6 +5634,14 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
+		case "salesforceOwnerID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salesforceOwnerID"))
+			it.SalesforceOwnerID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "name":
 			var err error
 
@@ -5551,11 +5650,11 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
-		case "owner":
+		case "ownerID":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("owner"))
-			it.Owner, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerID"))
+			it.OwnerID, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5927,32 +6026,43 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 		case "id":
 			out.Values[i] = ec._Account_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "createdAt":
 			out.Values[i] = ec._Account_createdAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "updatedAt":
 			out.Values[i] = ec._Account_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "deletedAt":
 			out.Values[i] = ec._Account_deletedAt(ctx, field, obj)
 		case "name":
 			out.Values[i] = ec._Account_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "owner":
-			out.Values[i] = ec._Account_owner(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Account_owner(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
 		case "salesforceID":
 			out.Values[i] = ec._Account_salesforceID(ctx, field, obj)
+		case "salesforceOwnerID":
+			out.Values[i] = ec._Account_salesforceOwnerID(ctx, field, obj)
 		case "industry":
 			out.Values[i] = ec._Account_industry(ctx, field, obj)
 		case "description":
@@ -5978,7 +6088,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 		case "assignmentEntries":
 			out.Values[i] = ec._Account_assignmentEntries(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -6356,6 +6466,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_organization(ctx, field)
+				return res
+			})
+		case "accounts":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_accounts(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
 				return res
 			})
 		case "contactAssignmentEntries":

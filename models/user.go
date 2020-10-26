@@ -6,20 +6,21 @@ import (
 	"strings"
 
 	"github.com/heroku/whaler-api/utils"
-	"gorm.io/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type User struct {
 	DBModel
-	Email          string        `json:"email" gorm:"unique, not null"`
-	Password       string        `json:"password"`
-	FirstName      string        `json:"firstName"`
-	LastName       string        `json:"lastName"`
-	IsAdmin        bool          `json:"isAdmin"`
-	OrganizationID string        `json:"organizationId"`
-	Workspaces     []Workspace   `json:"workspaces" gorm:"many2many:workspace_user"`
-	Organization   *Organization `json:"organization" gorm:"-"`
+	Email                 string        `json:"email" gorm:"unique, not null"`
+	Password              string        `json:"password"`
+	FirstName             string        `json:"firstName"`
+	LastName              string        `json:"lastName"`
+	IsAdmin               bool          `json:"isAdmin"`
+	OrganizationID        string        `json:"organizationId"`
+	Organization          *Organization `json:"organization" gorm:"-"`
+	OwnedAccounts         []Account     `json:"ownedAccounts" gorm:"foreignKey:OwnerID"`
+	CollaboratingAccounts []Account     `json:"collaboratingAccount" gorm:"many2many:account_collaborators;"`
 }
 
 //DEPRECATED -- REST
