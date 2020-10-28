@@ -57,13 +57,13 @@ func init() {
 	// db.Migrator().CreateTable(&Workspace{})
 
 	db.AutoMigrate(&Account{})
-	db.AutoMigrate(&Contact{})
-	db.AutoMigrate(&ContactAssignmentEntry{})
-	db.AutoMigrate(&AccountAssignmentEntry{})
-	db.AutoMigrate(&Organization{})
-	db.AutoMigrate(&RefreshToken{})
+	// db.AutoMigrate(&Contact{})
+	// db.AutoMigrate(&ContactAssignmentEntry{})
+	// db.AutoMigrate(&AccountAssignmentEntry{})
+	// db.AutoMigrate(&Organization{})
+	// db.AutoMigrate(&RefreshToken{})
 	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Workspace{})
+	// db.AutoMigrate(&Workspace{})
 
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error
 	// if err2 != nil {

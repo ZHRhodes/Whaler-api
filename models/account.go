@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
 	"gorm.io/gorm/clause"
@@ -86,24 +84,9 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 }
 
 func FetchAccounts(userID string) ([]*Account, error) {
-	var accounts = []Account{}
-	user := User{DBModel: DBModel{ID: userID}}
-	dbModel := db.Model(&user)
-	association := dbModel.Association("CollaboratingAccounts")
-	fmt.Println("HELLOOOOO -----------------------")
-	fmt.Println(&accounts)
-	err := association.Find(&accounts).Error
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var accountPointers = []*Account{}
-	for i := 0; i < len(accounts); i++ {
-		accountPointers = append(accountPointers, &accounts[i])
-	}
-
-	return accountPointers, nil //errors.New(err())
+	var accounts = []*Account{}
+	err := db.Model(&User{DBModel: DBModel{ID: userID}}).Association("CollaboratingAccounts").Find(&accounts)
+	return accounts, err
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
