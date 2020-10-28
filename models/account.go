@@ -78,7 +78,8 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 	user.OwnedAccounts = accounts
 	user.CollaboratingAccounts = accounts
 
-	db.Model(&user).Select("OwnedAccount", "CollaboratingAccounts").Updates(user)
+	db.Model(&user).Association("OwnedAccounts").Replace(accounts)
+	db.Model(&user).Association("CollaboratingAccounts").Replace(accounts)
 
 	return accounts, err
 }
