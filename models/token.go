@@ -13,7 +13,7 @@ import (
 
 type AccessToken struct {
 	jwt.StandardClaims
-	UserID       string                    `json:"userID"`
+	UserID       string                 `json:"userID"`
 	HasuraClaims map[string]interface{} `json:"https://hasura.io/jwt/claims"`
 }
 
@@ -30,7 +30,7 @@ type Tokens struct {
 }
 
 const RefreshTokenValidTime = time.Hour * 72
-const AuthTokenValidTime = time.Minute * 15
+const AuthTokenValidTime = time.Minute * 60
 
 func CreateAccessToken(userID string) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
