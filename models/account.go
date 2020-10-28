@@ -90,6 +90,8 @@ func FetchAccounts(userID string) ([]*Account, error) {
 	user := User{DBModel: DBModel{ID: userID}}
 	dbModel := db.Model(&user)
 	association := dbModel.Association("CollaboratingAccounts")
+	fmt.Println("HELLOOOOO -----------------------")
+	fmt.Println(accounts)
 	err := association.Find(&accounts).Error
 
 	if err != nil {
