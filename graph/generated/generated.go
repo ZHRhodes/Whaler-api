@@ -1127,7 +1127,7 @@ type Query {
   workspaces: [Workspace!]!
   organization: Organization
   accounts: [Account!]!
-  contacts(accountID: String!): [Contact!]!
+  contacts(accountID: ID!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
@@ -1346,7 +1346,7 @@ func (ec *executionContext) field_Query_contacts_args(ctx context.Context, rawAr
 	var arg0 string
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
