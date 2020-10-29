@@ -21,7 +21,6 @@ type contextKey struct {
 //DEPRECATED -- REST
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("Beginning jtw auth")
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",

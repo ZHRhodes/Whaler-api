@@ -8,15 +8,15 @@ import (
 
 type Contact struct {
 	DBModel
-	FirstName             string                      `json:"firstName"`
-	LastName              string                      `json:"lastName"`
-	SalesforceID          *string                     `json:"salesforceID"`
-	JobTitle              *string                     `json:"jobTitle"`
-	State                 *string                     `json:"state"`
-	Email                 *string                     `json:"email"`
-	Phone                 *string                     `json:"phone"`
-	AccountID			  *string					  `json:"accountID"` //TODO.. should i do this, or add an Account prop to Contact? need to connect them
-	AssignmentEntries     []ContactAssignmentEntry    `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
+	FirstName         string                   `json:"firstName"`
+	LastName          string                   `json:"lastName"`
+	SalesforceID      *string                  `json:"salesforceID"`
+	JobTitle          *string                  `json:"jobTitle"`
+	State             *string                  `json:"state"`
+	Email             *string                  `json:"email"`
+	Phone             *string                  `json:"phone"`
+	AccountID         *string                  `json:"accountID"`
+	AssignmentEntries []ContactAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
 	// Account               Account                 `json:"account"`
 	// Seniority             string                     `json:"seniority"`
 	// Persona               string                     `json:"persona"`
@@ -64,21 +64,26 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 	return contacts, err
 }
 
+func FetchContacts(accountID string) ([]*Contact, error) {
+	var contacts = []*Contact{}
+	err := db.Model(&Account{DBModel: DBModel{ID: accountID}}).Association("Contacts").Find(&contacts)
+	return contacts, err
+}
+
 func createContactFromNewContact(newContact model.NewContact) *Contact {
 	var id string
 	if newContact.ID != nil {
 		id = *newContact.ID
 	}
 	return &Contact{
-		DBModel:     DBModel{ID: id},
-		FirstName:   newContact.FirstName,
-		LastName:    newContact.LastName,
+		DBModel:      DBModel{ID: id},
+		FirstName:    newContact.FirstName,
+		LastName:     newContact.LastName,
 		SalesforceID: newContact.SalesforceID,
-		JobTitle:    newContact.JobTitle,
-		State:       newContact.State,
-		Email:       newContact.Email,
-		Phone:       newContact.Phone,
-		AccountID:   newContact.AccountID,
-		//figure out how to use AccountID to tie this contact to an account in db
+		JobTitle:     newContact.JobTitle,
+		State:        newContact.State,
+		Email:        newContact.Email,
+		Phone:        newContact.Phone,
+		AccountID:    newContact.AccountID,
 	}
 }

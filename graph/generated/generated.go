@@ -136,6 +136,7 @@ type ComplexityRoot struct {
 		AccountAssignmentEntries func(childComplexity int, accountID string) int
 		Accounts                 func(childComplexity int) int
 		ContactAssignmentEntries func(childComplexity int, contactID string) int
+		Contacts                 func(childComplexity int, accountID string) int
 		Organization             func(childComplexity int) int
 		Workspaces               func(childComplexity int) int
 	}
@@ -179,6 +180,7 @@ type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
 	Organization(ctx context.Context) (*models.Organization, error)
 	Accounts(ctx context.Context) ([]*models.Account, error)
+	Contacts(ctx context.Context, accountID string) ([]*models.Contact, error)
 	ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
 	AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error)
 }
@@ -736,6 +738,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ContactAssignmentEntries(childComplexity, args["contactID"].(string)), true
 
+	case "Query.contacts":
+		if e.complexity.Query.Contacts == nil {
+			break
+		}
+
+		args, err := ec.field_Query_contacts_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Contacts(childComplexity, args["accountID"].(string)), true
+
 	case "Query.organization":
 		if e.complexity.Query.Organization == nil {
 			break
@@ -1113,6 +1127,7 @@ type Query {
   workspaces: [Workspace!]!
   organization: Organization
   accounts: [Account!]!
+  contacts(accountID: String!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
@@ -1322,6 +1337,21 @@ func (ec *executionContext) field_Query_contactAssignmentEntries_args(ctx contex
 		}
 	}
 	args["contactID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_contacts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["accountID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["accountID"] = arg0
 	return args, nil
 }
 
@@ -3755,6 +3785,48 @@ func (ec *executionContext) _Query_accounts(ctx context.Context, field graphql.C
 	res := resTmp.([]*models.Account)
 	fc.Result = res
 	return ec.marshalNAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_contacts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_contacts_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Contacts(rctx, args["accountID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*models.Contact)
+	fc.Result = res
+	return ec.marshalNContact2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_contactAssignmentEntries(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -6464,6 +6536,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_accounts(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "contacts":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_contacts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}

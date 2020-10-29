@@ -92,6 +92,10 @@ func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error)
 	return models.FetchAccounts(userID)
 }
 
+func (r *queryResolver) Contacts(ctx context.Context, accountID string) ([]*models.Contact, error) {
+	return models.FetchContacts(accountID)
+}
+
 func (r *queryResolver) ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
 	return models.FetchContactAssignmentEntries(contactID)
 }

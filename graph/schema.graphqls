@@ -178,6 +178,7 @@ type Query {
   workspaces: [Workspace!]!
   organization: Organization
   accounts: [Account!]!
+  contacts(accountID: String!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
 }
