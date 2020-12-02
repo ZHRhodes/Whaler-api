@@ -63,10 +63,12 @@ func main() {
 			// ...
 		}
 
-		log.Printf("received: %v", v)
+		// log.Printf("received: %v", v)
 
 		c.Close(websocket.StatusNormalClosure, "")
 	})
+	//for next time -- start by implementing the echo function
+	//https://github.com/nhooyr/websocket/blob/master/examples/echo/server.go
 
 	port := os.Getenv("PORT")
 	if port == "" {
