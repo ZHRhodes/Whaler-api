@@ -8,6 +8,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gobwas/ws"
+	"github.com/gobwas/ws/wsutil"
 	"github.com/gorilla/mux"
 	"github.com/heroku/whaler-api/controllers"
 	"github.com/heroku/whaler-api/graph"
@@ -42,6 +44,29 @@ func main() {
 
 	// router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
 	// router.HandleFunc("/api/workspace", controllers.FetchWorkspace).Methods("GET")
+
+	router.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
+		conn, _, _, err := ws.UpgradeHTTP(r, w)
+		if err != nil {
+			fmt.Print(fmt.Sprint("Websocket error 1 ", err))
+		}
+		go func() {
+			defer conn.Close()
+
+			for {
+				msg, op, err := wsutil.ReadClientData(conn)
+				if err != nil {
+					fmt.Print(fmt.Sprint("Websocket error 2 ", err))
+				}
+				fmt.Print(fmt.Sprint("The message is ", msg))
+				fmt.Print(fmt.Sprint("The op is", op))
+				err = wsutil.WriteServerMessage(conn, op, msg)
+				if err != nil {
+					fmt.Print(fmt.Sprint("Websocket error 3 ", err))
+				}
+			}
+		}()
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
