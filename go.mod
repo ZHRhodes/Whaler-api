@@ -23,4 +23,5 @@ require (
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 	gorm.io/driver/postgres v1.0.2
 	gorm.io/gorm v1.20.2
+	nhooyr.io/websocket v1.8.6
 )

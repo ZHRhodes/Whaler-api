@@ -1,21 +1,23 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/gobwas/ws"
-	"github.com/gobwas/ws/wsutil"
 	"github.com/gorilla/mux"
 	"github.com/heroku/whaler-api/controllers"
 	"github.com/heroku/whaler-api/graph"
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
+	"nhooyr.io/websocket"
+	"nhooyr.io/websocket/wsjson"
 )
 
 func main() {
@@ -46,26 +48,24 @@ func main() {
 	// router.HandleFunc("/api/workspace", controllers.FetchWorkspace).Methods("GET")
 
 	router.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
-		conn, _, _, err := ws.UpgradeHTTP(r, w)
+		c, err := websocket.Accept(w, r, nil)
 		if err != nil {
-			fmt.Print(fmt.Sprint("Websocket error 1 ", err, "\n"))
+			// ...
 		}
-		go func() {
-			defer conn.Close()
+		defer c.Close(websocket.StatusInternalError, "the sky is falling")
 
-			for {
-				msg, op, err := wsutil.ReadClientData(conn)
-				if err != nil {
-					fmt.Print(fmt.Sprint("Websocket error 2 ", err, "\n"))
-				}
-				fmt.Print(fmt.Sprint("The message is ", msg, "\n"))
-				fmt.Print(fmt.Sprint("The op is", op, "\n"))
-				err = wsutil.WriteServerMessage(conn, op, msg)
-				if err != nil {
-					fmt.Print(fmt.Sprint("Websocket error 3 ", err, "\n\n\n"))
-				}
-			}
-		}()
+		ctx, cancel := context.WithTimeout(r.Context(), time.Second*10)
+		defer cancel()
+
+		var v interface{}
+		err = wsjson.Read(ctx, c, &v)
+		if err != nil {
+			// ...
+		}
+
+		log.Printf("received: %v", v)
+
+		c.Close(websocket.StatusNormalClosure, "")
 	})
 
 	port := os.Getenv("PORT")
