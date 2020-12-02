@@ -48,7 +48,7 @@ func main() {
 	router.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
 		conn, _, _, err := ws.UpgradeHTTP(r, w)
 		if err != nil {
-			fmt.Print(fmt.Sprint("Websocket error 1 ", err))
+			fmt.Print(fmt.Sprint("Websocket error 1 ", err, "\n"))
 		}
 		go func() {
 			defer conn.Close()
@@ -56,13 +56,13 @@ func main() {
 			for {
 				msg, op, err := wsutil.ReadClientData(conn)
 				if err != nil {
-					fmt.Print(fmt.Sprint("Websocket error 2 ", err))
+					fmt.Print(fmt.Sprint("Websocket error 2 ", err, "\n"))
 				}
-				fmt.Print(fmt.Sprint("The message is ", msg))
-				fmt.Print(fmt.Sprint("The op is", op))
+				fmt.Print(fmt.Sprint("The message is ", msg, "\n"))
+				fmt.Print(fmt.Sprint("The op is", op, "\n"))
 				err = wsutil.WriteServerMessage(conn, op, msg)
 				if err != nil {
-					fmt.Print(fmt.Sprint("Websocket error 3 ", err))
+					fmt.Print(fmt.Sprint("Websocket error 3 ", err, "\n\n\n"))
 				}
 			}
 		}()
