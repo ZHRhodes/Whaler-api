@@ -21,12 +21,14 @@ type contextKey struct {
 //DEPRECATED -- REST
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Print("hit jwt\n")
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",
 			"/api/account/create",
 			"/api/contact/create",
-			"/schema"}
+			"/schema",
+			"/socket"} //temporary! not for release!
 		requestPath := r.URL.Path
 
 		for _, value := range notAuth {

@@ -48,20 +48,23 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Socket = func(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		Subprotocols: []string{"echo"},
+	fmt.Print("Request received at /socket\n")
+	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
+		Subprotocols: []string{},
 	})
 	if err != nil {
-		fmt.Print("Failed to accept web socket")
+		fmt.Print("Failed to accept web socket: ", err, "\n")
+		return
 	}
-	defer c.Close(websocket.StatusInternalError, "the sky is falling")
+	fmt.Print("-->socket accepted!")
+	defer conn.Close(websocket.StatusInternalError, "the sky is falling")
 
-	if c.Subprotocol() != "echo" {
-		c.Close(websocket.StatusPolicyViolation, "the client must speak the echo subprotocol")
-	}
+	// // if c.Subprotocol() != "echo" {
+	// // 	c.Close(websocket.StatusPolicyViolation, "the client must speak the echo subprotocol")
+	// // }
 
 	for {
-		err = echo(r.Context(), c)
+		err = echo(r.Context(), conn)
 		if websocket.CloseStatus(err) == websocket.StatusNormalClosure {
 			return
 		}
