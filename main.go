@@ -1,12 +1,10 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -16,8 +14,6 @@ import (
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
-	"nhooyr.io/websocket"
-	"nhooyr.io/websocket/wsjson"
 )
 
 func main() {
@@ -47,26 +43,7 @@ func main() {
 	// router.HandleFunc("/api/org", controllers.FetchOrg).Methods("GET")
 	// router.HandleFunc("/api/workspace", controllers.FetchWorkspace).Methods("GET")
 
-	router.HandleFunc("/socket", func(w http.ResponseWriter, r *http.Request) {
-		c, err := websocket.Accept(w, r, nil)
-		if err != nil {
-			// ...
-		}
-		defer c.Close(websocket.StatusInternalError, "the sky is falling")
-
-		ctx, cancel := context.WithTimeout(r.Context(), time.Second*10)
-		defer cancel()
-
-		var v interface{}
-		err = wsjson.Read(ctx, c, &v)
-		if err != nil {
-			// ...
-		}
-
-		// log.Printf("received: %v", v)
-
-		c.Close(websocket.StatusNormalClosure, "")
-	})
+	router.HandleFunc("/socket", controllers.Socket)
 	//for next time -- start by implementing the echo function
 	//https://github.com/nhooyr/websocket/blob/master/examples/echo/server.go
 
