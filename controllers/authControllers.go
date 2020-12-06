@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
@@ -76,7 +75,7 @@ var Socket = func(w http.ResponseWriter, r *http.Request) {
 }
 
 func echo(ctx context.Context, conn *websocket.Conn) error {
-	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
 	messageType, ioReader, err := conn.Reader(ctx)
