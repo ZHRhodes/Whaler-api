@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/heroku/whaler-api/middleware"
@@ -12,6 +12,12 @@ import (
 	"github.com/heroku/whaler-api/utils"
 	"nhooyr.io/websocket"
 )
+
+type DocumentDelta struct {
+	Type       string `json:"type"`
+	DocumentID string `json:"documentID"`
+	Value      string `json:"value"`
+}
 
 //Authenticate logs into the user
 var Authenticate = func(w http.ResponseWriter, r *http.Request) {
@@ -78,21 +84,38 @@ func echo(ctx context.Context, conn *websocket.Conn) error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	messageType, ioReader, err := conn.Reader(ctx)
+	_, ioReader, err := conn.Reader(ctx)
 	if err != nil {
 		return err
 	}
 
-	writeCloser, err := conn.Writer(ctx, messageType)
+	//Write it back
+	//
+	// writer, err := conn.Writer(ctx, messageType)
+	// if err != nil {
+	// 	return err
+	// }
+	//
+	// _, err = io.Copy(writer, ioReader)
+	//
+	// if err != nil {
+	// 	return fmt.Errorf("failed to io.Copy: %w", err)
+	//}
+	// err = writer.Close()
+
+	//parse message as json
+	bytes, err := ioutil.ReadAll(ioReader)
 	if err != nil {
 		return err
 	}
 
-	_, err = io.Copy(writeCloser, ioReader)
-	if err != nil {
-		return fmt.Errorf("failed to io.Copy: %w", err)
+	var delta DocumentDelta
+	if err := json.Unmarshal(bytes, &delta); err != nil {
+		fmt.Print(err)
+		return err
 	}
 
-	err = writeCloser.Close()
+	fmt.Print(delta)
+
 	return err
 }
