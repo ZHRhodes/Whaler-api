@@ -9,15 +9,10 @@ import (
 
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
+	"github.com/heroku/whaler-api/sockets"
 	"github.com/heroku/whaler-api/utils"
 	"nhooyr.io/websocket"
 )
-
-type DocumentDelta struct {
-	Type       string `json:"type"`
-	DocumentID string `json:"documentID"`
-	Value      string `json:"value"`
-}
 
 //Authenticate logs into the user
 var Authenticate = func(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +84,15 @@ func echo(ctx context.Context, conn *websocket.Conn) error {
 		return err
 	}
 
+	bytes, err := ioutil.ReadAll(ioReader)
+	if err != nil {
+		return err
+	}
+
+	sockets.Retrieve(bytes)
+
+	return err
+
 	//Write it back
 	//
 	// writer, err := conn.Writer(ctx, messageType)
@@ -102,20 +106,4 @@ func echo(ctx context.Context, conn *websocket.Conn) error {
 	// 	return fmt.Errorf("failed to io.Copy: %w", err)
 	//}
 	// err = writer.Close()
-
-	//parse message as json
-	bytes, err := ioutil.ReadAll(ioReader)
-	if err != nil {
-		return err
-	}
-
-	var delta DocumentDelta
-	if err := json.Unmarshal(bytes, &delta); err != nil {
-		fmt.Print(err)
-		return err
-	}
-
-	fmt.Print(delta)
-
-	return err
 }
