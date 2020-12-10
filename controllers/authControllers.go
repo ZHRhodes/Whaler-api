@@ -1,17 +1,13 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
-	"github.com/heroku/whaler-api/sockets"
+	"github.com/heroku/whaler-api/websocket"
 	"github.com/heroku/whaler-api/utils"
-	"nhooyr.io/websocket"
 )
 
 //Authenticate logs into the user
@@ -48,62 +44,7 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Socket = func(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("Request received at /socket\n")
-	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		Subprotocols: []string{},
-	})
-	if err != nil {
-		fmt.Print("Failed to accept web socket: ", err, "\n")
-		return
-	}
-	fmt.Print("-->socket accepted!")
-	defer conn.Close(websocket.StatusInternalError, "the sky is falling")
-
-	// // if c.Subprotocol() != "echo" {
-	// // 	c.Close(websocket.StatusPolicyViolation, "the client must speak the echo subprotocol")
-	// // }
-
-	for {
-		err = echo(r.Context(), conn)
-		if websocket.CloseStatus(err) == websocket.StatusNormalClosure {
-			return
-		}
-		if err != nil {
-			fmt.Print(fmt.Sprintf("failed to echo with %v: %v", r.RemoteAddr, err))
-			return
-		}
-	}
-}
-
-func echo(ctx context.Context, conn *websocket.Conn) error {
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-	_, ioReader, err := conn.Reader(ctx)
-	if err != nil {
-		return err
-	}
-
-	bytes, err := ioutil.ReadAll(ioReader)
-	if err != nil {
-		return err
-	}
-
-	sockets.Retrieve(bytes)
-
-	return err
-
-	//Write it back
-	//
-	// writer, err := conn.Writer(ctx, messageType)
-	// if err != nil {
-	// 	return err
-	// }
-	//
-	// _, err = io.Copy(writer, ioReader)
-	//
-	// if err != nil {
-	// 	return fmt.Errorf("failed to io.Copy: %w", err)
-	//}
-	// err = writer.Close()
+	pool := websocket.NewPool()
+	go pool.Start()
+	websocket.HandleNewConnection(pool, w, r)
 }

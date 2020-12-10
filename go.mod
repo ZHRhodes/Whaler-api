@@ -12,6 +12,7 @@ require (
 	github.com/gobwas/ws v1.0.4
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/jinzhu/now v1.1.1 // indirect
