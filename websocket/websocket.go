@@ -15,6 +15,7 @@ func HandleNewConnection(id string, w http.ResponseWriter, r *http.Request) {
 	pool, ok := pools[id]
 	if !ok {
 		pool = NewPool()
+		pool.Start()
 		pools[id] = pool
 		log.Println("\nAdded new pool with id ", id)
 	}
