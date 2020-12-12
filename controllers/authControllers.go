@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
-	"github.com/heroku/whaler-api/websocket"
 	"github.com/heroku/whaler-api/utils"
+	"github.com/heroku/whaler-api/websocket"
 )
 
 //Authenticate logs into the user
@@ -44,7 +45,8 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Socket = func(w http.ResponseWriter, r *http.Request) {
-	pool := websocket.NewPool()
-	go pool.Start()
-	websocket.HandleNewConnection(pool, w, r)
+	params := mux.Vars(r)
+	id := params["id"]
+
+	websocket.HandleNewConnection(id, w, r)
 }

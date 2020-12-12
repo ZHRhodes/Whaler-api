@@ -1,5 +1,7 @@
 package websocket
 
+var pools = make(map[string]*Pool)
+
 type Pool struct {
 	clients    map[*Client]bool
 	broadcast  chan Message
@@ -37,4 +39,8 @@ func (p *Pool) Start() {
 			}
 		}
 	}
+}
+
+func AddPool(id string, pool *Pool) {
+	pools[id] = pool
 }

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -39,19 +38,6 @@ type Client struct {
 	pool *Pool
 	conn *websocket.Conn
 	send chan Message
-}
-
-func HandleNewConnection(pool *Pool, w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	client := &Client{pool: pool, conn: conn, send: make(chan Message, 256)}
-	client.pool.register <- client
-
-	go client.startWriting()
-	go client.startReading()
 }
 
 func (c *Client) startReading() error {

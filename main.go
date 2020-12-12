@@ -44,8 +44,6 @@ func main() {
 	// router.HandleFunc("/api/workspace", controllers.FetchWorkspace).Methods("GET")
 
 	router.HandleFunc("/socket", controllers.Socket)
-	//for next time -- start by implementing the echo function
-	//https://github.com/nhooyr/websocket/blob/master/examples/echo/server.go
 
 	port := os.Getenv("PORT")
 	if port == "" {
