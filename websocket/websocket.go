@@ -6,6 +6,7 @@ import (
 )
 
 func HandleNewConnection(id string, w http.ResponseWriter, r *http.Request) {
+	log.Println("\nReceived websocket connection")
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)

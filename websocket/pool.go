@@ -1,5 +1,7 @@
 package websocket
 
+import "log"
+
 var pools = make(map[string]*Pool)
 
 type Pool struct {
@@ -29,6 +31,7 @@ func (p *Pool) Start() {
 				close(client.send)
 			}
 		case message := <-p.broadcast:
+			log.Println("Broadcasting message")
 			for client := range p.clients {
 				select {
 				case client.send <- message:
