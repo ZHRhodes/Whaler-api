@@ -21,7 +21,7 @@ func HandleNewConnection(id string, w http.ResponseWriter, r *http.Request) {
 		pools[id] = pool
 		log.Println("\nAdded new pool with id ", id)
 	}
-	client := &Client{pool: pool, conn: conn, send: make(chan Message, 256)}
+	client := &Client{pool: pool, conn: conn, send: make(chan SocketMessage, 256)}
 	client.pool.register <- client
 
 	go client.startWriting()

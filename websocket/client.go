@@ -37,7 +37,7 @@ var upgrader = websocket.Upgrader{
 type Client struct {
 	pool *Pool
 	conn *websocket.Conn
-	send chan Message
+	send chan SocketMessage
 }
 
 func (c *Client) startReading() error {
@@ -60,7 +60,7 @@ func (c *Client) startReading() error {
 		}
 		messageBytes = bytes.TrimSpace(messageBytes) //bytes.Replace(message, newline, space, -1))
 
-		var message Message
+		var message SocketMessage
 		if err := json.Unmarshal(messageBytes, &message); err != nil {
 			fmt.Println(err)
 			return err
