@@ -46,7 +46,7 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 
 var Socket = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	id := params["id"]
+	id := params["ObjectId"]
 
 	websocket.HandleNewConnection(id, w, r)
 }
