@@ -55,8 +55,9 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	return account, nil
 }
 
-//When saving, we need to 1. set user.OwnedAccount = newAccount and 2. set user.CollaboratingAccount = newAccounts
+//When saving, we need to 1. set user.OwnedAccount = newAccounts and 2. set user.CollaboratingAccount = newAccounts
 //In the future, we can't just assume that the accounts they're saving are all their owned accounts
+//Update 3/3. Now I'm Appending instead of Replacing, which might resolve ^
 func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, error) {
 	var accounts = []*Account{}
 	for _, newAccount := range newAccounts {
@@ -76,11 +77,8 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 
 	user := FetchUser(userID)
 
-	user.OwnedAccounts = accounts
-	user.CollaboratingAccounts = accounts
-
-	db.Model(&user).Association("OwnedAccounts").Replace(accounts)
-	db.Model(&user).Association("CollaboratingAccounts").Replace(accounts)
+	db.Model(&user).Association("OwnedAccounts").Append(accounts)
+	db.Model(&user).Association("CollaboratingAccounts").Append(accounts)
 
 	return accounts, err
 }
