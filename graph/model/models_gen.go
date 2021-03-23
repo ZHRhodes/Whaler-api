@@ -6,6 +6,11 @@ type AccountID struct {
 	ID string `json:"id"`
 }
 
+type AccountTrackingChange struct {
+	Account  *NewAccount `json:"account"`
+	NewState string      `json:"newState"`
+}
+
 type NewAccount struct {
 	ID                *string `json:"id"`
 	SalesforceID      *string `json:"salesforceID"`

@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -12,6 +13,10 @@ import (
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
 )
+
+func (r *accountResolver) OwnerID(ctx context.Context, obj *models.Account) (string, error) {
+	panic(fmt.Errorf("not implemented"))
+}
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
 	user, err := models.CreateUser(input.Email, input.Password, input.OrganizationID)
@@ -74,6 +79,11 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 	return models.SaveContacts(input)
 }
 
+func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (string, error) {
+	userID := middleware.UserIDFromContext(ctx)
+	return models.ApplyAccountTrackingChanges(input, userID)
+}
+
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	preloads := getPreloads(ctx)
@@ -104,12 +114,16 @@ func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID 
 	return models.FetchAccountAssignmentEntries(accountID)
 }
 
+// Account returns generated.AccountResolver implementation.
+func (r *Resolver) Account() generated.AccountResolver { return &accountResolver{r} }
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type accountResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 
@@ -119,8 +133,6 @@ type queryResolver struct{ *Resolver }
 //  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //    it when you're done.
 //  - You have helper methods in this file. Move them out to keep these resolver files clean.
-type accountResolver struct{ *Resolver }
-
 func getPreloads(ctx context.Context) []string {
 	return getNestedPreloads(
 		graphql.GetOperationContext(ctx),

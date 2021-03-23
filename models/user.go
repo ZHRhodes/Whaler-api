@@ -19,7 +19,7 @@ type User struct {
 	IsAdmin               bool          `json:"isAdmin"`
 	OrganizationID        string        `json:"organizationId"`
 	Organization          *Organization `json:"organization" gorm:"-"`
-	OwnedAccounts         []*Account    `json:"ownedAccounts" gorm:"foreignKey:OwnerID"`
+	TrackedAccounts       []*Account    `json:"trackedAccounts" gorm:"many2many:account_trackers;"`
 	CollaboratingAccounts []*Account    `json:"collaboratingAccount" gorm:"many2many:account_collaborators;"`
 }
 

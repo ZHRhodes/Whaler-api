@@ -9,7 +9,6 @@ import (
 type Account struct {
 	DBModel
 	Name              string                   `json:"name"`
-	OwnerID           string                   `json:"ownerID"`
 	SalesforceOwnerID *string                  `json:"salesforceOwnerID"`
 	SalesforceID      *string                  `json:"salesforceID"`
 	Industry          *string                  `json:"industry"`
@@ -24,6 +23,7 @@ type Account struct {
 	State             *string                  `json:"state"`
 	Notes             *string                  `json:"notes"`
 	AssignmentEntries []AccountAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
+	Trackers          []*User                  `json:"trackers" gorm:"many2many:account_trackers;"`
 	Collaborators     []User                   `json:"collaborators" gorm:"many2many:account_collaborators;"`
 	Contacts          []*Contact               `json:"contacts"`
 	// AssignedTo          []User `json:"assignedTo"`
@@ -55,32 +55,30 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	return account, nil
 }
 
-//When saving, we need to 1. set user.OwnedAccount = newAccounts and 2. set user.CollaboratingAccount = newAccounts
-//In the future, we can't just assume that the accounts they're saving are all their owned accounts
-//Update 3/3. Now I'm Appending instead of Replacing, which might resolve ^
 func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, error) {
-	var accounts = []*Account{}
+	var savedAccounts = []*Account{}
+	var error error
 	for _, newAccount := range newAccounts {
 		account := createAccountFromNewAccount(*newAccount)
-		if account.OwnerID == "" {
-			account.OwnerID = userID
+		savedAccount, err := SaveAccount(account)
+		savedAccounts = append(savedAccounts, savedAccount)
+		if error == nil {
+			error = err
 		}
-		accounts = append(accounts, account)
 	}
+	//will only return latest error
+	return savedAccounts, error
+}
 
+func SaveAccount(account *Account) (*Account, error) {
 	err := DB().Clauses(clause.OnConflict{
-		Columns: []clause.Column{{Name: "id"}},
+		Columns: []clause.Column{{Name: "salesforce_id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "name", "owner_id", "industry",
 			"salesforce_id", "description", "number_of_employees", "annual_revenue",
-			"billing_city", "billing_state", "phone", "website", "type", "state", "notes"}),
-	}).Create(&accounts).Error
+			"billing_city", "billing_state", "phone", "website", "type", "state"}),
+	}).Create(&account).Error
 
-	user := FetchUser(userID)
-
-	db.Model(&user).Association("OwnedAccounts").Append(accounts)
-	db.Model(&user).Association("CollaboratingAccounts").Append(accounts)
-
-	return accounts, err
+	return account, err
 }
 
 func FetchAccounts(userID string) ([]*Account, error) {
@@ -92,14 +90,38 @@ func FetchAccounts(userID string) ([]*Account, error) {
 	return accounts, err
 }
 
+func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange, userID string) (string, error) {
+	//if new state is 'tracked'
+	//  if account does not exist in DB, save it
+	//  add account to current user's tracked accounts
+	//else if new state is 'untracked'
+	//  remove account from user's tracked accounts
+	user := FetchUser(userID)
+	var error error
+	for _, change := range trackingChanges {
+		account := createAccountFromNewAccount(*change.Account)
+		if change.NewState == "tracked" {
+			account, err := SaveAccount(account)
+			if error == nil {
+				error = err
+			}
+			//TODO: This might be re-appending existing tracked accounts, but need to check to confirm
+			db.Model(&user).Association("TrackedAccounts").Append(account)
+		} else if change.NewState == "untracked" {
+			db.Model(&user).Association("TrackedAccounts").Delete(account)
+		}
+	}
+
+	//TODO: return more informative success, and more than just latest error
+	return "done", error
+}
+
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 	id := SafelyUnwrap(newAccount.ID)
-	ownerID := SafelyUnwrap(newAccount.OwnerID)
 
 	return &Account{
 		DBModel:           DBModel{ID: id},
 		Name:              newAccount.Name,
-		OwnerID:           ownerID,
 		SalesforceID:      newAccount.SalesforceID,
 		Industry:          newAccount.Industry,
 		Description:       newAccount.Description,

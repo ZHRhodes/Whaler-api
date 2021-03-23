@@ -108,6 +108,11 @@ input NewAccountAssignmentEntry {
   assignedTo: String
 }
 
+input AccountTrackingChange {
+  account: NewAccount!
+  newState: String!
+}
+
 # Contact
 
 type Contact {
@@ -194,6 +199,8 @@ type Mutation {
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
+
+  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): String!
 }
 
 type DBModel {
