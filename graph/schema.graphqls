@@ -206,7 +206,7 @@ type Mutation {
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
 
-  applyAccountTrackingChanges(input: String!): String!
+  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): Boolean!
 }
 
 type DBModel {

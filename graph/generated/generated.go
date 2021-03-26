@@ -113,7 +113,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ApplyAccountTrackingChanges  func(childComplexity int, input string) int
+		ApplyAccountTrackingChanges  func(childComplexity int, input []*model.AccountTrackingChange) int
 		CreateAccount                func(childComplexity int, input model.NewAccount) int
 		CreateAccountAssignmentEntry func(childComplexity int, input model.NewAccountAssignmentEntry) int
 		CreateContact                func(childComplexity int, input model.NewContact) int
@@ -184,7 +184,7 @@ type MutationResolver interface {
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
-	ApplyAccountTrackingChanges(ctx context.Context, input string) (string, error)
+	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (bool, error)
 }
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
@@ -577,7 +577,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ApplyAccountTrackingChanges(childComplexity, args["input"].(string)), true
+		return e.complexity.Mutation.ApplyAccountTrackingChanges(childComplexity, args["input"].([]*model.AccountTrackingChange)), true
 
 	case "Mutation.createAccount":
 		if e.complexity.Mutation.CreateAccount == nil {
@@ -1184,7 +1184,7 @@ type Mutation {
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
 
-  applyAccountTrackingChanges(input: String!): String!
+  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): Boolean!
 }
 
 type DBModel {
@@ -1205,10 +1205,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_applyAccountTrackingChanges_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 []*model.AccountTrackingChange
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNAccountTrackingChange2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChangeᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3560,7 +3560,7 @@ func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ApplyAccountTrackingChanges(rctx, args["input"].(string))
+		return ec.resolvers.Mutation().ApplyAccountTrackingChanges(rctx, args["input"].([]*model.AccountTrackingChange))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3572,9 +3572,9 @@ func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Organization_id(ctx context.Context, field graphql.CollectedField, obj *models.Organization) (ret graphql.Marshaler) {
@@ -7343,6 +7343,32 @@ func (ec *executionContext) marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋher
 		return graphql.Null
 	}
 	return ec._AccountAssignmentEntry(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNAccountTrackingChange2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChangeᚄ(ctx context.Context, v interface{}) ([]*model.AccountTrackingChange, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*model.AccountTrackingChange, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNAccountTrackingChange2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChange(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) unmarshalNAccountTrackingChange2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChange(ctx context.Context, v interface{}) (*model.AccountTrackingChange, error) {
+	res, err := ec.unmarshalInputAccountTrackingChange(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

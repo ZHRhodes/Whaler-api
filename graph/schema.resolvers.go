@@ -79,8 +79,8 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 	return models.SaveContacts(input)
 }
 
-func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input string) (string, error) {
-	return "hello world", nil
+func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
