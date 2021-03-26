@@ -68,6 +68,10 @@ type NewWorkspace struct {
 	Name string `json:"name"`
 }
 
+type StringArray struct {
+	Array []string `json:"array"`
+}
+
 type UserID struct {
 	ID string `json:"id"`
 }

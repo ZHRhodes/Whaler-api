@@ -113,7 +113,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ApplyAccountTrackingChanges  func(childComplexity int, input []*model.AccountTrackingChange) int
+		ApplyAccountTrackingChanges  func(childComplexity int, input string) int
 		CreateAccount                func(childComplexity int, input model.NewAccount) int
 		CreateAccountAssignmentEntry func(childComplexity int, input model.NewAccountAssignmentEntry) int
 		CreateContact                func(childComplexity int, input model.NewContact) int
@@ -141,6 +141,10 @@ type ComplexityRoot struct {
 		Contacts                 func(childComplexity int, accountID string) int
 		Organization             func(childComplexity int) int
 		Workspaces               func(childComplexity int) int
+	}
+
+	StringArray struct {
+		Array func(childComplexity int) int
 	}
 
 	User struct {
@@ -180,7 +184,7 @@ type MutationResolver interface {
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
-	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (string, error)
+	ApplyAccountTrackingChanges(ctx context.Context, input string) (string, error)
 }
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
@@ -573,7 +577,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ApplyAccountTrackingChanges(childComplexity, args["input"].([]*model.AccountTrackingChange)), true
+		return e.complexity.Mutation.ApplyAccountTrackingChanges(childComplexity, args["input"].(string)), true
 
 	case "Mutation.createAccount":
 		if e.complexity.Mutation.CreateAccount == nil {
@@ -781,6 +785,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Workspaces(childComplexity), true
+
+	case "StringArray.array":
+		if e.complexity.StringArray.Array == nil {
+			break
+		}
+
+		return e.complexity.StringArray.Array(childComplexity), true
 
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
@@ -1146,6 +1157,12 @@ input NewWorkspace {
   name: String!
 }
 
+# Misc
+
+type StringArray {
+  array: [String!]!
+}
+
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
@@ -1167,7 +1184,7 @@ type Mutation {
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
 
-  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): String!
+  applyAccountTrackingChanges(input: String!): String!
 }
 
 type DBModel {
@@ -1188,10 +1205,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_applyAccountTrackingChanges_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.AccountTrackingChange
+	var arg0 string
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNAccountTrackingChange2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChangeᚄ(ctx, tmp)
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3543,7 +3560,7 @@ func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Co
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ApplyAccountTrackingChanges(rctx, args["input"].([]*model.AccountTrackingChange))
+		return ec.resolvers.Mutation().ApplyAccountTrackingChanges(rctx, args["input"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4064,6 +4081,41 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	res := resTmp.(*introspection.Schema)
 	fc.Result = res
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _StringArray_array(ctx context.Context, field graphql.CollectedField, obj *model.StringArray) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "StringArray",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Array, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *models.User) (ret graphql.Marshaler) {
@@ -6722,6 +6774,33 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
+var stringArrayImplementors = []string{"StringArray"}
+
+func (ec *executionContext) _StringArray(ctx context.Context, sel ast.SelectionSet, obj *model.StringArray) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, stringArrayImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("StringArray")
+		case "array":
+			out.Values[i] = ec._StringArray_array(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var userImplementors = []string{"User"}
 
 func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *models.User) graphql.Marshaler {
@@ -7266,32 +7345,6 @@ func (ec *executionContext) marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋher
 	return ec._AccountAssignmentEntry(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNAccountTrackingChange2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChangeᚄ(ctx context.Context, v interface{}) ([]*model.AccountTrackingChange, error) {
-	var vSlice []interface{}
-	if v != nil {
-		if tmp1, ok := v.([]interface{}); ok {
-			vSlice = tmp1
-		} else {
-			vSlice = []interface{}{v}
-		}
-	}
-	var err error
-	res := make([]*model.AccountTrackingChange, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNAccountTrackingChange2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChange(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) unmarshalNAccountTrackingChange2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐAccountTrackingChange(ctx context.Context, v interface{}) (*model.AccountTrackingChange, error) {
-	res, err := ec.unmarshalInputAccountTrackingChange(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -7575,6 +7628,36 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {

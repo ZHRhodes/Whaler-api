@@ -179,6 +179,12 @@ input NewWorkspace {
   name: String!
 }
 
+# Misc
+
+type StringArray {
+  array: [String!]!
+}
+
 type Query {
   workspaces: [Workspace!]!
   organization: Organization
@@ -200,7 +206,7 @@ type Mutation {
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
 
-  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): String!
+  applyAccountTrackingChanges(input: String!): String!
 }
 
 type DBModel {
