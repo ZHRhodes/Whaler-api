@@ -2,3 +2,5 @@
 .docker_build/
 bin/
 .DS_STORE
+# ignoring launch.json until i can figure out how to set the database_url through the heroku shell script. dont want the plaintext comitted to repo
+.vscode/launch.json
