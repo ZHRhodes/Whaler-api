@@ -16,7 +16,6 @@ type NewAccount struct {
 	SalesforceID      *string `json:"salesforceID"`
 	SalesforceOwnerID *string `json:"salesforceOwnerID"`
 	Name              string  `json:"name"`
-	OwnerID           *string `json:"ownerID"`
 	Industry          *string `json:"industry"`
 	Description       *string `json:"description"`
 	NumberOfEmployees *string `json:"numberOfEmployees"`

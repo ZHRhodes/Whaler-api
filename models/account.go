@@ -73,7 +73,7 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 func SaveAccount(account *Account) (*Account, error) {
 	err := DB().Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "salesforce_id"}},
-		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "name", "owner_id", "industry",
+		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "name", "industry",
 			"salesforce_id", "description", "number_of_employees", "annual_revenue",
 			"billing_city", "billing_state", "phone", "website", "type", "state"}),
 	}).Create(&account).Error

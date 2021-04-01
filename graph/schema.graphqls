@@ -50,7 +50,6 @@ type Account {
   updatedAt: Time!
   deletedAt: Time
   name: String!
-  ownerID: String!
   salesforceID: String
   salesforceOwnerID: String
   industry: String
@@ -74,7 +73,6 @@ input NewAccount {
   salesforceID: String
   salesforceOwnerID: String
   name: String!
-  ownerID: String
   industry: String
   description: String
   numberOfEmployees: String

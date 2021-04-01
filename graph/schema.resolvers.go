@@ -14,10 +14,6 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
-func (r *accountResolver) OwnerID(ctx context.Context, obj *models.Account) (string, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*models.User, error) {
 	user, err := models.CreateUser(input.Email, input.Password, input.OrganizationID)
 	if err != nil {
@@ -113,16 +109,12 @@ func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID 
 	return models.FetchAccountAssignmentEntries(accountID)
 }
 
-// Account returns generated.AccountResolver implementation.
-func (r *Resolver) Account() generated.AccountResolver { return &accountResolver{r} }
-
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-type accountResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 
