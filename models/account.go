@@ -10,7 +10,7 @@ type Account struct {
 	DBModel
 	Name              string                   `json:"name"`
 	SalesforceOwnerID *string                  `json:"salesforceOwnerID"`
-	SalesforceID      *string                  `json:"salesforceID"`
+	SalesforceID      *string                  `json:"salesforceID" gorm:"uniqueIndex"`
 	Industry          *string                  `json:"industry"`
 	Description       *string                  `json:"description"`
 	NumberOfEmployees *string                  `json:"numberOfEmployees"`
@@ -90,30 +90,27 @@ func FetchAccounts(userID string) ([]*Account, error) {
 	return accounts, err
 }
 
-func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange, userID string) (string, error) {
-	//if new state is 'tracked'
-	//  if account does not exist in DB, save it
-	//  add account to current user's tracked accounts
-	//else if new state is 'untracked'
-	//  remove account from user's tracked accounts
+func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange, userID string) (bool, error) {
 	user := FetchUser(userID)
 	var error error
 	for _, change := range trackingChanges {
 		account := createAccountFromNewAccount(*change.Account)
+		var existingAccount Account
+		if account.SalesforceID != nil {
+			db.First(&existingAccount, "salesforce_id = ?", account.SalesforceID)
+		}
+
+		account.ID = existingAccount.ID
+
 		if change.NewState == "tracked" {
-			account, err := SaveAccount(account)
-			if error == nil {
-				error = err
-			}
-			//TODO: This might be re-appending existing tracked accounts, but need to check to confirm
 			db.Model(&user).Association("TrackedAccounts").Append(account)
 		} else if change.NewState == "untracked" {
 			db.Model(&user).Association("TrackedAccounts").Delete(account)
 		}
 	}
 
-	//TODO: return more informative success, and more than just latest error
-	return "done", error
+	//TODO: return more informative response, and more than just latest error
+	return error == nil, error
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {

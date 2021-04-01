@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/heroku/whaler-api/graph/generated"
@@ -76,7 +75,8 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 }
 
 func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	userID := middleware.UserIDFromContext(ctx)
+	return models.ApplyAccountTrackingChanges(input, userID)
 }
 
 func (r *queryResolver) Workspaces(ctx context.Context) ([]*models.Workspace, error) {
