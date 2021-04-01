@@ -83,10 +83,8 @@ func SaveAccount(account *Account) (*Account, error) {
 
 func FetchAccounts(userID string) ([]*Account, error) {
 	var accounts = []*Account{}
-	// err := db.Model(&User{DBModel: DBModel{ID: userID}}).Association("CollaboratingAccounts").Find(&accounts)
-	//Temporarily opening access to all accounts for all users
-
-	err := db.Find(&accounts).Error
+	user := FetchUser(userID)
+	err := db.Model(&user).Association("TrackedAccounts").Find(&accounts)
 	return accounts, err
 }
 
