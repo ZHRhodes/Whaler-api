@@ -88,7 +88,7 @@ func FetchAccounts(userID string) ([]*Account, error) {
 	return accounts, err
 }
 
-func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange, userID string) (bool, error) {
+func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange, userID string) ([]*Account, error) {
 	user := FetchUser(userID)
 	var error error
 	for _, change := range trackingChanges {
@@ -107,8 +107,11 @@ func ApplyAccountTrackingChanges(trackingChanges []*model.AccountTrackingChange,
 		}
 	}
 
+	var trackedAccounts []*Account
+	db.Model(&user).Association("TrackedAccounts").Find(&trackedAccounts)
+
 	//TODO: return more informative response, and more than just latest error
-	return error == nil, error
+	return trackedAccounts, error
 }
 
 func createAccountFromNewAccount(newAccount model.NewAccount) *Account {

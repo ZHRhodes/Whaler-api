@@ -179,7 +179,7 @@ type MutationResolver interface {
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
-	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (bool, error)
+	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error)
 }
 type QueryResolver interface {
 	Workspaces(ctx context.Context) ([]*models.Workspace, error)
@@ -1170,7 +1170,7 @@ type Mutation {
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
 
-  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): Boolean!
+  applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }
 
 type DBModel {
@@ -3523,9 +3523,9 @@ func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.([]*models.Account)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Organization_id(ctx context.Context, field graphql.CollectedField, obj *models.Organization) (ret graphql.Marshaler) {

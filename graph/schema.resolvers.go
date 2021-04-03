@@ -74,7 +74,7 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 	return models.SaveContacts(input)
 }
 
-func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) (bool, error) {
+func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	return models.ApplyAccountTrackingChanges(input, userID)
 }
