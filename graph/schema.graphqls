@@ -64,7 +64,7 @@ type Account {
   state: String
   notes: String
   assignmentEntries: [AccountAssignmentEntry!]!
-  assignedTo: String
+  assignedTo: S
 }
 
 input NewAccount {
