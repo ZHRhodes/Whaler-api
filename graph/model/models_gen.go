@@ -27,6 +27,7 @@ type NewAccount struct {
 	Type              *string `json:"type"`
 	State             *string `json:"state"`
 	Notes             *string `json:"notes"`
+	AssignedTo        *string `json:"assignedTo"`
 }
 
 type NewAccountAssignmentEntry struct {

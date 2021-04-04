@@ -83,6 +83,7 @@ input NewAccount {
   type: String
   state: String
   notes: String
+  assignedTo: String
 }
 
 input AccountID {

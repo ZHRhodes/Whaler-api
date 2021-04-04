@@ -1057,6 +1057,7 @@ input NewAccount {
   type: String
   state: String
   notes: String
+  assignedTo: String
 }
 
 input AccountID {
@@ -5955,6 +5956,14 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notes"))
 			it.Notes, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedTo":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assignedTo"))
+			it.AssignedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
