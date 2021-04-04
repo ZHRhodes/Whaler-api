@@ -47,6 +47,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Account struct {
 		AnnualRevenue     func(childComplexity int) int
+		AssignedTo        func(childComplexity int) int
 		AssignmentEntries func(childComplexity int) int
 		BillingCity       func(childComplexity int) int
 		BillingState      func(childComplexity int) int
@@ -211,6 +212,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.AnnualRevenue(childComplexity), true
+
+	case "Account.assignedTo":
+		if e.complexity.Account.AssignedTo == nil {
+			break
+		}
+
+		return e.complexity.Account.AssignedTo(childComplexity), true
 
 	case "Account.assignmentEntries":
 		if e.complexity.Account.AssignmentEntries == nil {
@@ -1030,8 +1038,7 @@ type Account {
   state: String
   notes: String
   assignmentEntries: [AccountAssignmentEntry!]!
-  # tier: Int
-	# assignedTo: [User!]!
+  assignedTo: String
 }
 
 input NewAccount {
@@ -2057,6 +2064,38 @@ func (ec *executionContext) _Account_assignmentEntries(ctx context.Context, fiel
 	res := resTmp.([]models.AccountAssignmentEntry)
 	fc.Result = res
 	return ec.marshalNAccountAssignmentEntry2ᚕgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Account",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedTo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _AccountAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *models.AccountAssignmentEntry) (ret graphql.Marshaler) {
@@ -6249,6 +6288,8 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "assignedTo":
+			out.Values[i] = ec._Account_assignedTo(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
