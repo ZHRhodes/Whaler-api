@@ -26,7 +26,9 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 		return nil, err
 	}
 
-	db.First(&Account{}, newEntry.AccountID).Association("AssignmentEntries").Append(entry)
+	var account Account
+	db.First(account, newEntry.AccountID).Association("AssignmentEntries").Append(entry)
+	db.Model(account).Update("assignedTo", entry.AssignedTo)
 
 	return entry, nil
 }

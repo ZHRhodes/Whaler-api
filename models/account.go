@@ -26,7 +26,7 @@ type Account struct {
 	Trackers          []*User                  `json:"trackers" gorm:"many2many:account_trackers;"`
 	Collaborators     []User                   `json:"collaborators" gorm:"many2many:account_collaborators;"`
 	Contacts          []*Contact               `json:"contacts"`
-	// AssignedTo          []User `json:"assignedTo"`
+	AssignedTo        *User                    `json:"assignedTo"`
 	//contacts
 }
 
