@@ -21,7 +21,6 @@ type contextKey struct {
 //DEPRECATED -- REST
 var JwtAuthentication = func(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Print("hit jwt\n")
 		notAuth := []string{"/api/user/create",
 			"/api/user/login",
 			"/api/org/create",
@@ -64,22 +63,12 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
-		fmt.Print(fmt.Sprint(tokenHeader))
-
-		if err != nil {
-			fmt.Print(fmt.Sprint(err))
-			data := map[string]interface{}{"error": err}
-			response = utils.Message(4003, "Malformed authentication token", true, data)
-			w.WriteHeader(http.StatusForbidden)
-			w.Header().Add("Content-Type", "application/json")
-			utils.Respond(w, response)
-			return
-		}
-
 		isNotRefreshEndpoint := r.URL.Path != "/api/user/refresh"
 
-		if !token.Valid && !isNotRefreshEndpoint {
-			response = utils.Message(4003, "Token is not valid.", true, map[string]interface{}{})
+		if (err != nil || !token.Valid) && isNotRefreshEndpoint {
+			fmt.Print(fmt.Sprint(err))
+			data := map[string]interface{}{"error": err}
+			response = utils.Message(4003, "Invalid authentication token", true, data)
 			w.WriteHeader(http.StatusForbidden)
 			w.Header().Add("Content-Type", "application/json")
 			utils.Respond(w, response)
