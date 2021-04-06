@@ -30,7 +30,7 @@ type Tokens struct {
 }
 
 const RefreshTokenValidTime = time.Hour * 24 * 90
-const AuthTokenValidTime = time.Minute * 1
+const AuthTokenValidTime = time.Minute * 60
 
 func CreateAccessToken(userID string) string {
 	exp := time.Now().Add(AuthTokenValidTime).Unix()
@@ -118,7 +118,6 @@ func Refresh(refreshTokenString string, userID string) map[string]interface{} {
 	tokens := Tokens{AccessToken: accessTokenString, RefreshToken: refreshTokenString}
 	user := FetchUser(userID)
 	resp := utils.MessageWithTokens(1000, "Tokens refreshed", false, user, tokens)
-	fmt.Println(fmt.Sprintf("New Token %s", tokens.AccessToken))
 	return resp
 }
 
