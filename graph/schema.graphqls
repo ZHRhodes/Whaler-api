@@ -209,7 +209,7 @@ type Query {
   contacts(accountID: ID!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
-  note(accountID: String!) : Note!
+  note(accountID: ID!) : Note!
 }
 
 type Mutation {
