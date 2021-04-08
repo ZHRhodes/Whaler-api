@@ -7,7 +7,7 @@ import (
 type Note struct {
 	DBModel
 	OwnerID   string `json:"-" gorm:"index:owner_account"`
-	AccountID string `json:"accountID" gorm:"index:owner_account"`
+	AccountID string `json:"accountId" gorm:"index:owner_account"`
 	Content   string `json:"content"`
 }
 

@@ -125,7 +125,6 @@ type Note {
 
 input NewNote {
   id: ID!
-  ownerID: ID!
   accountID: ID!
   content: String!
 }

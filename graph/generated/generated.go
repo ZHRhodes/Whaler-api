@@ -1186,7 +1186,6 @@ type Note {
 
 input NewNote {
   id: ID!
-  ownerID: ID!
   accountID: ID!
   content: String!
 }
@@ -1270,7 +1269,7 @@ type Query {
   contacts(accountID: ID!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
-  note(accountID: String!) : Note!
+  note(accountID: ID!) : Note!
 }
 
 type Mutation {
@@ -1535,7 +1534,7 @@ func (ec *executionContext) field_Query_note_args(ctx context.Context, rawArgs m
 	var arg0 string
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -6604,14 +6603,6 @@ func (ec *executionContext) unmarshalInputNewNote(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			it.ID, err = ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "ownerID":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerID"))
-			it.OwnerID, err = ec.unmarshalNID2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
