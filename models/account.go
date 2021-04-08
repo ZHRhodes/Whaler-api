@@ -21,7 +21,7 @@ type Account struct {
 	Website           *string                  `json:"website"`
 	Type              *string                  `json:"type"`
 	State             *string                  `json:"state"`
-	Notes             *string                  `json:"notes"`
+	Notes             *string                  `json:"notes" gorm:"-"`
 	AssignmentEntries []AccountAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:AccountID;references:ID"`
 	Trackers          []*User                  `json:"trackers" gorm:"many2many:account_trackers;"`
 	Collaborators     []User                   `json:"collaborators" gorm:"many2many:account_collaborators;"`

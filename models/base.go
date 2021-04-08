@@ -63,7 +63,7 @@ func init() {
 	// db.AutoMigrate(&AccountAssignmentEntry{})
 	// db.AutoMigrate(&Organization{})
 	// db.AutoMigrate(&RefreshToken{})
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Note{})
 	// db.AutoMigrate(&Workspace{})
 
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error

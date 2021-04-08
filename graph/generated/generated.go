@@ -122,6 +122,17 @@ type ComplexityRoot struct {
 		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
 		SaveAccounts                 func(childComplexity int, input []*model.NewAccount) int
 		SaveContacts                 func(childComplexity int, input []*model.NewContact) int
+		SaveNote                     func(childComplexity int, input models.Note) int
+	}
+
+	Note struct {
+		AccountID func(childComplexity int) int
+		Content   func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		OwnerID   func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
 	}
 
 	Organization struct {
@@ -138,6 +149,7 @@ type ComplexityRoot struct {
 		Accounts                 func(childComplexity int) int
 		ContactAssignmentEntries func(childComplexity int, contactID string) int
 		Contacts                 func(childComplexity int, accountID string) int
+		Note                     func(childComplexity int, accountID string) int
 		Organization             func(childComplexity int) int
 		Workspaces               func(childComplexity int) int
 	}
@@ -180,6 +192,7 @@ type MutationResolver interface {
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
+	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
 	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error)
 }
 type QueryResolver interface {
@@ -189,6 +202,7 @@ type QueryResolver interface {
 	Contacts(ctx context.Context, accountID string) ([]*models.Contact, error)
 	ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
 	AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error)
+	Note(ctx context.Context, accountID string) (*models.Note, error)
 }
 
 type executableSchema struct {
@@ -683,6 +697,67 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SaveContacts(childComplexity, args["input"].([]*model.NewContact)), true
 
+	case "Mutation.saveNote":
+		if e.complexity.Mutation.SaveNote == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_saveNote_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SaveNote(childComplexity, args["input"].(models.Note)), true
+
+	case "Note.accountID":
+		if e.complexity.Note.AccountID == nil {
+			break
+		}
+
+		return e.complexity.Note.AccountID(childComplexity), true
+
+	case "Note.content":
+		if e.complexity.Note.Content == nil {
+			break
+		}
+
+		return e.complexity.Note.Content(childComplexity), true
+
+	case "Note.createdAt":
+		if e.complexity.Note.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Note.CreatedAt(childComplexity), true
+
+	case "Note.deletedAt":
+		if e.complexity.Note.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Note.DeletedAt(childComplexity), true
+
+	case "Note.id":
+		if e.complexity.Note.ID == nil {
+			break
+		}
+
+		return e.complexity.Note.ID(childComplexity), true
+
+	case "Note.ownerID":
+		if e.complexity.Note.OwnerID == nil {
+			break
+		}
+
+		return e.complexity.Note.OwnerID(childComplexity), true
+
+	case "Note.updatedAt":
+		if e.complexity.Note.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Note.UpdatedAt(childComplexity), true
+
 	case "Organization.createdAt":
 		if e.complexity.Organization.CreatedAt == nil {
 			break
@@ -767,6 +842,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Contacts(childComplexity, args["accountID"].(string)), true
+
+	case "Query.note":
+		if e.complexity.Query.Note == nil {
+			break
+		}
+
+		args, err := ec.field_Query_note_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Note(childComplexity, args["accountID"].(string)), true
 
 	case "Query.organization":
 		if e.complexity.Query.Organization == nil {
@@ -1085,6 +1172,25 @@ input AccountTrackingChange {
   newState: String!
 }
 
+# Note
+
+type Note {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  ownerID: ID!
+  accountID: ID!
+  content: String!
+}
+
+input NewNote {
+  id: ID!
+  ownerID: ID!
+  accountID: ID!
+  content: String!
+}
+
 # Contact
 
 type Contact {
@@ -1164,6 +1270,7 @@ type Query {
   contacts(accountID: ID!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
+  note(accountID: String!) : Note!
 }
 
 type Mutation {
@@ -1177,6 +1284,7 @@ type Mutation {
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
+  saveNote(input: NewNote!): Note!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }
@@ -1346,6 +1454,21 @@ func (ec *executionContext) field_Mutation_saveContacts_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_saveNote_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.Note
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewNote2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1398,6 +1521,21 @@ func (ec *executionContext) field_Query_contacts_args(ctx context.Context, rawAr
 	if tmp, ok := rawArgs["accountID"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["accountID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_note_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["accountID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3526,6 +3664,48 @@ func (ec *executionContext) _Mutation_saveContacts(ctx context.Context, field gr
 	return ec.marshalNContact2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐContactᚄ(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_saveNote(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_saveNote_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SaveNote(rctx, args["input"].(models.Note))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Note)
+	fc.Result = res
+	return ec.marshalNNote2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -3566,6 +3746,248 @@ func (ec *executionContext) _Mutation_applyAccountTrackingChanges(ctx context.Co
 	res := resTmp.([]*models.Account)
 	fc.Result = res
 	return ec.marshalNAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_id(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_deletedAt(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_ownerID(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OwnerID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_accountID(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Note_content(ctx context.Context, field graphql.CollectedField, obj *models.Note) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Note",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Content, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Organization_id(ctx context.Context, field graphql.CollectedField, obj *models.Organization) (ret graphql.Marshaler) {
@@ -4001,6 +4423,48 @@ func (ec *executionContext) _Query_accountAssignmentEntries(ctx context.Context,
 	res := resTmp.([]*models.AccountAssignmentEntry)
 	fc.Result = res
 	return ec.marshalNAccountAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntryᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_note(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_note_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Note(rctx, args["accountID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.Note)
+	fc.Result = res
+	return ec.marshalNNote2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -6129,6 +6593,50 @@ func (ec *executionContext) unmarshalInputNewContactAssignmentEntry(ctx context.
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewNote(ctx context.Context, obj interface{}) (models.Note, error) {
+	var it models.Note
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ownerID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ownerID"))
+			it.OwnerID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "accountID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
+			it.AccountID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "content":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("content"))
+			it.Content, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewOrganization(ctx context.Context, obj interface{}) (model.NewOrganization, error) {
 	var it model.NewOrganization
 	var asMap = obj.(map[string]interface{})
@@ -6577,8 +7085,67 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "saveNote":
+			out.Values[i] = ec._Mutation_saveNote(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "applyAccountTrackingChanges":
 			out.Values[i] = ec._Mutation_applyAccountTrackingChanges(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var noteImplementors = []string{"Note"}
+
+func (ec *executionContext) _Note(ctx context.Context, sel ast.SelectionSet, obj *models.Note) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, noteImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Note")
+		case "id":
+			out.Values[i] = ec._Note_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._Note_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._Note_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deletedAt":
+			out.Values[i] = ec._Note_deletedAt(ctx, field, obj)
+		case "ownerID":
+			out.Values[i] = ec._Note_ownerID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "accountID":
+			out.Values[i] = ec._Note_accountID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "content":
+			out.Values[i] = ec._Note_content(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -6733,6 +7300,20 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_accountAssignmentEntries(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "note":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_note(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -7591,6 +8172,11 @@ func (ec *executionContext) unmarshalNNewContactAssignmentEntry2githubᚗcomᚋh
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNNewNote2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx context.Context, v interface{}) (models.Note, error) {
+	res, err := ec.unmarshalInputNewNote(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNNewOrganization2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewOrganization(ctx context.Context, v interface{}) (model.NewOrganization, error) {
 	res, err := ec.unmarshalInputNewOrganization(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -7604,6 +8190,20 @@ func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋherokuᚋwhalerᚑa
 func (ec *executionContext) unmarshalNNewWorkspace2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewWorkspace(ctx context.Context, v interface{}) (model.NewWorkspace, error) {
 	res, err := ec.unmarshalInputNewWorkspace(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNote2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx context.Context, sel ast.SelectionSet, v models.Note) graphql.Marshaler {
+	return ec._Note(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNNote2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐNote(ctx context.Context, sel ast.SelectionSet, v *models.Note) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Note(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNOrganization2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐOrganization(ctx context.Context, sel ast.SelectionSet, v models.Organization) graphql.Marshaler {

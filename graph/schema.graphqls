@@ -111,6 +111,25 @@ input AccountTrackingChange {
   newState: String!
 }
 
+# Note
+
+type Note {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  ownerID: ID!
+  accountID: ID!
+  content: String!
+}
+
+input NewNote {
+  id: ID!
+  ownerID: ID!
+  accountID: ID!
+  content: String!
+}
+
 # Contact
 
 type Contact {
@@ -190,6 +209,7 @@ type Query {
   contacts(accountID: ID!): [Contact!]!
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
+  note(accountID: String!) : Note!
 }
 
 type Mutation {
@@ -203,6 +223,7 @@ type Mutation {
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
+  saveNote(input: NewNote!): Note!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }

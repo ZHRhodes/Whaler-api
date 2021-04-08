@@ -74,6 +74,10 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 	return models.SaveContacts(input)
 }
 
+func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*models.Note, error) {
+	return models.SaveNote(input)
+}
+
 func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	return models.ApplyAccountTrackingChanges(input, userID)
@@ -107,6 +111,11 @@ func (r *queryResolver) ContactAssignmentEntries(ctx context.Context, contactID 
 
 func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error) {
 	return models.FetchAccountAssignmentEntries(accountID)
+}
+
+func (r *queryResolver) Note(ctx context.Context, accountID string) (*models.Note, error) {
+	userID := middleware.UserIDFromContext(ctx)
+	return models.FetchNote(userID, accountID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

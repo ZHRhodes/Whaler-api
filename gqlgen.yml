@@ -78,3 +78,9 @@ models:
   AccountAssignmentEntry:
     model:
       - github.com/heroku/whaler-api/models.AccountAssignmentEntry
+  Note:
+    model:
+      - github.com/heroku/whaler-api/models.Note
+  NewNote:
+    model:
+      - github.com/heroku/whaler-api/models.Note
