@@ -18,7 +18,8 @@ func FetchNote(ownerID string, accountID string) (*Note, error) {
 	return &note, err
 }
 
-func SaveNote(note Note) (*Note, error) {
+func SaveNote(ownerID string, note Note) (*Note, error) {
+	note.OwnerID = ownerID
 	conflictColumn := []clause.Column{{Name: "id"}}
 	assignmentColumn := clause.AssignmentColumns([]string{"updated_at", "account_id", "owner_id", "content"})
 	err := db.Clauses(clause.OnConflict{Columns: conflictColumn, DoUpdates: assignmentColumn}).Create(&note).Error
