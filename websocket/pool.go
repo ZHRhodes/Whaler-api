@@ -33,6 +33,9 @@ func (p *Pool) Start() {
 		case message := <-p.broadcast:
 			log.Println("Broadcasting message")
 			for client := range p.clients {
+				if client.id == message.Id {
+					return
+				}
 				select {
 				case client.send <- message:
 				default:

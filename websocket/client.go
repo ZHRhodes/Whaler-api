@@ -35,6 +35,7 @@ var upgrader = websocket.Upgrader{
 }
 
 type Client struct {
+	id   string
 	pool *Pool
 	conn *websocket.Conn
 	send chan SocketMessage
@@ -65,6 +66,7 @@ func (c *Client) startReading() error {
 			fmt.Println(err)
 			return err
 		}
+		message.Id = c.id
 
 		c.pool.broadcast <- message
 	}
@@ -97,6 +99,7 @@ func (c *Client) startWriting() {
 			if err != nil {
 				log.Println("Failed to marshal message into bytes: ", err)
 			}
+			log.Println("Sending bytes: %s", messageBytes)
 			w.Write(messageBytes)
 
 			// Add queued chat messages to the current websocket message
