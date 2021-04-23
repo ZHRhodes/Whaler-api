@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -47,6 +48,6 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 var Socket = func(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["ObjectId"]
-
+	fmt.Printf("\nObjectId = %s", id)
 	websocket.HandleNewConnection(id, w, r)
 }
