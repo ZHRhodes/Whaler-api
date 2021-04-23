@@ -74,7 +74,7 @@ func SaveAccount(account *Account) (*Account, error) {
 		Columns: []clause.Column{{Name: "salesforce_id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "name", "industry",
 			"salesforce_id", "description", "number_of_employees", "annual_revenue",
-			"billing_city", "billing_state", "phone", "website", "type", "state", "assignedTo"}),
+			"billing_city", "billing_state", "phone", "website", "type", "state", "assigned_to"}),
 	}).Create(&account).Error
 
 	return account, err
