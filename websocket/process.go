@@ -19,6 +19,7 @@ func Process(bytes []byte) error {
 			return err
 		}
 
+		fmt.Println(change)
 		ProcessDocumentChange(change)
 	}
 
