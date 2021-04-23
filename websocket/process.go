@@ -6,6 +6,7 @@ import (
 )
 
 func Process(bytes []byte) error {
+	fmt.Println("Processing socket message...")
 	var message SocketMessage
 	if err := json.Unmarshal(bytes, &message); err != nil {
 		fmt.Println(err)
