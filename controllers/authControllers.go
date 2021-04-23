@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
 	"github.com/heroku/whaler-api/utils"
@@ -46,8 +45,7 @@ var LogOut = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var Socket = func(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["ObjectId"]
+	id := r.Header.Get("ObjectId")
 	fmt.Printf("\nObjectId = %s", id)
 	websocket.HandleNewConnection(id, w, r)
 }
