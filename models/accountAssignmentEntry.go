@@ -29,6 +29,7 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 	var account Account
 	db.First(&account, "id = ?", newEntry.AccountID).Association("AssignmentEntries").Append(entry)
 	db.Model(&account).Update("AssignedTo", entry.AssignedTo)
+	fmt.Printf("\nUpdating assigned to field for accountId %s to assignedTo %s", account.ID, *entry.AssignedTo)
 
 	return entry, nil
 }
