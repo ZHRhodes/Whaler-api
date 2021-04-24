@@ -131,6 +131,7 @@ func createAccountFromNewAccount(newAccount model.NewAccount) *Account {
 		Type:              newAccount.Type,
 		State:             newAccount.State,
 		Notes:             newAccount.Notes,
+		AssignedTo:        newAccount.AssignedTo,
 	}
 }
 
