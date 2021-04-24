@@ -75,7 +75,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			return
 		}
 
-		fmt.Println(fmt.Sprintf("User %s", tk.UserID))
+		fmt.Printf("\nUser %s", tk.UserID)
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
@@ -92,7 +92,7 @@ var ParseUserIDFromToken = func(next http.Handler) http.Handler {
 			return []byte(os.Getenv("JWT_SECRET")), nil
 		})
 
-		fmt.Println(fmt.Sprintf("User %d", tk.UserID))
+		fmt.Printf("\nUser %s", tk.UserID)
 		ctx := context.WithValue(r.Context(), userIDCtxKey, tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)

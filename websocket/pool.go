@@ -31,12 +31,12 @@ func (p *Pool) Start() {
 				close(client.send)
 			}
 		case message := <-p.broadcast:
-			fmt.Println("Broadcasting message")
+			fmt.Printf("\nBroadcasting message of type %s", message.Type)
 			for client := range p.clients {
-				if client.id == message.Id {
-					fmt.Printf("\nNot sending message to sender - client with id %s", client.id)
-					return
-				}
+				// if client.id == message.Id {
+				// 	fmt.Printf("\nNot sending message to sender - client with id %s", client.id)
+				// 	return
+				// }
 				select {
 				case client.send <- message:
 					fmt.Printf("\nSending message with id %s to client with id %s", message.Id, client.id)
