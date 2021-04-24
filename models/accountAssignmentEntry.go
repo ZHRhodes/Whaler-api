@@ -14,6 +14,7 @@ type AccountAssignmentEntry struct {
 }
 
 func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*AccountAssignmentEntry, error) {
+	fmt.Printf("\nCreating account assignment entry")
 	var entry = &AccountAssignmentEntry{
 		AccountID:  newEntry.AccountID,
 		AssignedBy: newEntry.AssignedBy,
@@ -22,7 +23,8 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 
 	var err = db.Create(entry).Error
 
-	if len(entry.ID) == 0 {
+	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
