@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"gorm.io/gorm/clause"
 )
 
@@ -19,6 +21,7 @@ func FetchNote(ownerID string, accountID string) (*Note, error) {
 }
 
 func SaveNote(ownerID string, note Note) (*Note, error) {
+	fmt.Printf("\nOwnerId %s is saving note with id %s and accountId %s\n")
 	note.OwnerID = ownerID
 	conflictColumn := []clause.Column{{Name: "id"}}
 	assignmentColumn := clause.AssignmentColumns([]string{"updated_at", "account_id", "owner_id", "content"})

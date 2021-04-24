@@ -30,7 +30,7 @@ func init() {
 	conn, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: os.Getenv("DATABASE_URL"), // data source name, refer https://github.com/jackc/pgx
 	}), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Error),
+		Logger: logger.Default.LogMode(logger.War),
 	})
 	if err != nil {
 		fmt.Print(err)
