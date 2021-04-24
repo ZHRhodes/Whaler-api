@@ -14,14 +14,15 @@ type Note struct {
 }
 
 func FetchNote(ownerID string, accountID string) (*Note, error) {
-	query := map[string]interface{}{"owner_id": ownerID, "account_id": accountID}
+	// query := map[string]interface{}{"owner_id": ownerID, "account_id": accountID}
+	query := map[string]interface{}{"account_id": accountID}
 	var note Note
 	err := db.Table("notes").Where(query).First(&note).Error
 	return &note, err
 }
 
 func SaveNote(ownerID string, note Note) (*Note, error) {
-	fmt.Printf("\nOwnerId %s is saving note with id %s and accountId %s\n")
+	fmt.Printf("\nOwnerId %s is saving note with id %s and accountId %s\n", ownerID, note.ID, note.AccountID)
 	note.OwnerID = ownerID
 	conflictColumn := []clause.Column{{Name: "id"}}
 	assignmentColumn := clause.AssignmentColumns([]string{"updated_at", "account_id", "owner_id", "content"})

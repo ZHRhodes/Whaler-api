@@ -36,7 +36,7 @@ func (user *User) Create() map[string]interface{} {
 	DB().Create(user)
 
 	if len(user.ID) == 0 {
-		fmt.Print(fmt.Sprint("the user id was less than zero"))
+		fmt.Println("The user id has zero length")
 		return utils.Message(5001, "Failed to create user, connection error.", true, map[string]interface{}{})
 	}
 
