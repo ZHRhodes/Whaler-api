@@ -1,6 +1,6 @@
 package websocket
 
-import "log"
+import "fmt"
 
 var pools = make(map[string]*Pool)
 
@@ -31,13 +31,15 @@ func (p *Pool) Start() {
 				close(client.send)
 			}
 		case message := <-p.broadcast:
-			log.Println("Broadcasting message")
+			fmt.Println("Broadcasting message")
 			for client := range p.clients {
 				if client.id == message.Id {
+					fmt.Printf("\nNot sending message to sender - client with id %s", client.id)
 					return
 				}
 				select {
 				case client.send <- message:
+					fmt.Printf("\nSending message with id %s to client with id %s", message.Id, client.id)
 				default:
 					close(client.send)
 					delete(p.clients, client)

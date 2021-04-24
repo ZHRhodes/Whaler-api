@@ -55,7 +55,7 @@ func (c *Client) startReading() error {
 		_, messageBytes, err := c.conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Println("error: %v", err)
+				log.Printf("error: %v", err)
 			}
 			break
 		}
@@ -99,7 +99,7 @@ func (c *Client) startWriting() {
 			if err != nil {
 				log.Println("Failed to marshal message into bytes: ", err)
 			}
-			log.Println("Sending bytes: %s", messageBytes)
+			log.Printf("Sending bytes: %s", messageBytes)
 			w.Write(messageBytes)
 
 			// Add queued chat messages to the current websocket message
