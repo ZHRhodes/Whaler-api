@@ -16,7 +16,7 @@ type Note struct {
 func FetchNote(ownerID string, accountID string) (*Note, error) {
 	query := map[string]interface{}{"owner_id": ownerID, "account_id": accountID}
 	var note Note
-	err := db.Table("Notes").Where(query).First(&note).Error
+	err := db.Table("notes").Where(query).First(&note).Error
 	return &note, err
 }
 
