@@ -8,6 +8,10 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	ServerID = uuid.New().String()
+)
+
 func HandleNewConnection(id string, w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("\nReceived websocket connection with id %s", id)
 	conn, err := upgrader.Upgrade(w, r, nil)

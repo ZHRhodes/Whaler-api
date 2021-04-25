@@ -66,9 +66,10 @@ func (c *Client) startReading() error {
 			fmt.Println(err)
 			return err
 		}
-		message.Id = c.id
+		message.SenderId = c.id
 
-		c.pool.broadcast <- message
+		// c.pool.broadcast <- message //with OT, we need to do some things before broadcasting now
+		Process(message, c)
 	}
 
 	return nil
