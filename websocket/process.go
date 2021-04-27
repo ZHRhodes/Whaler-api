@@ -64,7 +64,7 @@ func sendResourceConnectionConfirmation(resourceId string, initialState string, 
 		return
 	}
 
-	socketMessage := SocketMessage{SenderId: ServerID, Type: "ResourceConnectionConf", Data: bytes}
+	socketMessage := SocketMessage{SenderId: ServerID, Type: "resourceConnectionConf", Data: bytes}
 	select {
 	case client.send <- socketMessage:
 	default:
