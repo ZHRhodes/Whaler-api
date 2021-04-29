@@ -1,6 +1,10 @@
 package websocket
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/heroku/whaler-api/OT/ot-master"
+)
 
 type SocketMessage struct {
 	SenderId string          `json:"id"`
@@ -9,9 +13,9 @@ type SocketMessage struct {
 }
 
 type DocumentChange struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
-	Range string `json:"range"`
+	ResourceId string `json:"resourceId"`
+	Rev        int    `json:"revision"`
+	Ops        ot.Ops `json:"ops"`
 }
 
 type ResourceConnection struct {
@@ -19,8 +23,9 @@ type ResourceConnection struct {
 }
 
 type ResourceConnectionConf struct {
-	ResourceId   string `json:"resourceId,"`
-	InitialState string `json:"initialState"`
+	ResourceId   string   `json:"resourceId,"`
+	InitialState string   `json:"initialState"`
+	Test         [][]rune `json:"rune"`
 }
 
 // {"type": "docDelta", "data": {"documentID": "1", "value": "Hello World!"}}
