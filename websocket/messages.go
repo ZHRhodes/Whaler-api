@@ -7,15 +7,15 @@ import (
 )
 
 type SocketMessage struct {
-	SenderId string          `json:"id"`
+	SenderId string          `json:"senderId"`
 	Type     string          `json:"type"`
 	Data     json.RawMessage `json:"data"`
 }
 
 type DocumentChange struct {
-	ResourceId string `json:"resourceId"`
-	Rev        int    `json:"revision"`
-	Ops        ot.Ops `json:"ops"`
+	ResourceId string   `json:"resourceId"`
+	Rev        int      `json:"rev"`
+	Ops        []*ot.Op `json:"ops"`
 }
 
 type ResourceConnection struct {
@@ -23,9 +23,8 @@ type ResourceConnection struct {
 }
 
 type ResourceConnectionConf struct {
-	ResourceId   string   `json:"resourceId,"`
-	InitialState string   `json:"initialState"`
-	Test         [][]rune `json:"rune"`
+	ResourceId   string `json:"resourceId,"`
+	InitialState string `json:"initialState"`
 }
 
 // {"type": "docDelta", "data": {"documentID": "1", "value": "Hello World!"}}

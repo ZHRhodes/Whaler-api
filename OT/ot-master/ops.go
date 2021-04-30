@@ -21,8 +21,8 @@ type Op struct {
 	// >  0: Retain  N runes
 	// <  0: Delete -N runes
 	// == 0: Noop or Insert string S
-	N int
-	S string
+	N int    `json:"n"`
+	S string `json:"s"`
 }
 
 // MarshalJSON encodes op either as json number or string.
