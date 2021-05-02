@@ -15,7 +15,13 @@ type SocketMessage struct {
 type DocumentChange struct {
 	ResourceId string   `json:"resourceId"`
 	Rev        int      `json:"rev"`
-	Ops        []*ot.Op `json:"ops"`
+	N          []int    `json:"n"`
+	S          []string `json:"s"`
+}
+
+type DocumentChangeReturn struct {
+	ResoureceId string `json:"resourceId"`
+	Ops         ot.Ops `json:"ops"`
 }
 
 type ResourceConnection struct {
