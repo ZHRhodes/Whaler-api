@@ -104,6 +104,7 @@ func sendResourceConnectionConfirmation(messageId string, resourceId string, ini
 }
 
 func sendMessage(bytes []byte, messageId string, senderId string, messageType string, client *Client) {
+	fmt.Printf("\nSending messageId %s, senderId %s, messageType %s, to clientId %s", messageId, senderId, messageType, client.id)
 	socketMessage := SocketMessage{SenderId: senderId, MessageId: messageId, Type: messageType, Data: bytes}
 	select {
 	case client.send <- socketMessage:
