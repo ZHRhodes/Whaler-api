@@ -2,8 +2,6 @@ package websocket
 
 import (
 	"encoding/json"
-
-	"github.com/heroku/whaler-api/OT/ot-master"
 )
 
 type SocketMessage struct {
@@ -20,8 +18,9 @@ type DocumentChange struct {
 }
 
 type DocumentChangeReturn struct {
-	ResoureceId string `json:"resourceId"`
-	Ops         ot.Ops `json:"ops"`
+	ResoureceId string   `json:"resourceId"`
+	N           []int    `json:"n"`
+	S           []string `json:"s"`
 }
 
 type ResourceConnection struct {

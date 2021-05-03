@@ -42,7 +42,15 @@ func processDocChange(message SocketMessage, client *Client) error {
 }
 
 func returnOps(client *Client, resourceId string, ops ot.Ops) error {
-	message := DocumentChangeReturn{ResoureceId: resourceId, Ops: ops}
+	n := []int{}
+	s := []string{}
+
+	for _, op := range ops {
+		n = append(n, op.N)
+		s = append(s, op.S)
+	}
+
+	message := DocumentChangeReturn{ResoureceId: resourceId, N: n, S: s}
 
 	bytes, err := json.Marshal(message)
 
@@ -73,7 +81,7 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 
 	doc := ot.NewDocFromStr(note.Content)
 	serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
-	ot.ServerDocs[request.ResourceId] = serverDoc
+	ot.ServerDocs[request.ResourceId] = &serverDoc
 	sendResourceConnectionConfirmation(request.ResourceId, note.Content, client)
 	return nil
 }
