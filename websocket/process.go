@@ -37,11 +37,11 @@ func processDocChange(message SocketMessage, client *Client) error {
 		fmt.Printf("\nFailed sending changes to doc. %s", err)
 		return err
 	}
-	err = returnOps(client, change.ResourceId, ops)
+	err = returnOps(client, message.MessageId, change.ResourceId, ops)
 	return err
 }
 
-func returnOps(client *Client, resourceId string, ops ot.Ops) error {
+func returnOps(client *Client, messageId string, resourceId string, ops ot.Ops) error {
 	n := []int{}
 	s := []string{}
 
@@ -59,7 +59,7 @@ func returnOps(client *Client, resourceId string, ops ot.Ops) error {
 		return err
 	}
 
-	sendMessage(bytes, ServerID, "docChangeReturnOps", client)
+	sendMessage(bytes, messageId, ServerID, "docChangeReturnOps", client)
 	return nil
 }
 
@@ -82,14 +82,14 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	doc := ot.NewDocFromStr(note.Content)
 	serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
 	ot.ServerDocs[request.ResourceId] = &serverDoc
-	sendResourceConnectionConfirmation(request.ResourceId, note.Content, client)
+	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, note.Content, client)
 	return nil
 }
 
-func sendResourceConnectionConfirmation(resourceId string, initialState string, client *Client) {
+func sendResourceConnectionConfirmation(messageId string, resourceId string, initialState string, client *Client) {
 	conf := ResourceConnectionConf{ResourceId: resourceId, InitialState: initialState}
 	bytes, err := json.Marshal(conf)
-	sendMessage(bytes, ServerID, "resourceConnectionConf", client)
+	sendMessage(bytes, messageId, ServerID, "resourceConnectionConf", client)
 
 	if err != nil {
 		fmt.Println("\nFailed to marshal conf message into bytes")
@@ -97,8 +97,8 @@ func sendResourceConnectionConfirmation(resourceId string, initialState string, 
 	}
 }
 
-func sendMessage(bytes []byte, senderId string, messageType string, client *Client) {
-	socketMessage := SocketMessage{SenderId: senderId, Type: messageType, Data: bytes}
+func sendMessage(bytes []byte, messageId string, senderId string, messageType string, client *Client) {
+	socketMessage := SocketMessage{SenderId: senderId, MessageId: messageId, Type: messageType, Data: bytes}
 	select {
 	case client.send <- socketMessage:
 	default:

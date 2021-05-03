@@ -5,9 +5,10 @@ import (
 )
 
 type SocketMessage struct {
-	SenderId string          `json:"senderId"`
-	Type     string          `json:"type"`
-	Data     json.RawMessage `json:"data"`
+	SenderId  string          `json:"senderId"`
+	MessageId string          `json:"messageId"`
+	Type      string          `json:"type"`
+	Data      json.RawMessage `json:"data"`
 }
 
 type DocumentChange struct {
