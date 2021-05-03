@@ -39,7 +39,7 @@ func processDocChange(message SocketMessage, client *Client) error {
 		fmt.Printf("\nFailed sending changes to doc. %s", err)
 		return err
 	}
-	err = returnOps(client, message.MessageId, change.ResourceId, ops)
+	err = returnOps(client, doc, message.MessageId, change.ResourceId, ops)
 	return err
 }
 
@@ -86,7 +86,7 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	doc := ot.NewDocFromStr(note.Content)
 	serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
 	ot.ServerDocs[request.ResourceId] = &serverDoc
-	ServerDocClients[&serverDoc] = client //TODO: clear this map out somewhere?
+	ServerDocClients[&serverDoc] = append(ServerDocClients[&serverDoc], client) //TODO: clear this map out somewhere?
 	//TODO in general, the unregister flow hasn't really been looked at yet
 	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, note.Content, client)
 	return nil
