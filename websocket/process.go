@@ -60,6 +60,7 @@ func returnOps(client *Client, serverDoc *ot.ServerDoc, messageId string, resour
 		return err
 	}
 
+	fmt.Printf("\n\nSending message to %d clients", len(ServerDocClients[serverDoc]))
 	for _, client := range ServerDocClients[serverDoc] {
 		sendMessage(bytes, messageId, ServerID, "docChangeReturnOps", client)
 	}
