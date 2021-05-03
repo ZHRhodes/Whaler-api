@@ -8,6 +8,8 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
+var ServerDocClients = map[*ot.ServerDoc][]*Client{}
+
 func Process(message SocketMessage, client *Client) error {
 	fmt.Println("Processing socket message...")
 
@@ -41,7 +43,7 @@ func processDocChange(message SocketMessage, client *Client) error {
 	return err
 }
 
-func returnOps(client *Client, messageId string, resourceId string, ops ot.Ops) error {
+func returnOps(client *Client, serverDoc *ot.ServerDoc, messageId string, resourceId string, ops ot.Ops) error {
 	n := []int{}
 	s := []string{}
 
@@ -59,7 +61,9 @@ func returnOps(client *Client, messageId string, resourceId string, ops ot.Ops) 
 		return err
 	}
 
-	sendMessage(bytes, messageId, ServerID, "docChangeReturnOps", client)
+	for _, client := range ServerDocClients[serverDoc] {
+		sendMessage(bytes, messageId, ServerID, "docChangeReturnOps", client)
+	}
 	return nil
 }
 
@@ -82,6 +86,8 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	doc := ot.NewDocFromStr(note.Content)
 	serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
 	ot.ServerDocs[request.ResourceId] = &serverDoc
+	ServerDocClients[&serverDoc] = client //TODO: clear this map out somewhere?
+	//TODO in general, the unregister flow hasn't really been looked at yet
 	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, note.Content, client)
 	return nil
 }
