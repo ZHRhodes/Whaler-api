@@ -83,10 +83,13 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 		return err
 	}
 
-	doc := ot.NewDocFromStr(note.Content)
-	serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
-	ot.ServerDocs[request.ResourceId] = &serverDoc
-	ServerDocClients[&serverDoc] = append(ServerDocClients[&serverDoc], client) //TODO: clear this map out somewhere?
+	serverDoc := ot.ServerDocs[request.ResourceId]
+	if serverDoc == nil {
+		doc := ot.NewDocFromStr(note.Content)
+		serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
+		ot.ServerDocs[request.ResourceId] = &serverDoc
+	}
+	ServerDocClients[serverDoc] = append(ServerDocClients[serverDoc], client) //TODO: clear this map out somewhere?
 	//TODO in general, the unregister flow hasn't really been looked at yet
 	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, note.Content, client)
 	return nil
