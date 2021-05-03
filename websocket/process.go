@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/heroku/whaler-api/OT/ot-master"
-	"github.com/heroku/whaler-api/models"
 )
 
 var ServerDocClients = map[*ot.ServerDoc][]*Client{}
@@ -76,22 +75,24 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	fmt.Println(request)
 
 	//Resource connections are for notes only for now
-	note, err := models.FetchNote("", request.ResourceId)
+	// note, err := models.FetchNote("", request.ResourceId)
 
-	if err != nil {
-		fmt.Printf("\nFailed to fetch note with id %s", request.ResourceId)
-		return err
-	}
+	// if err != nil {
+	// 	fmt.Printf("\nFailed to fetch note with id %s", request.ResourceId)
+	// 	return err
+	// }
 
 	serverDoc := ot.ServerDocs[request.ResourceId]
 	if serverDoc == nil {
-		doc := ot.NewDocFromStr(note.Content)
+		doc := ot.NewDocFromStr("")
 		serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
 		ot.ServerDocs[request.ResourceId] = &serverDoc
+	} else {
+		fmt.Println("Connected to existing server doc")
 	}
 	ServerDocClients[serverDoc] = append(ServerDocClients[serverDoc], client) //TODO: clear this map out somewhere?
 	//TODO in general, the unregister flow hasn't really been looked at yet
-	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, note.Content, client)
+	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, serverDoc.Doc.String(), client)
 	return nil
 }
 
