@@ -82,11 +82,11 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	// 	return err
 	// }
 
-	serverDoc := ot.ServerDocs[request.ResourceId]
+	var serverDoc = ot.ServerDocs[request.ResourceId]
 	if serverDoc == nil {
 		doc := ot.NewDocFromStr("")
-		serverDoc := ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
-		ot.ServerDocs[request.ResourceId] = &serverDoc
+		serverDoc = &ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
+		ot.ServerDocs[request.ResourceId] = serverDoc
 	} else {
 		fmt.Println("Connected to existing server doc")
 	}
