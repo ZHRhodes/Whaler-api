@@ -29,3 +29,11 @@ func SaveNote(ownerID string, note Note) (*Note, error) {
 	err := db.Clauses(clause.OnConflict{Columns: conflictColumn, DoUpdates: assignmentColumn}).Create(&note).Error
 	return &note, err
 }
+
+func SaveNoteContent(accountID string, newContent string) error {
+	err := DB().Model(&Note{}).Where("account_id = ?", accountID).Update("Content", newContent).Error
+	if err != nil {
+		fmt.Printf("\nFailed to save new content to note with accountId %s", accountID)
+	}
+	return err
+}

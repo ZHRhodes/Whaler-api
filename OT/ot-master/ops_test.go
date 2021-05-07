@@ -80,16 +80,16 @@ func TestOpsEncoding(t *testing.T) {
 var composeTests = []struct {
 	a, b, ab Ops
 }{
-	{
-		a:  Ops{{N: 3}, {N: -1}},
-		b:  Ops{{N: 1}, {S: "tag"}, {N: 2}},
-		ab: Ops{{N: 1}, {S: "tag"}, {N: 2}, {N: -1}},
-	},
-	{
-		a:  Ops{{N: 1}, {S: "tag"}, {N: 2}},
-		b:  Ops{{N: 4}, {N: -2}},
-		ab: Ops{{N: 1}, {S: "tag"}, {N: -2}},
-	},
+	// {
+	// 	a:  Ops{{N: 3}, {N: -1}},
+	// 	b:  Ops{{N: 1}, {S: "tag"}, {N: 2}},
+	// 	ab: Ops{{N: 1}, {S: "tag"}, {N: 2}, {N: -1}},
+	// },
+	// {
+	// 	a:  Ops{{N: 1}, {S: "tag"}, {N: 2}},
+	// 	b:  Ops{{N: 4}, {N: -2}},
+	// 	ab: Ops{{N: 1}, {S: "tag"}, {N: -2}},
+	// },
 	{
 		a:  Ops{{N: 1}, {S: "tag"}},
 		b:  Ops{{N: 2}, {N: -1}, {N: 1}},

@@ -35,7 +35,7 @@ var upgrader = websocket.Upgrader{
 }
 
 type Client struct {
-	id   string
+	Id   string
 	pool *Pool
 	conn *websocket.Conn
 	send chan SocketMessage
@@ -66,9 +66,8 @@ func (c *Client) startReading() error {
 			fmt.Println(err)
 			return err
 		}
-		message.SenderId = c.id
+		message.SenderId = c.Id
 
-		// c.pool.broadcast <- message //with OT, we need to do some things before broadcasting now
 		Process(message, c)
 	}
 

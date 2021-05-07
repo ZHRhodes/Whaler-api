@@ -7,7 +7,7 @@ import (
 	"github.com/heroku/whaler-api/OT/ot-master"
 )
 
-var ServerDocClients = map[*ot.ServerDoc][]*Client{}
+var contentManager = ContentManager{}
 
 func Process(message SocketMessage, client *Client) error {
 	fmt.Println("Processing socket message...")
@@ -60,8 +60,9 @@ func returnOps(client *Client, serverDoc *ot.ServerDoc, messageId string, resour
 		return err
 	}
 
-	fmt.Printf("\n\nSending message to %d clients", len(ServerDocClients[serverDoc]))
-	for _, client := range ServerDocClients[serverDoc] {
+	clients := contentManager.clients(resourceId)
+	fmt.Printf("\n\nSending message to %d clients", len(clients))
+	for _, client := range clients {
 		sendMessage(bytes, messageId, ServerID, "docChangeReturnOps", client)
 	}
 	return nil
@@ -75,24 +76,9 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	}
 	fmt.Println(request)
 
-	//Resource connections are for notes only for now
-	// note, err := models.FetchNote("", request.ResourceId)
+	contentManager.registerClient(client, request.ResourceId)
+	serverDoc := contentManager.serverDoc(request.ResourceId)
 
-	// if err != nil {
-	// 	fmt.Printf("\nFailed to fetch note with id %s", request.ResourceId)
-	// 	return err
-	// }
-
-	var serverDoc = ot.ServerDocs[request.ResourceId]
-	if serverDoc == nil {
-		doc := ot.NewDocFromStr("")
-		serverDoc = &ot.ServerDoc{Doc: doc, History: []ot.Ops{}}
-		ot.ServerDocs[request.ResourceId] = serverDoc
-	} else {
-		fmt.Println("Connected to existing server doc")
-	}
-	ServerDocClients[serverDoc] = append(ServerDocClients[serverDoc], client) //TODO: clear this map out somewhere?
-	//TODO in general, the unregister flow hasn't really been looked at yet
 	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, serverDoc.Doc.String(), client)
 	return nil
 }
@@ -109,7 +95,7 @@ func sendResourceConnectionConfirmation(messageId string, resourceId string, ini
 }
 
 func sendMessage(bytes []byte, messageId string, senderId string, messageType string, client *Client) {
-	fmt.Printf("\nSending messageId %s, senderId %s, messageType %s, to clientId %s", messageId, senderId, messageType, client.id)
+	fmt.Printf("\nSending messageId %s, senderId %s, messageType %s, to clientId %s", messageId, senderId, messageType, client.Id)
 	socketMessage := SocketMessage{SenderId: senderId, MessageId: messageId, Type: messageType, Data: bytes}
 	select {
 	case client.send <- socketMessage:

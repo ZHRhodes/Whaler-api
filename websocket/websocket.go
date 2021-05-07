@@ -30,7 +30,7 @@ func HandleNewConnection(id string, w http.ResponseWriter, r *http.Request) {
 	}
 
 	clientId := uuid.New().String()
-	client := &Client{id: clientId, pool: pool, conn: conn, send: make(chan SocketMessage, 256)}
+	client := &Client{Id: clientId, pool: pool, conn: conn, send: make(chan SocketMessage, 256)}
 	client.pool.register <- client
 
 	go client.startWriting()
