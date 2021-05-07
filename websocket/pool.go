@@ -27,6 +27,7 @@ func (p *Pool) Start() {
 			p.clients[client] = true
 		case client := <-p.unregister:
 			if _, ok := p.clients[client]; ok {
+				contentManager.unregisterClient(client)
 				delete(p.clients, client)
 				close(client.send)
 			}
