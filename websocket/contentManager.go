@@ -30,7 +30,6 @@ func (manager *ContentManager) registerClient(client *Client, resourceId string)
 		fmt.Printf("\n Adding client with id %s to existing doc for resourceId %s", client.Id, resourceId)
 		existingServerDoc.Clients = append(existingServerDoc.Clients, client)
 		manager.ActiveServerDocs[resourceId] = existingServerDoc
-		manager.ClientResourceIDs[client] = resourceId
 	} else {
 		fmt.Printf("\n Creating new server doc for resourceId %s", resourceId)
 		note, err := models.FetchNote("", resourceId)
@@ -45,13 +44,14 @@ func (manager *ContentManager) registerClient(client *Client, resourceId string)
 		manager.ActiveServerDocs[resourceId] = ActiveServerDoc{ServerDoc: newServerDoc, Clients: []*Client{client}}
 	}
 
+	manager.ClientResourceIDs[client] = resourceId
 	return nil
 }
 
 func (manager *ContentManager) unregisterClient(client *Client) {
 	resourceId := manager.ClientResourceIDs[client]
 	if existingServerDoc, ok := manager.ActiveServerDocs[resourceId]; ok {
-		fmt.Printf("\n Unregistering client with id %s from existing doc for resourceId %s", client.Id, resourceId)
+		fmt.Printf("\nUnregistering client with id %s from existing doc for resourceId %s", client.Id, resourceId)
 		for i, existingClient := range existingServerDoc.Clients {
 			if client.Id == existingClient.Id {
 				existingServerDoc.Clients = append(existingServerDoc.Clients[:i], existingServerDoc.Clients[i+1:]...)

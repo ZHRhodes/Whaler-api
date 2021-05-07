@@ -2,12 +2,13 @@ package websocket
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/heroku/whaler-api/OT/ot-master"
 )
 
-var contentManager = ContentManager{}
+var contentManager = ContentManager{make(map[string]ActiveServerDoc), make(map[*Client]string)}
 
 func Process(message SocketMessage, client *Client) error {
 	fmt.Println("Processing socket message...")
@@ -28,7 +29,13 @@ func processDocChange(message SocketMessage, client *Client) error {
 		return err
 	}
 
-	doc := ot.ServerDocs[change.ResourceId]
+	doc := contentManager.serverDoc(change.ResourceId)
+
+	if doc == nil {
+		fmt.Printf("\nAttempted to apply change to unregistered doc with resourceId %s", change.ResourceId)
+		return errors.New("attempted to apply change to unregistered doc")
+	}
+
 	ops := []ot.Op{}
 	for i, n := range change.N {
 		ops = append(ops, ot.Op{N: n, S: change.S[i]})

@@ -6,8 +6,6 @@ package ot
 
 import "fmt"
 
-var ServerDocs = map[string]*ServerDoc{}
-
 // Server represents shared document with revision history.
 type ServerDoc struct {
 	Doc     *Doc
