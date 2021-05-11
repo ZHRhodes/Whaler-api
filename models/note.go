@@ -17,7 +17,7 @@ func FetchNote(ownerID string, accountID string) (*Note, error) {
 	// query := map[string]interface{}{"owner_id": ownerID, "account_id": accountID}
 	query := map[string]interface{}{"account_id": accountID}
 	var note Note
-	err := db.Table("notes").Where(query).First(&note).Error
+	err := db.Table("notes").Where(query).FirstOrInit(&note, Note{OwnerID: ownerID, AccountID: accountID, Content: ""}).Error
 	return &note, err
 }
 
