@@ -86,12 +86,12 @@ func processResourceConnection(message SocketMessage, client *Client) error {
 	contentManager.registerClient(client, request.ResourceId)
 	serverDoc := contentManager.serverDoc(request.ResourceId)
 
-	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, serverDoc.Doc.String(), client)
+	sendResourceConnectionConfirmation(message.MessageId, request.ResourceId, serverDoc.Doc.String(), serverDoc.Rev(), client)
 	return nil
 }
 
-func sendResourceConnectionConfirmation(messageId string, resourceId string, initialState string, client *Client) {
-	conf := ResourceConnectionConf{ResourceId: resourceId, InitialState: initialState}
+func sendResourceConnectionConfirmation(messageId string, resourceId string, initialState string, revision int, client *Client) {
+	conf := ResourceConnectionConf{ResourceId: resourceId, InitialState: initialState, Revision: revision}
 	bytes, err := json.Marshal(conf)
 	sendMessage(bytes, messageId, ServerID, "resourceConnectionConf", client)
 

@@ -31,6 +31,7 @@ type ResourceConnection struct {
 type ResourceConnectionConf struct {
 	ResourceId   string `json:"resourceId,"`
 	InitialState string `json:"initialState"`
+	Revision     int    `json:"revision"`
 }
 
 // {"type": "docDelta", "data": {"documentID": "1", "value": "Hello World!"}}
