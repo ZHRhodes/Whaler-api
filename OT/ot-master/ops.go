@@ -228,7 +228,7 @@ func Transform(a, b Ops) (a1, b1 Ops, err error) {
 	reta, dela, _ := a.Count()
 	retb, delb, _ := b.Count()
 	if reta+dela != retb+delb {
-		err = fmt.Errorf("transform requires concurrent ops")
+		err = fmt.Errorf("transform requires concurrent ops. reta+dela=%d, retb+delb=%d", reta+dela, retb+delb)
 		return
 	}
 	ia, oa := getop(0, a)
