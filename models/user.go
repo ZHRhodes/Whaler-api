@@ -23,6 +23,8 @@ type User struct {
 	CollaboratingAccounts []*Account    `json:"collaboratingAccount" gorm:"many2many:account_collaborators;"`
 }
 
+var minPasswordLength = 6
+
 //DEPRECATED -- REST
 func (user *User) Create() map[string]interface{} {
 	resp := user.validate()
@@ -83,9 +85,18 @@ func LogIn(email string, password string) map[string]interface{} {
 		return utils.Message(5001, "Connection error", true, nil)
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return utils.Message(4001, "Invalid login credentials", true, nil)
+	if user.Password == "" {
+		if len(password) < minPasswordLength {
+			return utils.Message(4001, "Password too short", true, nil)
+		}
+		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		user.Password = string(hashedPassword)
+		DB().Save(&user)
+	} else {
+		err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+			return utils.Message(4001, "Invalid login credentials", true, nil)
+		}
 	}
 
 	user.Password = ""
@@ -142,7 +153,7 @@ func validateUserCreds(email string, password string) *error {
 		return &err
 	}
 
-	if len(password) < 6 {
+	if len(password) < minPasswordLength {
 		err := errors.New("password is required")
 		return &err
 	}
