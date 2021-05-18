@@ -78,14 +78,14 @@ func LogIn(email string, password string) map[string]interface{} {
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return utils.Message(4001, "Email address not found", true, map[string]interface{}{})
+			return utils.Message(4001, "Email address not found", true, nil)
 		}
-		return utils.Message(5001, "Connection error", true, map[string]interface{}{})
+		return utils.Message(5001, "Connection error", true, nil)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
-		return utils.Message(4001, "Invalid login credentials", true, map[string]interface{}{})
+		return utils.Message(4001, "Invalid login credentials", true, nil)
 	}
 
 	user.Password = ""
@@ -115,11 +115,11 @@ func FetchUser(userID string) *User {
 //DEPRECATED -- REST
 func (user *User) validate() map[string]interface{} {
 	if !strings.Contains(user.Email, "@") {
-		return utils.Message(4001, "Email address is required", true, map[string]interface{}{})
+		return utils.Message(4001, "Email address is required", true, nil)
 	}
 
 	if len(user.Password) < 6 {
-		return utils.Message(4001, "Password is required", true, map[string]interface{}{})
+		return utils.Message(4001, "Password is required", true, nil)
 	}
 
 	temp := &User{}
@@ -130,7 +130,7 @@ func (user *User) validate() map[string]interface{} {
 		return utils.Message(4001, errMessage, true, map[string]interface{}{})
 	}
 	if temp.Email != "" {
-		return utils.Message(4001, "Email address already in use by another user.", true, map[string]interface{}{})
+		return utils.Message(4001, "Email address already in use by another user.", true, nil)
 	}
 
 	return utils.Message(4001, "Requirement passed", false, map[string]interface{}{})
@@ -138,12 +138,12 @@ func (user *User) validate() map[string]interface{} {
 
 func validateUserCreds(email string, password string) *error {
 	if !strings.Contains(email, "@") {
-		err := errors.New("Email address is required")
+		err := errors.New("email address is required")
 		return &err
 	}
 
 	if len(password) < 6 {
-		err := errors.New("Password is required")
+		err := errors.New("password is required")
 		return &err
 	}
 

@@ -7,8 +7,13 @@ import (
 
 //Message returns the code, message, hasError, data as a map
 func Message(code int, message string, hasError bool, data interface{}) map[string]interface{} {
-	responseData := map[string]interface{}{"response": data}
-	return map[string]interface{}{"code": code, "message": message, "hasError": hasError, "data": responseData}
+	response := map[string]interface{}{"code": code, "message": message, "hasError": hasError}
+	if data != nil {
+		responseData := map[string]interface{}{"response": data}
+		response["data"] = responseData
+	}
+
+	return response
 }
 
 func MessageWithTokens(code int, message string, hasError bool, data interface{}, tokens interface{}) map[string]interface{} {
