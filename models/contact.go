@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"github.com/heroku/whaler-api/graph/model"
 	"github.com/heroku/whaler-api/utils"
 	"gorm.io/gorm/clause"
@@ -61,6 +63,10 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 			"salesforce_id", "state", "email", "phone", "account_id", "assigned_to"}),
 	}).Create(&contacts).Error
 
+	if err != nil {
+		fmt.Println("erroring saving contacts.", err)
+	}
+
 	return contacts, err
 }
 
@@ -85,5 +91,6 @@ func createContactFromNewContact(newContact model.NewContact) *Contact {
 		Email:        newContact.Email,
 		Phone:        newContact.Phone,
 		AccountID:    newContact.AccountID,
+		AssignedTo:   newContact.AssignedTo,
 	}
 }

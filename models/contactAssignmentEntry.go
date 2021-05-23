@@ -29,8 +29,19 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	}
 
 	var contact Contact
-	db.First(&contact, "id = ?", newEntry.ContactID).Association("AssignmentEntries").Append(entry)
-	db.Model(&contact).Update("AssignedTo", entry.AssignedTo)
+
+	err = db.First(&contact, "id = ?", newEntry.ContactID).Association("AssignmentEntries").Append(entry)
+
+	if err != nil {
+		fmt.Printf("\nError adding assignment entry for contact %s", contact.ID)
+	}
+
+	err = db.Model(&contact).Update("AssignedTo", entry.AssignedTo).Error
+
+	if err != nil {
+		fmt.Printf("\nError updating assignedTo on contact with id %s", contact.ID)
+	}
+
 	fmt.Printf("\nUpdating assigned to field for contactId %s to assignedTo %s", contact.ID, *entry.AssignedTo)
 
 	return entry, nil
