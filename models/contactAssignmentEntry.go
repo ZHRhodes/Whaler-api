@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	
+
 	"github.com/heroku/whaler-api/graph/model"
 )
 
@@ -19,7 +19,7 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		AssignedBy: newEntry.AssignedBy,
 		AssignedTo: newEntry.AssignedTo,
 	}
-	
+
 	// err = db.Debug().Model(&Contact{}).Where("id = ?", newEntry.ContactID).Update("LatestAssignmentEntry", entry).Error
 	// err := db.Model(&Contact{}).Where("id = ?", newEntry.ContactID).Association("Languages").Order("createdDate desc").Find(&languages)
 	var err = db.Create(entry).Error
@@ -28,14 +28,17 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 		return nil, err
 	}
 
-	db.First(&Contact{}, newEntry.ContactID).Association("AssignmentEntries").Append(entry)
+	var contact Contact
+	db.First(&contact, "id = ?", newEntry.ContactID).Association("AssignmentEntries").Append(entry)
+	db.Model(&contact).Update("AssignedTo", entry.AssignedTo)
+	fmt.Printf("\nUpdating assigned to field for contactId %s to assignedTo %s", contact.ID, *entry.AssignedTo)
 
 	return entry, nil
 }
 
 func FetchContactAssignmentEntries(contactID string) ([]*ContactAssignmentEntry, error) {
 	entries := []*ContactAssignmentEntry{}
-	
+
 	var contact Contact
 	var err = DB().Debug().First(&contact, "id = ?", contactID).Error
 	association := DB().Model(&contact).Association("AssignmentEntries")

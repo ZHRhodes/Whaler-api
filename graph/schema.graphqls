@@ -144,11 +144,11 @@ type Contact {
   email: String
   phone: String
   accountID: String
+  assignedTo: String
   assignmentEntries: [ContactAssignmentEntry!]!
   # account: Account!
   # seniority: String
   # persona: String
-  # assignedTo: User
 }
 
 input NewContact {

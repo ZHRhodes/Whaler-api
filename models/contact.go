@@ -17,10 +17,10 @@ type Contact struct {
 	Phone             *string                  `json:"phone"`
 	AccountID         *string                  `json:"accountID"`
 	AssignmentEntries []ContactAssignmentEntry `json:"assignmentEntries" gorm:"foreignKey:ContactID;references:ID"`
+	AssignedTo        *string                  `json:"assignedTo"`
 	// Account               Account                 `json:"account"`
 	// Seniority             string                     `json:"seniority"`
 	// Persona               string                     `json:"persona"`
-	// AssignedTo            User                    `json:"assignedTo"`
 	// ExternalID            string                     `json:"externalID"`
 	//notes
 }
@@ -58,7 +58,7 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 	err := DB().Clauses(clause.OnConflict{
 		Columns: []clause.Column{{Name: "id"}},
 		DoUpdates: clause.AssignmentColumns([]string{"updated_at", "first_name", "last_name", "job_title",
-			"salesforce_id", "state", "email", "phone", "account_id"}),
+			"salesforce_id", "state", "email", "phone", "account_id, assigned_to"}),
 	}).Create(&contacts).Error
 
 	return contacts, err
