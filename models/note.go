@@ -15,7 +15,7 @@ type Note struct {
 
 func FetchNote(ownerID string, accountID string) (*Note, error) {
 	var note Note
-	err := db.Where(Note{AccountID: accountID}).Attrs(Note{OwnerID: ownerID, Content: ""}).FirstOrInit(&note).Error
+	err := db.Where(Note{AccountID: accountID}).Attrs(Note{OwnerID: ownerID, Content: ""}).FirstOrCreate(&note).Error
 	return &note, err
 }
 
