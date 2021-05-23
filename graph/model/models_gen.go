@@ -46,6 +46,7 @@ type NewContact struct {
 	Email        *string `json:"email"`
 	Phone        *string `json:"phone"`
 	AccountID    *string `json:"accountID"`
+	AssignedTo   *string `json:"assignedTo"`
 }
 
 type NewContactAssignmentEntry struct {

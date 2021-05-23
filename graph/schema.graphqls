@@ -161,6 +161,7 @@ input NewContact {
   email: String
   phone: String
   accountID: String
+  assignedTo: String
 }
 
 type ContactAssignmentEntry {

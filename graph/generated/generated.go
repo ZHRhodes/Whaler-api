@@ -1230,6 +1230,7 @@ input NewContact {
   email: String
   phone: String
   accountID: String
+  assignedTo: String
 }
 
 type ContactAssignmentEntry {
@@ -6587,6 +6588,14 @@ func (ec *executionContext) unmarshalInputNewContact(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountID"))
 			it.AccountID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "assignedTo":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assignedTo"))
+			it.AssignedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}

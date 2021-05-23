@@ -5,8 +5,8 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/heroku/whaler-api/utils"
 	"github.com/heroku/whaler-api/graph/model"
+	"github.com/heroku/whaler-api/utils"
 )
 
 type Organization struct {
@@ -46,7 +46,7 @@ func FetchOrganization(db *gorm.DB, preloads []string, orgID string) (*Organizat
 		}
 	}
 
-	fmt.Printf(fmt.Sprint("Should fetch users: %t", shouldFetchUsers))
+	fmt.Printf(fmt.Sprint("should fetch users: %t", shouldFetchUsers))
 
 	org := &Organization{}
 	res := db.Table("organizations").Where("id = ?", orgID)
