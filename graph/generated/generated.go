@@ -80,6 +80,7 @@ type ComplexityRoot struct {
 
 	Contact struct {
 		AccountID         func(childComplexity int) int
+		AssignedTo        func(childComplexity int) int
 		AssignmentEntries func(childComplexity int) int
 		CreatedAt         func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
@@ -415,6 +416,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Contact.AccountID(childComplexity), true
+
+	case "Contact.assignedTo":
+		if e.complexity.Contact.AssignedTo == nil {
+			break
+		}
+
+		return e.complexity.Contact.AssignedTo(childComplexity), true
 
 	case "Contact.assignmentEntries":
 		if e.complexity.Contact.AssignmentEntries == nil {
@@ -1205,11 +1213,11 @@ type Contact {
   email: String
   phone: String
   accountID: String
+  assignedTo: String
   assignmentEntries: [ContactAssignmentEntry!]!
   # account: Account!
   # seniority: String
   # persona: String
-  # assignedTo: User
 }
 
 input NewContact {
@@ -2861,6 +2869,38 @@ func (ec *executionContext) _Contact_accountID(ctx context.Context, field graphq
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Contact_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.Contact) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Contact",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AssignedTo, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6910,6 +6950,8 @@ func (ec *executionContext) _Contact(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Contact_phone(ctx, field, obj)
 		case "accountID":
 			out.Values[i] = ec._Contact_accountID(ctx, field, obj)
+		case "assignedTo":
+			out.Values[i] = ec._Contact_assignedTo(ctx, field, obj)
 		case "assignmentEntries":
 			out.Values[i] = ec._Contact_assignmentEntries(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
