@@ -64,6 +64,7 @@ func init() {
 	// db.AutoMigrate(&Organization{})
 	// db.AutoMigrate(&RefreshToken{})
 	db.AutoMigrate(&Note{})
+	db.AutoMigrate(&Task{})
 	// db.AutoMigrate(&Workspace{})
 
 	// err2 := db.Debug().AutoMigrate(&Contact{}).Error

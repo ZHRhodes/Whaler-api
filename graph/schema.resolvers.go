@@ -61,6 +61,10 @@ func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, inp
 	return models.CreateAccountAssignmentEntry(input)
 }
 
+func (r *mutationResolver) CreateTask(ctx context.Context, input models.Task) (*models.Task, error) {
+	return models.CreateTask(input)
+}
+
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	accounts, err := models.SaveAccounts(input, userID)
@@ -77,6 +81,10 @@ func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewC
 func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*models.Note, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	return models.SaveNote(userID, input)
+}
+
+func (r *mutationResolver) SaveTask(ctx context.Context, input models.Task) (*models.Task, error) {
+	return models.SaveTask(input)
 }
 
 func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error) {
@@ -117,6 +125,10 @@ func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID 
 func (r *queryResolver) Note(ctx context.Context, accountID string) (*models.Note, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	return models.FetchNote(userID, accountID)
+}
+
+func (r *queryResolver) Tasks(ctx context.Context, associatedTo string) ([]*models.Task, error) {
+	return models.FetchTasks(associatedTo)
 }
 
 // Mutation returns generated.MutationResolver implementation.

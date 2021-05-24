@@ -180,6 +180,39 @@ input NewContactAssignmentEntry {
   assignedTo: String
 }
 
+# Task
+
+type Task {
+  id: ID!
+  createdAt: Time!
+  updatedAt: Time!
+  deletedAt: Time
+  associatedTo: String
+  description: String!
+  done: Boolean!
+  type: String
+  dueDate: Time
+  assignedTo: String
+}
+
+input NewTask {
+  associatedTo: String
+  description: String!
+  type: String
+  dueDate: Time
+  assignedTo: String
+}
+
+input SaveTask {
+  id: ID!
+  associatedTo: String
+  description: String
+  done: Boolean
+  type: String
+  dueDate: Time
+  assignedTo: String
+}
+
 # Workspace
 
 type Workspace {
@@ -210,6 +243,7 @@ type Query {
   contactAssignmentEntries(contactID: String!): [ContactAssignmentEntry!]!
   accountAssignmentEntries(accountID: String!): [AccountAssignmentEntry!]!
   note(accountID: ID!) : Note!
+  tasks(associatedTo: ID!) : [Task!]!
 }
 
 type Mutation {
@@ -220,10 +254,12 @@ type Mutation {
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
+  createTask(input: NewTask!): Task!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
+  saveTask(input: SaveTask!): Task!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }

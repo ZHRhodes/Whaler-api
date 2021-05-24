@@ -84,3 +84,12 @@ models:
   NewNote:
     model:
       - github.com/heroku/whaler-api/models.Note
+  Task:
+    model:
+      - github.com/heroku/whaler-api/models.Task
+  NewTask:
+    model:
+      - github.com/heroku/whaler-api/models.Task
+  SaveTask:
+    model:
+      - github.com/heroku/whaler-api/models.Task
