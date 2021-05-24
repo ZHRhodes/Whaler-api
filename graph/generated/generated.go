@@ -1381,7 +1381,7 @@ type Task {
   createdAt: Time!
   updatedAt: Time!
   deletedAt: Time
-  associatedTo: String
+  associatedTo: ID
   description: String!
   done: Boolean!
   type: String
@@ -1390,7 +1390,7 @@ type Task {
 }
 
 input NewTask {
-  associatedTo: String
+  associatedTo: ID
   description: String!
   type: String
   dueDate: Time
@@ -1399,7 +1399,7 @@ input NewTask {
 
 input SaveTask {
   id: ID!
-  associatedTo: String
+  associatedTo: ID
   description: String
   done: Boolean
   type: String
@@ -5111,7 +5111,7 @@ func (ec *executionContext) _Task_associatedTo(ctx context.Context, field graphq
 	}
 	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Task_description(ctx context.Context, field graphql.CollectedField, obj *models.Task) (ret graphql.Marshaler) {
@@ -7374,7 +7374,7 @@ func (ec *executionContext) unmarshalInputNewTask(ctx context.Context, obj inter
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("associatedTo"))
-			it.AssociatedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.AssociatedTo, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7490,7 +7490,7 @@ func (ec *executionContext) unmarshalInputSaveTask(ctx context.Context, obj inte
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("associatedTo"))
-			it.AssociatedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.AssociatedTo, err = ec.unmarshalOID2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
