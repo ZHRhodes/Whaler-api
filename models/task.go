@@ -16,18 +16,13 @@ type Task struct {
 	AssignedTo        *string               `json:"assignedTo"`
 }
 
-func CreateTask(newTask Task) (*Task, error) {
-	err := DB().Create(&newTask).Error
-
-	if err != nil {
-		fmt.Println("Failed to create task.", err)
-	}
-
-	return &newTask, nil
-}
-
 func SaveTask(saveTask Task) (*Task, error) {
-	err := DB().Save(&saveTask).Error
+	var err error
+	if saveTask.ID == "" {
+		err = DB().Create(&saveTask).Error
+	} else {
+		err = DB().Save(&saveTask).Error
+	}
 
 	if err != nil {
 		fmt.Println("Failed to save task.", err)

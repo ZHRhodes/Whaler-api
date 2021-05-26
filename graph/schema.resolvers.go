@@ -61,10 +61,6 @@ func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, inp
 	return models.CreateAccountAssignmentEntry(input)
 }
 
-func (r *mutationResolver) CreateTask(ctx context.Context, input models.Task) (*models.Task, error) {
-	return models.CreateTask(input)
-}
-
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	accounts, err := models.SaveAccounts(input, userID)

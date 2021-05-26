@@ -119,7 +119,6 @@ type ComplexityRoot struct {
 		CreateContact                func(childComplexity int, input model.NewContact) int
 		CreateContactAssignmentEntry func(childComplexity int, input model.NewContactAssignmentEntry) int
 		CreateOrganization           func(childComplexity int, input model.NewOrganization) int
-		CreateTask                   func(childComplexity int, input models.Task) int
 		CreateUser                   func(childComplexity int, input model.NewUser) int
 		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
 		SaveAccounts                 func(childComplexity int, input []*model.NewAccount) int
@@ -207,7 +206,6 @@ type MutationResolver interface {
 	CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error)
 	CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
-	CreateTask(ctx context.Context, input models.Task) (*models.Task, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
 	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
@@ -675,18 +673,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateOrganization(childComplexity, args["input"].(model.NewOrganization)), true
-
-	case "Mutation.createTask":
-		if e.complexity.Mutation.CreateTask == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createTask_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateTask(childComplexity, args["input"].(models.Task)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -1389,14 +1375,6 @@ type Task {
   assignedTo: String
 }
 
-input NewTask {
-  associatedTo: ID
-  description: String!
-  type: String
-  dueDate: Time
-  assignedTo: String
-}
-
 input SaveTask {
   id: ID!
   associatedTo: ID
@@ -1448,7 +1426,6 @@ type Mutation {
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
-  createTask(input: NewTask!): Task!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
@@ -1555,21 +1532,6 @@ func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.C
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewOrganization2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewOrganization(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 models.Task
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTask2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTask(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3824,48 +3786,6 @@ func (ec *executionContext) _Mutation_createAccountAssignmentEntry(ctx context.C
 	res := resTmp.(*models.AccountAssignmentEntry)
 	fc.Result = res
 	return ec.marshalNAccountAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐAccountAssignmentEntry(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_createTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   true,
-		IsResolver: true,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_createTask_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	fc.Args = args
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateTask(rctx, args["input"].(models.Task))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*models.Task)
-	fc.Result = res
-	return ec.marshalNTask2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_saveAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -7364,58 +7284,6 @@ func (ec *executionContext) unmarshalInputNewOrganization(ctx context.Context, o
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewTask(ctx context.Context, obj interface{}) (models.Task, error) {
-	var it models.Task
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "associatedTo":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("associatedTo"))
-			it.AssociatedTo, err = ec.unmarshalOID2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "description":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "type":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
-			it.Type, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "dueDate":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("dueDate"))
-			it.DueDate, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "assignedTo":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("assignedTo"))
-			it.AssignedTo, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (model.NewUser, error) {
 	var it model.NewUser
 	var asMap = obj.(map[string]interface{})
@@ -7901,11 +7769,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createAccountAssignmentEntry":
 			out.Values[i] = ec._Mutation_createAccountAssignmentEntry(ctx, field)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "createTask":
-			out.Values[i] = ec._Mutation_createTask(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -9089,11 +8952,6 @@ func (ec *executionContext) unmarshalNNewNote2githubᚗcomᚋherokuᚋwhalerᚑa
 
 func (ec *executionContext) unmarshalNNewOrganization2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewOrganization(ctx context.Context, v interface{}) (model.NewOrganization, error) {
 	res, err := ec.unmarshalInputNewOrganization(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalNNewTask2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTask(ctx context.Context, v interface{}) (models.Task, error) {
-	res, err := ec.unmarshalInputNewTask(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

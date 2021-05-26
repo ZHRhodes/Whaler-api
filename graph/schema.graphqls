@@ -195,14 +195,6 @@ type Task {
   assignedTo: String
 }
 
-input NewTask {
-  associatedTo: ID
-  description: String!
-  type: String
-  dueDate: Time
-  assignedTo: String
-}
-
 input SaveTask {
   id: ID!
   associatedTo: ID
@@ -254,7 +246,6 @@ type Mutation {
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
-  createTask(input: NewTask!): Task!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
