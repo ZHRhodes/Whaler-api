@@ -1377,6 +1377,7 @@ type Task {
 
 input SaveTask {
   id: ID!
+  createdAt: Time!
   associatedTo: ID
   description: String
   done: Boolean
@@ -7351,6 +7352,14 @@ func (ec *executionContext) unmarshalInputSaveTask(ctx context.Context, obj inte
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdAt"))
+			it.CreatedAt, err = ec.unmarshalNTime2timeᚐTime(ctx, v)
 			if err != nil {
 				return it, err
 			}

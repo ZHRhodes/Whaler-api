@@ -29,7 +29,7 @@ type ResourceConnection struct {
 }
 
 type ResourceConnectionConf struct {
-	ResourceId   string `json:"resourceId,"`
+	ResourceId   string `json:"resourceId"`
 	InitialState string `json:"initialState"`
 	Revision     int    `json:"revision"`
 }

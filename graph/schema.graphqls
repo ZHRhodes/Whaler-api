@@ -197,6 +197,7 @@ type Task {
 
 input SaveTask {
   id: ID!
+  createdAt: Time!
   associatedTo: ID
   description: String
   done: Boolean
