@@ -33,7 +33,7 @@ func SaveTask(saveTask Task) (*Task, error) {
 
 func FetchTasks(associatedTo string) ([]*Task, error) {
 	var tasks = []*Task{}
-	err := db.Where(&Task{AssociatedTo: &associatedTo}).Find(&tasks).Error
+	err := db.Where("associated_to = ?", associatedTo).Find(&tasks).Error
 
 	if err != nil {
 		fmt.Println("Failed to fetch tasks.", err)
