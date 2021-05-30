@@ -21,7 +21,10 @@ func SaveTask(saveTask Task) (*Task, error) {
 	if saveTask.ID == "" {
 		err = DB().Create(&saveTask).Error
 	} else if saveTask.DeletedAt != nil {
-		err = DB().Delete(&saveTask).Error
+		err = DB().Where("task_id = ?", saveTask.ID).Delete(&TaskAssignmentEntry{}).Error
+		if err == nil {
+			err = DB().Delete(&saveTask).Error
+		}
 	} else {
 		err = DB().Save(&saveTask).Error
 	}
