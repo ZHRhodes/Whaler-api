@@ -62,6 +62,10 @@ func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, inp
 	return models.CreateAccountAssignmentEntry(input)
 }
 
+func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*model.TaskAssignmentEntry, error) {
+	return models.CreateTaskAssignmentEntry(input)
+}
+
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
 	userID := middleware.UserIDFromContext(ctx)
 	accounts, err := models.SaveAccounts(input, userID)
@@ -107,16 +111,16 @@ func (r *queryResolver) Accounts(ctx context.Context) ([]*models.Account, error)
 	return models.FetchAccounts(userID)
 }
 
+func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error) {
+	return models.FetchAccountAssignmentEntries(accountID)
+}
+
 func (r *queryResolver) Contacts(ctx context.Context, accountID string) ([]*models.Contact, error) {
 	return models.FetchContacts(accountID)
 }
 
 func (r *queryResolver) ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error) {
 	return models.FetchContactAssignmentEntries(contactID)
-}
-
-func (r *queryResolver) AccountAssignmentEntries(ctx context.Context, accountID string) ([]*models.AccountAssignmentEntry, error) {
-	return models.FetchAccountAssignmentEntries(accountID)
 }
 
 func (r *queryResolver) Note(ctx context.Context, accountID string) (*models.Note, error) {
@@ -126,6 +130,10 @@ func (r *queryResolver) Note(ctx context.Context, accountID string) (*models.Not
 
 func (r *queryResolver) Tasks(ctx context.Context, associatedTo string) ([]*models.Task, error) {
 	return models.FetchTasks(associatedTo)
+}
+
+func (r *queryResolver) TaskAssignmentEntries(ctx context.Context, taskID string) ([]*model.TaskAssignmentEntry, error) {
+	return models.FetchTaskAssignmentEntries(taskID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

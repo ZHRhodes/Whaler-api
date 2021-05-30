@@ -2,6 +2,10 @@
 
 package model
 
+import (
+	"time"
+)
+
 type AccountID struct {
 	ID string `json:"id"`
 }
@@ -59,6 +63,12 @@ type NewOrganization struct {
 	Name string `json:"name"`
 }
 
+type NewTaskAssignmentEntry struct {
+	TaskID     string  `json:"taskId"`
+	AssignedBy string  `json:"assignedBy"`
+	AssignedTo *string `json:"assignedTo"`
+}
+
 type NewUser struct {
 	Email          string `json:"email"`
 	Password       string `json:"password"`
@@ -71,6 +81,16 @@ type NewWorkspace struct {
 
 type StringArray struct {
 	Array []string `json:"array"`
+}
+
+type TaskAssignmentEntry struct {
+	ID         string     `json:"id"`
+	CreatedAt  time.Time  `json:"createdAt"`
+	UpdatedAt  time.Time  `json:"updatedAt"`
+	DeletedAt  *time.Time `json:"deletedAt"`
+	TaskID     string     `json:"taskId"`
+	AssignedBy string     `json:"assignedBy"`
+	AssignedTo *string    `json:"assignedTo"`
 }
 
 type UserID struct {
