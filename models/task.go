@@ -20,6 +20,8 @@ func SaveTask(saveTask Task) (*Task, error) {
 	var err error
 	if saveTask.ID == "" {
 		err = DB().Create(&saveTask).Error
+	} else if saveTask.DeletedAt != nil {
+		err = DB().Delete(&saveTask).Error
 	} else {
 		err = DB().Save(&saveTask).Error
 	}
@@ -33,7 +35,7 @@ func SaveTask(saveTask Task) (*Task, error) {
 
 func FetchTasks(associatedTo string) ([]*Task, error) {
 	var tasks = []*Task{}
-	err := db.Where("associated_to = ?", associatedTo).Where("deleted_at = ?", nil).Find(&tasks).Error
+	err := db.Where("associated_to = ?", associatedTo).Find(&tasks).Error
 
 	if err != nil {
 		fmt.Println("Failed to fetch tasks.", err)
