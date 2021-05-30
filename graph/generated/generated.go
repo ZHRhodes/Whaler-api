@@ -218,7 +218,7 @@ type MutationResolver interface {
 	CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error)
 	CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
-	CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*model.TaskAssignmentEntry, error)
+	CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
 	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
@@ -234,7 +234,7 @@ type QueryResolver interface {
 	ContactAssignmentEntries(ctx context.Context, contactID string) ([]*models.ContactAssignmentEntry, error)
 	Note(ctx context.Context, accountID string) (*models.Note, error)
 	Tasks(ctx context.Context, associatedTo string) ([]*models.Task, error)
-	TaskAssignmentEntries(ctx context.Context, taskID string) ([]*model.TaskAssignmentEntry, error)
+	TaskAssignmentEntries(ctx context.Context, taskID string) ([]*models.TaskAssignmentEntry, error)
 }
 
 type executableSchema struct {
@@ -3961,9 +3961,9 @@ func (ec *executionContext) _Mutation_createTaskAssignmentEntry(ctx context.Cont
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.TaskAssignmentEntry)
+	res := resTmp.(*models.TaskAssignmentEntry)
 	fc.Result = res
-	return ec.marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntry(ctx, field.Selections, res)
+	return ec.marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntry(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_saveAccounts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4974,9 +4974,9 @@ func (ec *executionContext) _Query_taskAssignmentEntries(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.TaskAssignmentEntry)
+	res := resTmp.([]*models.TaskAssignmentEntry)
 	fc.Result = res
-	return ec.marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntryᚄ(ctx, field.Selections, res)
+	return ec.marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntryᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -5420,7 +5420,7 @@ func (ec *executionContext) _Task_assignedTo(ctx context.Context, field graphql.
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_id(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5455,7 +5455,7 @@ func (ec *executionContext) _TaskAssignmentEntry_id(ctx context.Context, field g
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_createdAt(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5490,7 +5490,7 @@ func (ec *executionContext) _TaskAssignmentEntry_createdAt(ctx context.Context, 
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5525,7 +5525,7 @@ func (ec *executionContext) _TaskAssignmentEntry_updatedAt(ctx context.Context, 
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_deletedAt(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5557,7 +5557,7 @@ func (ec *executionContext) _TaskAssignmentEntry_deletedAt(ctx context.Context, 
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_taskId(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_taskId(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5592,7 +5592,7 @@ func (ec *executionContext) _TaskAssignmentEntry_taskId(ctx context.Context, fie
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_assignedBy(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5627,7 +5627,7 @@ func (ec *executionContext) _TaskAssignmentEntry_assignedBy(ctx context.Context,
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _TaskAssignmentEntry_assignedTo(ctx context.Context, field graphql.CollectedField, obj *model.TaskAssignmentEntry) (ret graphql.Marshaler) {
+func (ec *executionContext) _TaskAssignmentEntry_assignedTo(ctx context.Context, field graphql.CollectedField, obj *models.TaskAssignmentEntry) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8658,7 +8658,7 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 
 var taskAssignmentEntryImplementors = []string{"TaskAssignmentEntry"}
 
-func (ec *executionContext) _TaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, obj *model.TaskAssignmentEntry) graphql.Marshaler {
+func (ec *executionContext) _TaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, obj *models.TaskAssignmentEntry) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, taskAssignmentEntryImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -9672,11 +9672,11 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapi
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTaskAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v model.TaskAssignmentEntry) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v models.TaskAssignmentEntry) graphql.Marshaler {
 	return ec._TaskAssignmentEntry(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskAssignmentEntry) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntryᚄ(ctx context.Context, sel ast.SelectionSet, v []*models.TaskAssignmentEntry) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -9700,7 +9700,7 @@ func (ec *executionContext) marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋher
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntry(ctx, sel, v[i])
+			ret[i] = ec.marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntry(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -9713,7 +9713,7 @@ func (ec *executionContext) marshalNTaskAssignmentEntry2ᚕᚖgithubᚗcomᚋher
 	return ret
 }
 
-func (ec *executionContext) marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐTaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v *model.TaskAssignmentEntry) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskAssignmentEntry2ᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTaskAssignmentEntry(ctx context.Context, sel ast.SelectionSet, v *models.TaskAssignmentEntry) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

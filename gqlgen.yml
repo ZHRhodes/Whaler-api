@@ -90,3 +90,6 @@ models:
   SaveTask:
     model:
       - github.com/heroku/whaler-api/models.Task
+  TaskAssignmentEntry:
+    model:
+      - github.com/heroku/whaler-api/models.TaskAssignmentEntry

@@ -62,7 +62,7 @@ func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, inp
 	return models.CreateAccountAssignmentEntry(input)
 }
 
-func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*model.TaskAssignmentEntry, error) {
+func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
 	return models.CreateTaskAssignmentEntry(input)
 }
 
@@ -132,7 +132,7 @@ func (r *queryResolver) Tasks(ctx context.Context, associatedTo string) ([]*mode
 	return models.FetchTasks(associatedTo)
 }
 
-func (r *queryResolver) TaskAssignmentEntries(ctx context.Context, taskID string) ([]*model.TaskAssignmentEntry, error) {
+func (r *queryResolver) TaskAssignmentEntries(ctx context.Context, taskID string) ([]*models.TaskAssignmentEntry, error) {
 	return models.FetchTaskAssignmentEntries(taskID)
 }
 
