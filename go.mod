@@ -15,7 +15,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/jinzhu/gorm v1.9.16
-	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/mattn/go-sqlite3 v2.0.1+incompatible // indirect
@@ -23,6 +22,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.1.0
 	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
 	gorm.io/driver/postgres v1.0.2
-	gorm.io/gorm v1.20.2
+	gorm.io/gorm v1.21.10
 	nhooyr.io/websocket v1.8.6
 )
