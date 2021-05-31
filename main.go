@@ -14,9 +14,12 @@ import (
 	"github.com/heroku/whaler-api/graph/generated"
 	"github.com/heroku/whaler-api/middleware"
 	"github.com/heroku/whaler-api/models"
+	"github.com/heroku/whaler-api/websocket"
 )
 
 func main() {
+	models.Consumer = websocket.ChangeConsumer{}
+
 	router := mux.NewRouter()
 	router.Use(middleware.JwtAuthentication)
 	// router.Use(middleware.ParseUserIDFromToken)

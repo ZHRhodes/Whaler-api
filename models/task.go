@@ -31,8 +31,10 @@ func SaveTask(saveTask Task) (*Task, error) {
 
 	if err != nil {
 		fmt.Println("Failed to save task.", err)
+		return &saveTask, err
 	}
 
+	go Consumer.ModelChanged(saveTask.ID)
 	return &saveTask, err
 }
 

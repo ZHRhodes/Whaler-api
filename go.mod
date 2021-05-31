@@ -1,7 +1,7 @@
 module github.com/heroku/whaler-api
 
-// +heroku goVersion go1.14
-go 1.14
+// +heroku goVersion go1.16
+go 1.16
 
 require (
 	github.com/99designs/gqlgen v0.13.0

@@ -33,6 +33,7 @@ func CreateTaskAssignmentEntry(newEntry model.NewTaskAssignmentEntry) (*TaskAssi
 	db.Model(&task).Update("AssignedTo", entry.AssignedTo)
 	fmt.Printf("\nUpdating assigned to field for taskId %s to assignedTo %s", task.ID, *entry.AssignedTo)
 
+	go Consumer.ModelChanged(task.ID)
 	return entry, nil
 }
 

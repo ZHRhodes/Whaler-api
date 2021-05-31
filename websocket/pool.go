@@ -1,6 +1,8 @@
 package websocket
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var pools = make(map[string]*Pool)
 

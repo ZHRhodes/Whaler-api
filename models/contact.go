@@ -67,6 +67,11 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 		fmt.Println("erroring saving contacts.", err)
 	}
 
+	//This might be excessive, especially if FE can't perfectly hide the reloading
+	if len(newContacts) > 0 && newContacts[0] != nil {
+		go Consumer.ModelChanged(*newContacts[0].ID)
+	}
+
 	return contacts, err
 }
 
