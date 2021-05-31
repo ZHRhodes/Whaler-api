@@ -50,8 +50,8 @@ func (r *mutationResolver) CreateWorkspace(ctx context.Context, input model.NewW
 	return workspace, nil
 }
 
-func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error) {
-	entry, err := models.CreateContactAssignmentEntry(input)
+func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, senderID *string, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error) {
+	entry, err := models.CreateContactAssignmentEntry(senderID, input)
 	if err != nil {
 		return nil, err
 	}
