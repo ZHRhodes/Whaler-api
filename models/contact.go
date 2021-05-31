@@ -69,7 +69,7 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 
 	//This might be excessive, especially if FE can't perfectly hide the reloading
 	if len(newContacts) > 0 && newContacts[0] != nil {
-		go Consumer.ModelChanged(*newContacts[0].ID)
+		go Consumer.ModelChanged(*newContacts[0].AccountID)
 	}
 
 	return contacts, err
