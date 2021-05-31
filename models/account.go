@@ -54,7 +54,7 @@ func CreateAccount(newAccount model.NewAccount) (*Account, error) {
 	return account, nil
 }
 
-func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, error) {
+func SaveAccounts(senderID *string, newAccounts []*model.NewAccount, userID string) ([]*Account, error) {
 	var savedAccounts = []*Account{}
 	var error error
 	for _, newAccount := range newAccounts {
@@ -65,8 +65,22 @@ func SaveAccounts(newAccounts []*model.NewAccount, userID string) ([]*Account, e
 			error = err
 		}
 	}
+
+	//Same as for contacts:
+	//A rare short term solution: this is to idenfiy single saves
+	//aka a FE changed something specifically. Will not send notifications for
+	//Salesforce sync saves. After moving SF to BE, this can be refined more easily.
+	if len(newAccounts) == 1 {
+		go SendAccountChangeMessage(senderID, userID)
+	}
+
 	//will only return latest error
 	return savedAccounts, error
+}
+
+func SendAccountChangeMessage(senderID *string, userID string) {
+	user := FetchUser(userID)
+	Consumer.ModelChanged(user.OrganizationID, senderID)
 }
 
 func SaveAccount(account *Account) (*Account, error) {

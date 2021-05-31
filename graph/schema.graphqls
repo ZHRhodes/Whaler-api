@@ -267,7 +267,7 @@ type Mutation {
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
   createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
-  saveAccounts(input: [NewAccount!]!): [Account!]!
+  saveAccounts(senderID: ID, input: [NewAccount!]!): [Account!]!
   saveContacts(senderID: ID, input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
   saveTask(senderID: ID, input: SaveTask!): Task!

@@ -122,7 +122,7 @@ type ComplexityRoot struct {
 		CreateTaskAssignmentEntry    func(childComplexity int, senderID *string, input model.NewTaskAssignmentEntry) int
 		CreateUser                   func(childComplexity int, input model.NewUser) int
 		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
-		SaveAccounts                 func(childComplexity int, input []*model.NewAccount) int
+		SaveAccounts                 func(childComplexity int, senderID *string, input []*model.NewAccount) int
 		SaveContacts                 func(childComplexity int, senderID *string, input []*model.NewContact) int
 		SaveNote                     func(childComplexity int, input models.Note) int
 		SaveTask                     func(childComplexity int, senderID *string, input models.Task) int
@@ -219,7 +219,7 @@ type MutationResolver interface {
 	CreateContactAssignmentEntry(ctx context.Context, senderID *string, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error)
-	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
+	SaveAccounts(ctx context.Context, senderID *string, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, senderID *string, input []*model.NewContact) ([]*models.Contact, error)
 	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
 	SaveTask(ctx context.Context, senderID *string, input models.Task) (*models.Task, error)
@@ -734,7 +734,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SaveAccounts(childComplexity, args["input"].([]*model.NewAccount)), true
+		return e.complexity.Mutation.SaveAccounts(childComplexity, args["senderID"].(*string), args["input"].([]*model.NewAccount)), true
 
 	case "Mutation.saveContacts":
 		if e.complexity.Mutation.SaveContacts == nil {
@@ -1534,7 +1534,7 @@ type Mutation {
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
   createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
-  saveAccounts(input: [NewAccount!]!): [Account!]!
+  saveAccounts(senderID: ID, input: [NewAccount!]!): [Account!]!
   saveContacts(senderID: ID, input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
   saveTask(senderID: ID, input: SaveTask!): Task!
@@ -1713,15 +1713,24 @@ func (ec *executionContext) field_Mutation_createWorkspace_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_saveAccounts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.NewAccount
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccountᚄ(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["senderID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("senderID"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["senderID"] = arg0
+	var arg1 []*model.NewAccount
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNNewAccount2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewAccountᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -4028,7 +4037,7 @@ func (ec *executionContext) _Mutation_saveAccounts(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SaveAccounts(rctx, args["input"].([]*model.NewAccount))
+		return ec.resolvers.Mutation().SaveAccounts(rctx, args["senderID"].(*string), args["input"].([]*model.NewAccount))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
