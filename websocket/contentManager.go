@@ -7,6 +7,11 @@ import (
 	"github.com/heroku/whaler-api/models"
 )
 
+type ContentFetcher interface {
+	FetchDocument(resourceId string) (string, error)
+	SaveDocument(resourceId string, content string)
+}
+
 type ActiveServerDoc struct {
 	ServerDoc *ot.ServerDoc
 	Clients   []*Client
@@ -16,6 +21,8 @@ type ContentManager struct {
 	ActiveServerDocs  map[string]ActiveServerDoc
 	ClientResourceIDs map[*Client]string
 }
+
+var Fetcher ContentFetcher
 
 func (manager *ContentManager) clients(resourceId string) []*Client {
 	return manager.ActiveServerDocs[resourceId].Clients
