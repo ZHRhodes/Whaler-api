@@ -13,7 +13,7 @@ type AccountAssignmentEntry struct {
 	AssignedTo *string `json:"assignedTo"`
 }
 
-func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*AccountAssignmentEntry, error) {
+func CreateAccountAssignmentEntry(senderID *string, userID string, newEntry model.NewAccountAssignmentEntry) (*AccountAssignmentEntry, error) {
 	fmt.Printf("\nCreating account assignment entry")
 	var entry = &AccountAssignmentEntry{
 		AccountID:  newEntry.AccountID,
@@ -32,6 +32,8 @@ func CreateAccountAssignmentEntry(newEntry model.NewAccountAssignmentEntry) (*Ac
 	db.First(&account, "id = ?", newEntry.AccountID).Association("AssignmentEntries").Append(entry)
 	db.Model(&account).Update("AssignedTo", entry.AssignedTo)
 	fmt.Printf("\nUpdating assigned to field for accountId %s to assignedTo %s", account.ID, *entry.AssignedTo)
+
+	go SendAccountChangeMessage(senderID, userID)
 
 	return entry, nil
 }

@@ -58,8 +58,9 @@ func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, sen
 	return entry, nil
 }
 
-func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
-	return models.CreateAccountAssignmentEntry(input)
+func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, senderID *string, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
+	userID := middleware.UserIDFromContext(ctx)
+	return models.CreateAccountAssignmentEntry(senderID, userID, input)
 }
 
 func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
