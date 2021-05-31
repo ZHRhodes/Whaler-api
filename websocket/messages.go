@@ -35,5 +35,6 @@ type ResourceConnectionConf struct {
 }
 
 type ResourceUpdate struct {
-	ResourceId string `json:"resourceId"`
+	ResourceId string  `json:"resourceId"`
+	SenderId   *string `json:"senderId"`
 }

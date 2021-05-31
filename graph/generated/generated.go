@@ -119,13 +119,13 @@ type ComplexityRoot struct {
 		CreateContact                func(childComplexity int, input model.NewContact) int
 		CreateContactAssignmentEntry func(childComplexity int, input model.NewContactAssignmentEntry) int
 		CreateOrganization           func(childComplexity int, input model.NewOrganization) int
-		CreateTaskAssignmentEntry    func(childComplexity int, input model.NewTaskAssignmentEntry) int
+		CreateTaskAssignmentEntry    func(childComplexity int, senderID *string, input model.NewTaskAssignmentEntry) int
 		CreateUser                   func(childComplexity int, input model.NewUser) int
 		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
 		SaveAccounts                 func(childComplexity int, input []*model.NewAccount) int
 		SaveContacts                 func(childComplexity int, input []*model.NewContact) int
 		SaveNote                     func(childComplexity int, input models.Note) int
-		SaveTask                     func(childComplexity int, input models.Task) int
+		SaveTask                     func(childComplexity int, senderID *string, input models.Task) int
 	}
 
 	Note struct {
@@ -218,11 +218,11 @@ type MutationResolver interface {
 	CreateWorkspace(ctx context.Context, input model.NewWorkspace) (*models.Workspace, error)
 	CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error)
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
-	CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error)
+	CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
 	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
 	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
-	SaveTask(ctx context.Context, input models.Task) (*models.Task, error)
+	SaveTask(ctx context.Context, senderID *string, input models.Task) (*models.Task, error)
 	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error)
 }
 type QueryResolver interface {
@@ -698,7 +698,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateTaskAssignmentEntry(childComplexity, args["input"].(model.NewTaskAssignmentEntry)), true
+		return e.complexity.Mutation.CreateTaskAssignmentEntry(childComplexity, args["senderID"].(*string), args["input"].(model.NewTaskAssignmentEntry)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -770,7 +770,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SaveTask(childComplexity, args["input"].(models.Task)), true
+		return e.complexity.Mutation.SaveTask(childComplexity, args["senderID"].(*string), args["input"].(models.Task)), true
 
 	case "Note.accountID":
 		if e.complexity.Note.AccountID == nil {
@@ -1532,12 +1532,12 @@ type Mutation {
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
-  createTaskAssignmentEntry(input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
+  createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
-  saveTask(input: SaveTask!): Task!
+  saveTask(senderID: ID, input: SaveTask!): Task!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }
@@ -1650,15 +1650,24 @@ func (ec *executionContext) field_Mutation_createOrganization_args(ctx context.C
 func (ec *executionContext) field_Mutation_createTaskAssignmentEntry_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewTaskAssignmentEntry
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTaskAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewTaskAssignmentEntry(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["senderID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("senderID"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["senderID"] = arg0
+	var arg1 model.NewTaskAssignmentEntry
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNNewTaskAssignmentEntry2githubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewTaskAssignmentEntry(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -1740,15 +1749,24 @@ func (ec *executionContext) field_Mutation_saveNote_args(ctx context.Context, ra
 func (ec *executionContext) field_Mutation_saveTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.Task
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSaveTask2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTask(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["senderID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("senderID"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["senderID"] = arg0
+	var arg1 models.Task
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNSaveTask2githubᚗcomᚋherokuᚋwhalerᚑapiᚋmodelsᚐTask(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -3950,7 +3968,7 @@ func (ec *executionContext) _Mutation_createTaskAssignmentEntry(ctx context.Cont
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateTaskAssignmentEntry(rctx, args["input"].(model.NewTaskAssignmentEntry))
+		return ec.resolvers.Mutation().CreateTaskAssignmentEntry(rctx, args["senderID"].(*string), args["input"].(model.NewTaskAssignmentEntry))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4118,7 +4136,7 @@ func (ec *executionContext) _Mutation_saveTask(ctx context.Context, field graphq
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SaveTask(rctx, args["input"].(models.Task))
+		return ec.resolvers.Mutation().SaveTask(rctx, args["senderID"].(*string), args["input"].(models.Task))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

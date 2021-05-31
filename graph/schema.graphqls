@@ -265,12 +265,12 @@ type Mutation {
   createWorkspace(input: NewWorkspace!): Workspace!
   createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
   createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
-  createTaskAssignmentEntry(input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
+  createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
   saveContacts(input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
-  saveTask(input: SaveTask!): Task!
+  saveTask(senderID: ID, input: SaveTask!): Task!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }

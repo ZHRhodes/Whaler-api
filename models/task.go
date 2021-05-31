@@ -16,7 +16,7 @@ type Task struct {
 	AssignedTo        *string               `json:"assignedTo"`
 }
 
-func SaveTask(saveTask Task) (*Task, error) {
+func SaveTask(senderId *string, saveTask Task) (*Task, error) {
 	var err error
 	if saveTask.ID == "" {
 		err = DB().Create(&saveTask).Error
@@ -35,7 +35,7 @@ func SaveTask(saveTask Task) (*Task, error) {
 	}
 
 	if saveTask.AssociatedTo != nil {
-		go Consumer.ModelChanged(*saveTask.AssociatedTo)
+		go Consumer.ModelChanged(*saveTask.AssociatedTo, senderId)
 	}
 
 	return &saveTask, err

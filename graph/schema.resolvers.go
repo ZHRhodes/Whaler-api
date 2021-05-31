@@ -62,8 +62,8 @@ func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, inp
 	return models.CreateAccountAssignmentEntry(input)
 }
 
-func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
-	return models.CreateTaskAssignmentEntry(input)
+func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
+	return models.CreateTaskAssignmentEntry(senderID, input)
 }
 
 func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
@@ -84,8 +84,8 @@ func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*mo
 	return models.SaveNote(userID, input)
 }
 
-func (r *mutationResolver) SaveTask(ctx context.Context, input models.Task) (*models.Task, error) {
-	return models.SaveTask(input)
+func (r *mutationResolver) SaveTask(ctx context.Context, senderID *string, input models.Task) (*models.Task, error) {
+	return models.SaveTask(senderID, input)
 }
 
 func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error) {
