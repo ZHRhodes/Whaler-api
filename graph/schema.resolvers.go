@@ -75,8 +75,8 @@ func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewA
 	return accounts, err
 }
 
-func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error) {
-	return models.SaveContacts(input)
+func (r *mutationResolver) SaveContacts(ctx context.Context, senderID *string, input []*model.NewContact) ([]*models.Contact, error) {
+	return models.SaveContacts(senderID, input)
 }
 
 func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*models.Note, error) {

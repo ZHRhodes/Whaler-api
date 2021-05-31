@@ -123,7 +123,7 @@ type ComplexityRoot struct {
 		CreateUser                   func(childComplexity int, input model.NewUser) int
 		CreateWorkspace              func(childComplexity int, input model.NewWorkspace) int
 		SaveAccounts                 func(childComplexity int, input []*model.NewAccount) int
-		SaveContacts                 func(childComplexity int, input []*model.NewContact) int
+		SaveContacts                 func(childComplexity int, senderID *string, input []*model.NewContact) int
 		SaveNote                     func(childComplexity int, input models.Note) int
 		SaveTask                     func(childComplexity int, senderID *string, input models.Task) int
 	}
@@ -220,7 +220,7 @@ type MutationResolver interface {
 	CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error)
 	CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error)
 	SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error)
-	SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error)
+	SaveContacts(ctx context.Context, senderID *string, input []*model.NewContact) ([]*models.Contact, error)
 	SaveNote(ctx context.Context, input models.Note) (*models.Note, error)
 	SaveTask(ctx context.Context, senderID *string, input models.Task) (*models.Task, error)
 	ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error)
@@ -746,7 +746,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SaveContacts(childComplexity, args["input"].([]*model.NewContact)), true
+		return e.complexity.Mutation.SaveContacts(childComplexity, args["senderID"].(*string), args["input"].([]*model.NewContact)), true
 
 	case "Mutation.saveNote":
 		if e.complexity.Mutation.SaveNote == nil {
@@ -1535,7 +1535,7 @@ type Mutation {
   createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
   saveAccounts(input: [NewAccount!]!): [Account!]!
-  saveContacts(input: [NewContact!]!): [Contact!]!
+  saveContacts(senderID: ID, input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
   saveTask(senderID: ID, input: SaveTask!): Task!
 
@@ -1719,15 +1719,24 @@ func (ec *executionContext) field_Mutation_saveAccounts_args(ctx context.Context
 func (ec *executionContext) field_Mutation_saveContacts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.NewContact
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewContact2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContactᚄ(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["senderID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("senderID"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["senderID"] = arg0
+	var arg1 []*model.NewContact
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNNewContact2ᚕᚖgithubᚗcomᚋherokuᚋwhalerᚑapiᚋgraphᚋmodelᚐNewContactᚄ(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -4052,7 +4061,7 @@ func (ec *executionContext) _Mutation_saveContacts(ctx context.Context, field gr
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SaveContacts(rctx, args["input"].([]*model.NewContact))
+		return ec.resolvers.Mutation().SaveContacts(rctx, args["senderID"].(*string), args["input"].([]*model.NewContact))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
