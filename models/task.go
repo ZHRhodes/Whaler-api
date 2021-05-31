@@ -34,7 +34,10 @@ func SaveTask(saveTask Task) (*Task, error) {
 		return &saveTask, err
 	}
 
-	go Consumer.ModelChanged(saveTask.ID)
+	if saveTask.AssociatedTo != nil {
+		go Consumer.ModelChanged(*saveTask.AssociatedTo)
+	}
+
 	return &saveTask, err
 }
 
