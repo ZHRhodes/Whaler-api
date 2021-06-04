@@ -50,33 +50,34 @@ func (r *mutationResolver) CreateWorkspace(ctx context.Context, input model.NewW
 	return workspace, nil
 }
 
-func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error) {
-	entry, err := models.CreateContactAssignmentEntry(input)
+func (r *mutationResolver) CreateContactAssignmentEntry(ctx context.Context, senderID *string, input model.NewContactAssignmentEntry) (*models.ContactAssignmentEntry, error) {
+	entry, err := models.CreateContactAssignmentEntry(senderID, input)
 	if err != nil {
 		return nil, err
 	}
 	return entry, nil
 }
 
-func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
-	return models.CreateAccountAssignmentEntry(input)
-}
-
-func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
-	return models.CreateTaskAssignmentEntry(input)
-}
-
-func (r *mutationResolver) SaveAccounts(ctx context.Context, input []*model.NewAccount) ([]*models.Account, error) {
+func (r *mutationResolver) CreateAccountAssignmentEntry(ctx context.Context, senderID *string, input model.NewAccountAssignmentEntry) (*models.AccountAssignmentEntry, error) {
 	userID := middleware.UserIDFromContext(ctx)
-	accounts, err := models.SaveAccounts(input, userID)
+	return models.CreateAccountAssignmentEntry(senderID, userID, input)
+}
+
+func (r *mutationResolver) CreateTaskAssignmentEntry(ctx context.Context, senderID *string, input model.NewTaskAssignmentEntry) (*models.TaskAssignmentEntry, error) {
+	return models.CreateTaskAssignmentEntry(senderID, input)
+}
+
+func (r *mutationResolver) SaveAccounts(ctx context.Context, senderID *string, input []*model.NewAccount) ([]*models.Account, error) {
+	userID := middleware.UserIDFromContext(ctx)
+	accounts, err := models.SaveAccounts(senderID, input, userID)
 	if err != nil {
 		return nil, err
 	}
 	return accounts, err
 }
 
-func (r *mutationResolver) SaveContacts(ctx context.Context, input []*model.NewContact) ([]*models.Contact, error) {
-	return models.SaveContacts(input)
+func (r *mutationResolver) SaveContacts(ctx context.Context, senderID *string, input []*model.NewContact) ([]*models.Contact, error) {
+	return models.SaveContacts(senderID, input)
 }
 
 func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*models.Note, error) {
@@ -84,8 +85,8 @@ func (r *mutationResolver) SaveNote(ctx context.Context, input models.Note) (*mo
 	return models.SaveNote(userID, input)
 }
 
-func (r *mutationResolver) SaveTask(ctx context.Context, input models.Task) (*models.Task, error) {
-	return models.SaveTask(input)
+func (r *mutationResolver) SaveTask(ctx context.Context, senderID *string, input models.Task) (*models.Task, error) {
+	return models.SaveTask(senderID, input)
 }
 
 func (r *mutationResolver) ApplyAccountTrackingChanges(ctx context.Context, input []*model.AccountTrackingChange) ([]*models.Account, error) {

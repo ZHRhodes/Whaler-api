@@ -19,7 +19,7 @@ import (
 
 func main() {
 	models.Consumer = websocket.ChangeConsumer{}
-
+	websocket.Fetcher = models.DocumentWorker{}
 	router := mux.NewRouter()
 	router.Use(middleware.JwtAuthentication)
 	// router.Use(middleware.ParseUserIDFromToken)

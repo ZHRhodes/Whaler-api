@@ -13,7 +13,7 @@ type ContactAssignmentEntry struct {
 	AssignedTo *string `json:"assignedTo"`
 }
 
-func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*ContactAssignmentEntry, error) {
+func CreateContactAssignmentEntry(senderID *string, newEntry model.NewContactAssignmentEntry) (*ContactAssignmentEntry, error) {
 	entry := &ContactAssignmentEntry{
 		ContactID:  newEntry.ContactID,
 		AssignedBy: newEntry.AssignedBy,
@@ -43,6 +43,10 @@ func CreateContactAssignmentEntry(newEntry model.NewContactAssignmentEntry) (*Co
 	}
 
 	fmt.Printf("\nUpdating assigned to field for contactId %s to assignedTo %s", contact.ID, *entry.AssignedTo)
+
+	if contact.AccountID != nil {
+		go Consumer.ModelChanged(*contact.AccountID, senderID)
+	}
 
 	return entry, nil
 }

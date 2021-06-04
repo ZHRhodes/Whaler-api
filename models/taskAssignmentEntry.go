@@ -13,7 +13,7 @@ type TaskAssignmentEntry struct {
 	AssignedTo *string `json:"assignedTo"`
 }
 
-func CreateTaskAssignmentEntry(newEntry model.NewTaskAssignmentEntry) (*TaskAssignmentEntry, error) {
+func CreateTaskAssignmentEntry(senderId *string, newEntry model.NewTaskAssignmentEntry) (*TaskAssignmentEntry, error) {
 	fmt.Printf("\nCreating task assignment entry")
 	var entry = &TaskAssignmentEntry{
 		TaskID:     newEntry.TaskID,
@@ -33,7 +33,10 @@ func CreateTaskAssignmentEntry(newEntry model.NewTaskAssignmentEntry) (*TaskAssi
 	db.Model(&task).Update("AssignedTo", entry.AssignedTo)
 	fmt.Printf("\nUpdating assigned to field for taskId %s to assignedTo %s", task.ID, *entry.AssignedTo)
 
-	go Consumer.ModelChanged(task.ID)
+	if task.AssociatedTo != nil {
+		go Consumer.ModelChanged(*task.AssociatedTo, senderId)
+	}
+
 	return entry, nil
 }
 

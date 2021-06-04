@@ -263,14 +263,14 @@ type Mutation {
   createAccount(input: NewAccount!): Account!
   createContact(input: NewContact!): Contact!
   createWorkspace(input: NewWorkspace!): Workspace!
-  createContactAssignmentEntry(input: NewContactAssignmentEntry!): ContactAssignmentEntry!
-  createAccountAssignmentEntry(input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
-  createTaskAssignmentEntry(input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
+  createContactAssignmentEntry(senderID: ID, input: NewContactAssignmentEntry!): ContactAssignmentEntry!
+  createAccountAssignmentEntry(senderID: ID, input: NewAccountAssignmentEntry!): AccountAssignmentEntry!
+  createTaskAssignmentEntry(senderID: ID, input: NewTaskAssignmentEntry!): TaskAssignmentEntry!
 
-  saveAccounts(input: [NewAccount!]!): [Account!]!
-  saveContacts(input: [NewContact!]!): [Contact!]!
+  saveAccounts(senderID: ID, input: [NewAccount!]!): [Account!]!
+  saveContacts(senderID: ID, input: [NewContact!]!): [Contact!]!
   saveNote(input: NewNote!): Note!
-  saveTask(input: SaveTask!): Task!
+  saveTask(senderID: ID, input: SaveTask!): Task!
 
   applyAccountTrackingChanges(input: [AccountTrackingChange!]!): [Account!]!
 }

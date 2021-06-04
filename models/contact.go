@@ -51,7 +51,7 @@ func CreateContact(newContact model.NewContact) (*Contact, error) {
 	return contact, nil
 }
 
-func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
+func SaveContacts(senderID *string, newContacts []*model.NewContact) ([]*Contact, error) {
 	var contacts = []*Contact{}
 	for _, newContact := range newContacts {
 		contacts = append(contacts, createContactFromNewContact(*newContact))
@@ -67,9 +67,11 @@ func SaveContacts(newContacts []*model.NewContact) ([]*Contact, error) {
 		fmt.Println("erroring saving contacts.", err)
 	}
 
-	//This might be excessive, especially if FE can't perfectly hide the reloading
-	if len(newContacts) > 0 && newContacts[0] != nil {
-		go Consumer.ModelChanged(*newContacts[0].ID)
+	//A rare short term solution: this is to idenfiy single saves
+	//aka a FE changed something specifically. Will not send notifications for
+	//Salesforce sync saves. After moving SF to BE, this won't exactly be necessary.
+	if len(newContacts) == 1 {
+		go Consumer.ModelChanged(*newContacts[0].AccountID, senderID)
 	}
 
 	return contacts, err
