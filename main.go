@@ -33,6 +33,8 @@ func main() {
 	router.HandleFunc("/api/user/login", controllers.Authenticate)
 	router.HandleFunc("/api/user/refresh", controllers.Refresh)
 
+	router.HandleFunc("/appcast.xml", http.ServeFile(res, req, "./appcast.xml"))
+
 	// router.HandleFunc("/api/user/create", controllers.CreateUser).Methods("POST")
 	// router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	// router.HandleFunc("/api/user/refresh", controllers.Refresh).Methods("POST")
@@ -54,6 +56,10 @@ func main() {
 	}
 
 	log.Printf("connect to port %s for GraphQL playground", port)
+
+	// http.HandleFunc("/appcast.xml", func (res http.ResponseWriter, req *http.Request) {
+	// 	http.ServeFile(res, req, "./appcast.xml")
+	// })
 
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
