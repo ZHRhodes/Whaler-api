@@ -26,6 +26,7 @@ var JwtAuthentication = func(next http.Handler) http.Handler {
 			"/api/org/create",
 			"/api/account/create",
 			"/api/contact/create",
+			"/appcast.xml",
 			"/schema",
 			"/socket"} //temporary! not for release!
 		requestPath := r.URL.Path
