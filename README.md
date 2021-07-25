@@ -1,7 +1,9 @@
 
 # whaler-api
 
-The api component of the whaler app
+Whaler-api is the backend to [Whaler](https://github.com/ZHRhodes/Whaler)
+
+It's a Golang API deployed to Heroku.
 
 ## Running Locally
 
