@@ -31,21 +31,26 @@ Looking at the whole picture, this repo consists of the left half of this diagra
 ![Whaler Technical Overview](https://user-images.githubusercontent.com/12732454/126923083-f529c8ba-a43b-49d5-976d-745047c1a230.png)
 
 Whaler-api is currently hosted on Heroku. Here's a look at the high level project structure:
-<img width="641" alt="Mind Map 4" src="https://user-images.githubusercontent.com/12732454/126924006-7cc46a3a-7de1-4f5f-9cfb-2c2ae750f044.png">
+<img width="703" alt="Mind Map 8" src="https://user-images.githubusercontent.com/12732454/126958935-0667384b-ae53-42d7-b803-f96d9b3c2547.png">
 
 Let's step through each node to get an idea of how it all works. 
 
 ### Middleware
 
-![IMG_24CA09751158-1](https://user-images.githubusercontent.com/12732454/126927906-9163a0cd-5d38-45f9-94cf-3fc8bf5c6707.jpeg)
+<img width="500" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126959995-926a5c54-27b5-41bb-93e1-999ae9fe0300.png">
 
 In `jwtAuth.go`, a simple bit of middleware authenticates the jwt token attached to incoming requests. If the token is valid, then the userId will be extracted from the token and added to the request context.
 
 ### Controllers
 
+<img width="500" alt="IMG_05FDC30FEF94-1 copy" src="https://user-images.githubusercontent.com/12732454/126959700-376594b1-0952-47e5-aa4c-de0f8cdd2f94.png">
+
+
 Whaler-api only uses REST endpoints for authentication related requests. In `authController.go`, you'll find the handlers for authenticating and refreshing the token. These functions parse the token and then call into the `Token` model to do more work.
 
 ### Graph
+
+<img width="500" alt="IMG_8DA394044771-1 copy" src="https://user-images.githubusercontent.com/12732454/126960018-58e6fe71-9ee5-45ae-a2cb-876776f6001c.png">
 
 Whaler-api uses GraphQL for all data operations. The full schema is available in this directory as `schema.graphqls`. Whaler-api uses a Go module called `gqlgen` to generate the GraphQL-related boilerplate. This schema-first approach lets us focus on defining our API needs and then leveraging the strong typing of GraphQL and Go to catch any inconsistencies as the API changes. 
 
@@ -57,13 +62,21 @@ A schema explorer called `playground` runs on the `/schema` route accessable on 
 
 ### Models
 
+<img width="500" alt="IMG_C9B2799EDAFE-1 copy" src="https://user-images.githubusercontent.com/12732454/126960043-25023299-94e8-499a-97e9-82237a44ab1b.png">
+
 This package contains all of the Whaler-api database models. `gorm` is the ORM that facilitates communication with the connected Postgres database. Models include `account`, `contact`, `accountAssignmentEntry`, `note`, `task`, `token`, and more. Each class has functions that provide CRUD operations on the data and are usually called from GraphQL resolvers.
 
 Access tokens, defined in `token.go`, are of the JWT format, and encode the userId in addition to the standard JWT claims. Refresh tokens, also defined in `token.go`, contain the userId, an expiration date, and a randomly generated 256 byte hash. The current expiration time is 90 days for refresh tokens. 
 
 ### Websocket
 
+<img width="500" alt="IMG_F5B32B4D93E1-1 copy" src="https://user-images.githubusercontent.com/12732454/126959549-2d8357c0-7c1a-44b9-b702-caa5d5e01d22.png">
+
+
 ### OT
+
+<img width="500" alt="IMG_110634F00130-1 copy" src="https://user-images.githubusercontent.com/12732454/126960078-17ba9cae-5c90-4ea7-9532-8bc7e5dfb528.png">
+
 
 
 ### Roadmap
