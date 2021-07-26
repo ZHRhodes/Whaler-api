@@ -84,12 +84,34 @@ The models package defines a `ChangeConsumer` interface that is implemented by `
 
 <img width="500" alt="IMG_110634F00130-1 copy" src="https://user-images.githubusercontent.com/12732454/126960078-17ba9cae-5c90-4ea7-9532-8bc7e5dfb528.png">
 
+Whaler-api provides real-time document editing à la Google docs. Currently, this is used for the notes section of the account details page. It works via an operational transform implementation, where Whaler-api functions as the `server` in the algorithm, and the clients each run a corresponding `client` when they wish to engage in collaborative editing.
+
+The full details of the operational transform algorithm is complex and outside the scope of this README. There are plenty of resources online covering this topic; this one in particular helped me finally understand how it works: https://www.aha.io/blog/text-editor.
+
+Since that's a pretty long article, I'll try to summarize things at a high level. Whaler-api is the OT `server` (`server.go`), which means it maintains the source of truth doc (`doc.go`). This doc is held in memory as a 2D array of `runes`. `Clients` also hold their own copy of the doc, and the goal is to keep all these copies in sync by conveying changes as a series of transformations. Each time a change is made to the doc by a client, that change is packaged up into a series of `Ops` (`ops.go`). These `Ops` define the entire set of changes describing the whole document. For example, if the doc was the text `Hello orld` and a client added the missing `w`, that change would be described by this series of ops: 
+
+1. `retain 6` (H e l l o [space]) - 6 chars
+2. `insert "w"`
+3. `retain 4` (o r l d) - 4 chars
+
+A set of ops must fully describe the document or they will be rejected by the server. There is one more Op type: delete. If you wanted to delete the space in the last phrase, you would do: 
+
+1. `retain 5`
+2. `delete 1`
+3. `retain 5` (don't forget we added the "w")
+
+See the `Op` struct defined in `ops.go` for more details on how these operations are represented using an int `N` and a string `S`. 
+
 
 
 ### Future 👀
-Ideally, the Salesforce integration would be moved to the backend. The frontend would still be responsible for initiating the integration process, but once a Salesforce token is obtained, it would be sent to the backend, where the integration would then be managed. Moving all the Salesforce data management to the backend would free up the app to focus on being a great frontend. As a part of that migration, I would abstract the few direct Salesforce references (e.g. SalesforceId) behind a generic CRM integration interface. Then, adding support for HubSpot, Pipedrive, or any other CRM would be much simpler. 
+#1. The Salesforce integration would be moved to the backend. The frontend would still be responsible for initiating the integration process, but once a Salesforce token is obtained, it would be sent to the backend, where the integration would then be managed. Moving all the Salesforce data management to the backend would free up the app to focus on being a great frontend. As a part of that migration, I would abstract the few direct Salesforce references (e.g. SalesforceId) behind a generic CRM integration interface. Then, adding support for HubSpot, Pipedrive, or any other CRM would be much simpler. 
 
-Additionally, this project could use a bit more delineation. Over time, the `models` package would continue to expand and take on too much responsibility. I'd like to further reduce the scope of the existing packages by creating new ones and splitting them up better. Because this project started as a REST api and later switched to GraphQL, there are some leftovers from that transition that could use an update. 
+#2. The current reliance on storing items in memory will present challenges when scaling later. A longer term solution would be to use Redis to store these items. For example, if we store the docs being actively collaborated on in Redis, then we could scale the api to multiple Heroku dynos.
+
+#3. We need pre-production environments, namely a develop and staging environment. This would need to include seperate DBs, as testing migrations is a key reason for the seperation.
+
+#4. This project could use a bit more delineation. Over time, the `models` package would continue to expand and take on too much responsibility. I'd like to further reduce the scope of the existing packages by creating new ones and splitting them up better. Because this project started as a REST api and later switched to GraphQL, there are some leftovers from that transition that could use an update. 
 
 ## Running Locally
 
