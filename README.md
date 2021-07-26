@@ -39,7 +39,7 @@ Let's step through each node to get an idea of how it all works.
 
 <img width="500" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126959995-926a5c54-27b5-41bb-93e1-999ae9fe0300.png">
 
-In `jwtAuth.go`, a simple bit of middleware authenticates the jwt token attached to incoming requests. If the token is valid, then the userId will be extracted from the token and added to the request context.
+In `jwtAuth.go`, a simple bit of middleware authenticates the jwt token attached to incoming requests. If the token is valid, then the userId will be extracted from the token and added to the request context. This middleware is added to the responder chain during the initialization of the router in `main.go`. 
 
 ### Controllers
 
@@ -72,6 +72,13 @@ Access tokens, defined in `token.go`, are of the JWT format, and encode the user
 
 <img width="500" alt="IMG_F5B32B4D93E1-1 copy" src="https://user-images.githubusercontent.com/12732454/126959549-2d8357c0-7c1a-44b9-b702-caa5d5e01d22.png">
 
+Websocket connections are represented as `Clients` defined in `clients.go`. When a new connection request is received (`websocket.go`), a `Client` is created and added to the `Pool` associated with the `resourceId` passed with the request. If this is the first connection seen for that `resourceId`, then a new `Pool` is created. When a `Client` receives a message, it does a bit of pre-processing in `client.go` before sending the message to the `Process` function defined in `process.go`. From here, the message type is used to decode the message data into the appropriate struct, which is then sent into the correct handler function. 
+
+Messages can easily be broadcast to an entire `Pool` by sending a `SocketMessage` into the `Pool.broadcast` channel. The `Pool` will iterate over each of its clients and send it the new message. If you're trying to replicate an incoming message across other members of the pool, then you can leverage the `message.SenderId` property to ensure the data will not be sent back to the originating `Client`. 
+
+New connections arrive with a grouping identifier, typically the resource id of the object being viewed or collaborated on. In the case of a websocket client wanting updates for the accounts they're tracking, this id will be the user's `organizationId`. The first iteration of real time model updates simply fires a message containing the resource id of the updated model to each client registered with the organizationId. While this dragnet approach may be a bit inefficient, it effectively suits the needs of the MVP. This `ResourceUpdate` message and all other websocket messages are defined in `messages.go`.
+
+The models package defines a `ChangeConsumer` interface that is implemented by `websocket.ChangeConsumer`. The websocket implementation is set as the consumer for the models package. When models are changed, these changes are forwarded to the `ChangeConsumer` for further handling. In this case, that results in a message being broadcast to the `Pool` for the resourceId indicating that the model has changed. Currently, this triggers a reload on the client side, but later this message could be expanded to contain the new model itself.
 
 ### OT
 
@@ -79,7 +86,7 @@ Access tokens, defined in `token.go`, are of the JWT format, and encode the user
 
 
 
-### Roadmap
+### Future 👀
 Ideally, the Salesforce integration would be moved to the backend. The frontend would still be responsible for initiating the integration process, but once a Salesforce token is obtained, it would be sent to the backend, where the integration would then be managed. Moving all the Salesforce data management to the backend would free up the app to focus on being a great frontend. As a part of that migration, I would abstract the few direct Salesforce references (e.g. SalesforceId) behind a generic CRM integration interface. Then, adding support for HubSpot, Pipedrive, or any other CRM would be much simpler. 
 
 Additionally, this project could use a bit more delineation. Over time, the `models` package would continue to expand and take on too much responsibility. I'd like to further reduce the scope of the existing packages by creating new ones and splitting them up better. Because this project started as a REST api and later switched to GraphQL, there are some leftovers from that transition that could use an update. 
