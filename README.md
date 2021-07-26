@@ -1,7 +1,9 @@
+![Logo_Lock_Transparent](https://user-images.githubusercontent.com/12732454/126949778-df08d3b0-5233-42d7-9757-c4652e0bdbff.png)
+
 
 # Whaler-api
 
-Whaler-api is the backend to [Whaler](https://github.com/ZHRhodes/Whaler). 
+Whaler-api is a Go application backend serving up REST and GraphQL endpoints for the Whaler client app. WebSockets are used to power custom real-time collaborative note taking and real-time model updates.
 
 ## What is Whaler? 
 
@@ -48,6 +50,20 @@ Whaler-api only uses REST endpoints for authentication related requests. In `aut
 Whaler-api uses GraphQL for all data operations. The full schema is available in this directory as `schema.graphqls`. Whaler-api uses a Go module called `gqlgen` to generate the GraphQL-related boilerplate. This schema-first approach lets us focus on defining our API needs and then leveraging the strong typing of GraphQL and Go to catch any inconsistencies as the API changes. 
 
 In order to generate the boilerplate with the current schema, use `go run github.com/99designs/gqlgen generate`. The generated code will be placed in `generated.go` and includes Go interfaces defining the schema and Go functions implementing the actual GraphQL operations themselves. You don't need to worry much about the contents of this file; `generate` will place empty resolver methods in `schema.resolvers.go`. Each query and mutations in the schema will map to a resolver function added to this file, and all you have to do then is fill in those resolver functions. This effectively abstracts almost all of the implementation details of GraphQL and lets us focus on the parts that are specific to this project. Amazing!
+
+`generate` will create Go structs for each type in the schema, but you can also map them to your own structs if you wish. Mappings can be added to the top-level `gqlgen.yml` file. For the sake of having more control over struct definitions, most Whaler models are mapped.
+
+A schema explorer called `playground` runs on the `/schema` route accessable on the browser. This playground introspects your schema and presents an explorer alongside a terminal where you can execute queries and mutations. This is very useful for using and testing resolvers. **Note**: These requests do still require a token, so you'll need to generate one from the REST endpoint and add it as the `Authorization` header in the playground interface.
+
+### Models
+
+This package contains all of the Whaler-api database models. `gorm` is the ORM that facilitates communication with the connected Postgres database. Models include `account`, `contact`, `accountAssignmentEntry`, `note`, `task`, `token`, and more. Each class has functions that provide CRUD operations on the data and are usually called from GraphQL resolvers.
+
+Access tokens, defined in `token.go`, are of the JWT format, and encode the userId in addition to the standard JWT claims. Refresh tokens, also defined in `token.go`, contain the userId, an expiration date, and a randomly generated 256 byte hash. The current expiration time is 90 days for refresh tokens. 
+
+### Websocket
+
+### OT
 
 
 ### Roadmap
