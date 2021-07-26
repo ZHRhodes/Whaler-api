@@ -45,7 +45,9 @@ Whaler-api only uses REST endpoints for authentication related requests. In `aut
 
 ### Graph
 
-Whaler-api uses GraphQL for all data operations. The full schema is available in this directory as `schema.graphqls`. Whaler-api uses a Go module called `gqlgen` to generate the GraphQL-related boilerplate. This lets us focus on updating the schema first and foremost.
+Whaler-api uses GraphQL for all data operations. The full schema is available in this directory as `schema.graphqls`. Whaler-api uses a Go module called `gqlgen` to generate the GraphQL-related boilerplate. This schema-first approach lets us focus on defining our API needs and then leveraging the strong typing of GraphQL and Go to catch any inconsistencies as the API changes. 
+
+In order to generate the boilerplate with the current schema, use `go run github.com/99designs/gqlgen generate`. The generated code will be placed in `generated.go` and includes Go interfaces defining the schema and Go functions implementing the actual GraphQL operations themselves. You don't need to worry much about the contents of this file; `generate` will place empty resolver methods in `schema.resolvers.go`. Each query and mutations in the schema will map to a resolver function added to this file, and all you have to do then is fill in those resolver functions. This effectively abstracts almost all of the implementation details of GraphQL and lets us focus on the parts that are specific to this project. Amazing!
 
 
 ### Roadmap
