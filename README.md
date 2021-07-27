@@ -19,12 +19,11 @@ These features include:
 
 Because a picture speaks a thousand words, here are two key pages within the app:
 
-<img width="1345" alt="Screen Shot 2021-07-25 at 7 55 51 PM" src="https://user-images.githubusercontent.com/12732454/126926937-3ffb596c-f8af-489c-8fef-d0a213cafa11.png">
+![paste](https://user-images.githubusercontent.com/12732454/127080032-728efdf7-e86e-41c7-a4a2-851210d599df.png)
 
-<img width="1340" alt="Screen Shot 2021-07-25 at 7 56 45 PM" src="https://user-images.githubusercontent.com/12732454/126926982-1609ec78-9c7d-4ae2-a72f-d9a14073c856.png">
+![paste (1)](https://user-images.githubusercontent.com/12732454/127080145-fcd2c5cc-ca7a-40e1-94a2-65944faacb22.png)
 
-<img width="1340" alt="Screen Shot 2021-07-25 at 7 58 02 PM" src="https://user-images.githubusercontent.com/12732454/126927102-e9f19bf7-eb2d-4506-a55d-505dde54820e.png">
-
+![paste (2)](https://user-images.githubusercontent.com/12732454/127080202-bd144411-40c3-478b-998e-c54602e41267.png)
 
 ## Whaler-api Technical Overview
 
