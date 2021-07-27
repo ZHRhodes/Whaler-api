@@ -155,7 +155,7 @@ As a starting point, I dropped in this package https://github.com/mb0/ot, which 
 
 ## Running Locally
 
-If developing with VSCode, here's a launch.json that will let you run locally within VSCode. 
+If developing with VSCode, here's a launch.json that will run Whaler-api locally within VSCode. 
 
 ```{
     "version": "0.2.0",
