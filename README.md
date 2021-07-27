@@ -107,7 +107,7 @@ A set of ops must fully describe the document or they will be rejected by the se
 2. `delete 1`
 3. `retain 5` (don't forget we added the "w")
 
-See the `Op` struct defined in `ops.go` for more details on how these operations are represented using an int `N` and a string `S`. After a set of changes is sent to the server and applied, it must acknkowledge to the client that the changes were accepted. The client will buffer any future changes until it does so. 
+See the `Op` struct defined in `ops.go` for more details on how these operations are represented using an int `N` and a string `S`. After a set of changes is sent to the server and applied, it must acknowledge to the client that the changes were accepted. The client will buffer any future changes until it does so. 
 
 Because the server and clients each maintain their own copy of the doc, they need the ability to reconcile different sets of changes with their own copy. This primarily comes in the form of two functions: `Compose` and `Transform`. 
 
@@ -120,7 +120,7 @@ This might be best understood with an example. Take the doc `I see dead people.`
 2. `delete 5` (d e a d [space])
 3. `retain 7` (p e o p l e .)
 
-But let's say we need to buffer Ops A with a new set called Ops B, which describe a consecutive changing deleting the word `people`. Operating on the newly changed doc, Ops B looks like:
+But let's say we need to buffer Ops A with a new set called Ops B, which describes deleting the word `people`. Operating on the newly changed doc, Ops B looks like:
 1. `retain 6` (I [space] s e e [space])
 2. `delete 6` (p e o p l e)
 3. `retain 1` (.)
@@ -132,7 +132,7 @@ Compose(OpsA, OpsB) =>
 2. `delete 11` (d e a d [space] p e o p l e)
 3. `retain 1` (.)
 
-Tada! We've composed six consecutive ops into three with no loss of information. This is a simple case of composing two delete changes, but you can imagine how complicated composition can get when mixing message types across overlapping boundaries. This makes up a lot of the "meat" of the algorithm, and the full implementation can be found in `ops.go`. 
+Tada! We've composed six consecutive ops into three with no loss of information. This is a simple case of composing two deletions, but you can imagine how complicated composition can get when mixing message types across overlapping boundaries. This makes up some of the "meat" of the algorithm, and the full implementation can be found in `ops.go`. 
 
 
 #### Transform
