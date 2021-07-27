@@ -8,7 +8,7 @@ Whaler-api is a Go application backend serving up REST and GraphQL endpoints for
 
 ## What is Whaler? 
 
-Whaler is a platform consisting of a native mac app ([Whaler](https://github.com/ZHRhodes/Whaler)) and a heroku-hosted backend. The goal is to enable real time sales outreach collaboration right on top of the organization's Salesforce data. This is accomplished by allowing the user to sign in to their organization's Salesforce, importing subsets of their data into the frontend app, and enhancing that data with additional constructs that power our features. 
+Whaler is a platform consisting of a native Mac app ([Whaler](https://github.com/ZHRhodes/Whaler)) and a heroku-hosted backend. The goal is to enable real time sales outreach collaboration right on top of the organization's Salesforce data. This is accomplished by allowing the user to sign in to their organization's Salesforce, importing subsets of their data into the frontend app, and enhancing that data with additional constructs that power our features. 
 
 These features include: 
 * Kanban-style progress tracking for accounts and contacts
