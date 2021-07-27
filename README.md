@@ -17,7 +17,7 @@ These features include:
 * Real time collaborative editor for account notes, communicating over websockets with operational transform conflict resolution
 * Real time data model updates over websockets
 
-Because a picture speaks a thousand words, here are two key pages within the app:
+Because a picture speaks a thousand words, here are a few key pages within the app:
 
 ![paste](https://user-images.githubusercontent.com/12732454/127080032-728efdf7-e86e-41c7-a4a2-851210d599df.png)
 
