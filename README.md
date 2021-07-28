@@ -12,8 +12,8 @@ Whaler is a platform consisting of a native Mac app ([Whaler](https://github.com
 
 These features include: 
 * Kanban-style progress tracking for accounts and contacts
-* Per-account tasks feature with ability to create, edit, set due date, and complete tasks
 * Assign accounts, contacts, and tasks to users within your organization
+* Per-account tasks feature with ability to create, edit, set due date, and complete tasks
 * Real time collaborative editor for account notes, communicating over websockets with operational transform conflict resolution
 * Real time data model updates over websockets
 
