@@ -48,8 +48,7 @@ In `jwtAuth.go`, a simple bit of middleware authenticates the jwt token attached
 
 <img width="600" alt="IMG_05FDC30FEF94-1 copy" src="https://user-images.githubusercontent.com/12732454/126959700-376594b1-0952-47e5-aa4c-de0f8cdd2f94.png">
 
-
-Whaler-api only uses REST endpoints for authentication related requests. In `authController.go`, you'll find the handlers for authenticating and refreshing the token. These functions parse the token and then call into the `Token` model to do more work.
+Whaler-api only uses REST endpoints for authentication related requests. In `authController.go`, you'll find the handlers for those requests, namely logging in and refreshing the token. 
 
 
 ### Graph
