@@ -29,7 +29,7 @@ Because a picture speaks a thousand words, here are a few key pages within the a
 
 Looking at the whole picture, this repo consists of the left half of this diagram:
 
-![Whaler Technical Overview](https://user-images.githubusercontent.com/12732454/126923083-f529c8ba-a43b-49d5-976d-745047c1a230.png)
+<img width="600" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126923083-f529c8ba-a43b-49d5-976d-745047c1a230.png">
 
 Whaler-api is currently hosted on Heroku. Here's a look at the high level project structure:
 <img width="703" alt="Mind Map 8" src="https://user-images.githubusercontent.com/12732454/126958935-0667384b-ae53-42d7-b803-f96d9b3c2547.png">
@@ -39,14 +39,14 @@ Let's step through each node to get an idea of how it all works.
 
 ### Middleware
 
-<img width="500" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126959995-926a5c54-27b5-41bb-93e1-999ae9fe0300.png">
+<img width="600" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126959995-926a5c54-27b5-41bb-93e1-999ae9fe0300.png">
 
 In `jwtAuth.go`, a simple bit of middleware authenticates the jwt token attached to incoming requests. If the token is valid, then the userId will be extracted from the token and added to the request context. This middleware is added to the responder chain during the initialization of the router in `main.go`. 
 
 
 ### Controllers
 
-<img width="500" alt="IMG_05FDC30FEF94-1 copy" src="https://user-images.githubusercontent.com/12732454/126959700-376594b1-0952-47e5-aa4c-de0f8cdd2f94.png">
+<img width="600" alt="IMG_05FDC30FEF94-1 copy" src="https://user-images.githubusercontent.com/12732454/126959700-376594b1-0952-47e5-aa4c-de0f8cdd2f94.png">
 
 
 Whaler-api only uses REST endpoints for authentication related requests. In `authController.go`, you'll find the handlers for authenticating and refreshing the token. These functions parse the token and then call into the `Token` model to do more work.
@@ -54,7 +54,7 @@ Whaler-api only uses REST endpoints for authentication related requests. In `aut
 
 ### Graph
 
-<img width="500" alt="IMG_8DA394044771-1 copy" src="https://user-images.githubusercontent.com/12732454/126960018-58e6fe71-9ee5-45ae-a2cb-876776f6001c.png">
+<img width="600" alt="IMG_8DA394044771-1 copy" src="https://user-images.githubusercontent.com/12732454/126960018-58e6fe71-9ee5-45ae-a2cb-876776f6001c.png">
 
 Whaler-api uses GraphQL for all data operations. The full schema is available in this directory as `schema.graphqls`. Whaler-api uses a Go module called `gqlgen` to generate the GraphQL-related boilerplate. This schema-first approach lets us focus on defining our API needs and then leveraging the strong typing of GraphQL and Go to catch any inconsistencies as the API changes. 
 
@@ -67,7 +67,7 @@ A schema explorer called `playground` runs on the `/schema` route accessable on 
 
 ### Models
 
-<img width="500" alt="IMG_C9B2799EDAFE-1 copy" src="https://user-images.githubusercontent.com/12732454/126960043-25023299-94e8-499a-97e9-82237a44ab1b.png">
+<img width="600" alt="IMG_C9B2799EDAFE-1 copy" src="https://user-images.githubusercontent.com/12732454/126960043-25023299-94e8-499a-97e9-82237a44ab1b.png">
 
 This package contains all of the Whaler-api database models. `gorm` is the ORM that facilitates communication with the connected Postgres database. Models include `account`, `contact`, `accountAssignmentEntry`, `note`, `task`, `token`, and more. Each class has functions that provide CRUD operations on the data and are usually called from GraphQL resolvers.
 
@@ -76,7 +76,7 @@ Access tokens, defined in `token.go`, are of the JWT format, and encode the user
 
 ### Websocket
 
-<img width="500" alt="IMG_F5B32B4D93E1-1 copy" src="https://user-images.githubusercontent.com/12732454/126959549-2d8357c0-7c1a-44b9-b702-caa5d5e01d22.png">
+<img width="600" alt="IMG_F5B32B4D93E1-1 copy" src="https://user-images.githubusercontent.com/12732454/126959549-2d8357c0-7c1a-44b9-b702-caa5d5e01d22.png">
 
 Websocket connections are represented as `Clients` defined in `clients.go`. When a new connection request is received (`websocket.go`), a `Client` is created and added to the `Pool` associated with the `resourceId` passed with the request. If this is the first connection seen for that `resourceId`, then a new `Pool` is created. When a `Client` receives a message, it does a bit of pre-processing in `client.go` before sending the message to the `Process` function defined in `process.go`. From here, the message type is used to decode the message data into the appropriate struct, which is then sent into the correct handler function. 
 
@@ -89,7 +89,7 @@ The models package defines a `ChangeConsumer` interface that is implemented by `
 
 ### OT
 
-<img width="500" alt="IMG_110634F00130-1 copy" src="https://user-images.githubusercontent.com/12732454/126960078-17ba9cae-5c90-4ea7-9532-8bc7e5dfb528.png">
+<img width="600" alt="IMG_110634F00130-1 copy" src="https://user-images.githubusercontent.com/12732454/126960078-17ba9cae-5c90-4ea7-9532-8bc7e5dfb528.png">
 
 Whaler-api provides real-time document editing à la Google docs. Currently, this is used for the notes section of the account details page. It works via an operational transform implementation, where Whaler-api functions as the `server` in the algorithm, and the clients each run a corresponding `client` when they wish to engage in collaborative editing.
 
