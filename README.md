@@ -29,7 +29,7 @@ Because a picture speaks a thousand words, here are a few key pages within the a
 
 Looking at the whole picture, this repo consists of the left half of this diagram:
 
-<img width="600" alt="IMG_DA5BD9A32359-1 copy" src="https://user-images.githubusercontent.com/12732454/126923083-f529c8ba-a43b-49d5-976d-745047c1a230.png">
+![Whaler Technical Overview](https://user-images.githubusercontent.com/12732454/127265060-54d774e8-5175-416d-9231-095937ddd309.png)
 
 Whaler-api is currently hosted on Heroku. Here's a look at the high level project structure:
 <img width="703" alt="Mind Map 8" src="https://user-images.githubusercontent.com/12732454/126958935-0667384b-ae53-42d7-b803-f96d9b3c2547.png">
