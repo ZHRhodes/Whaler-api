@@ -145,13 +145,11 @@ As a starting point, I dropped in this package https://github.com/mb0/ot, which 
 
 
 ### Future 👀
-#1. The Salesforce integration should be moved to the backend. The frontend would still be responsible for initiating the integration process, but once a Salesforce token is obtained, it would be sent to the backend, where the integration would then be managed. Moving all the Salesforce data management to the backend would free up the app to focus on being a great frontend. As a part of that migration, I would abstract the few direct Salesforce references (e.g. SalesforceId) behind a generic CRM integration interface. Then, adding support for HubSpot, Pipedrive, or any other CRM would be much simpler. 
+1. The Salesforce integration should be moved to the backend. The frontend would still be responsible for initiating the integration process, but once a Salesforce token is obtained, it would be sent to the backend, where the integration would then be managed. Moving all the Salesforce data management to the backend would free up the app to focus on being a great frontend. As a part of that migration, I would abstract the few direct Salesforce references (e.g. SalesforceId) behind a generic CRM integration interface. Then, adding support for HubSpot, Pipedrive, or any other CRM would be much simpler. 
 
-#2. The current reliance on storing items in memory will present challenges when scaling later. A longer term solution would be to use Redis to store these items. For example, if we store the docs being actively collaborated on in Redis, then we could scale the api to multiple Heroku dynos.
+2. The current reliance on storing items in memory will present challenges when scaling later. A longer term solution would be to use Redis to store these items. For example, if we store the docs being actively collaborated on in Redis, then we could scale the api to multiple Heroku dynos.
 
-#3. We need pre-production environments, namely a develop and staging environment. This would need to include seperate DBs, as testing migrations is a key reason for the seperation.
-
-#4. This project could use a bit more delineation. Over time, the `models` package would continue to expand and take on too much responsibility. I'd like to further reduce the scope of the existing packages by creating new ones and splitting them up better. Because this project started as a REST api and later switched to GraphQL, there are some leftovers from that transition that could use an update. 
+3. We need pre-production environments, namely a develop and staging environment. This would need to include seperate DBs, as testing migrations is a key reason for the seperation.
 
 ## Running Locally
 
